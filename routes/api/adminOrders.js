@@ -40,6 +40,8 @@ router.post('/', authAdmin, async ( req, res) => {
     customer.balance = customer.balance-orderTotalPrice
     await customer.save()
 
+    console.log('Add New Order, newOrder ID', newOrder._id)
+
     // Save to User Activity
     const userActivity = new UserActivity({
       orderId: newOrder._id,
@@ -97,6 +99,7 @@ router.put('/:orderId', authAdmin, async ( req, res) => {
     const userActivity = await UserActivity.findOne({
       orderId: order._id
     });
+
     userActivity.customerId = user._id;
     userActivity.amount = orderTotalPrice;
     await userActivity.save();
@@ -139,13 +142,12 @@ router.get('/:orderId', authAdmin, async ( req, res) => {
       "username"
     ).populate('serviceList.service', 'productName serviceType' );  // productName serviceType
 
-    if( !order) {
-      return res.status(400).json({ errors: [{ msg: "Order not found" }] });
-    }
-
     res.status(200).json(order)
     
   } catch (err) {
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ errors: [{ msg: "Order not found" }] })
+    }
     console.error(err.message);
     res.status(500).send("Server Error");
   }

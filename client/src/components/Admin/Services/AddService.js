@@ -1,8 +1,9 @@
 import React, {useContext, useState, Fragment, useEffect} from 'react'
 import adminContext from '../../../context/admin/adminContext'
 import ProductRowForAddService from "./ProductRowForAddService";
+import Spinner from '../../layout/Spinner'
 
-const AddService = ({match}) => {
+const AddService = ({match, history}) => {
   const adminContext1 = useContext(adminContext)
   const {
     loadQueriedProducts,
@@ -10,18 +11,25 @@ const AddService = ({match}) => {
     addNewService,
     updateService,
     loadSingleService,
-    serviceToBeEditted
+    // serviceToBeEditted, 
+    loading,
+    setAdminLoading
   } = adminContext1;
 
   const [formData, setFormData] = useState({
     productName: "",
     product: "",
     serviceType: "",
-    servicePrice: ""
+    servicePrice: "",
+    featured: false
   });
 
-  // If Edit
-  const updateFormFromBackend = res => {
+  // If Not a New Service, but Editting. Update this form states, by async function at the adminContext loadSingleService method
+  const next = res => {
+
+    if(!res) {
+      return history.push('/dashboard/services')
+    }
     setFormData({
       ...formData,
       productName: res.productName || "",
@@ -33,19 +41,23 @@ const AddService = ({match}) => {
 
 
   useEffect( () => {
+    // If Not a New Service, but Editting
     if(match.params.serviceId) {
     // Do smt
-      loadSingleService({serviceId: match.params.serviceId}).then(res => {
-      updateFormFromBackend(res);
+      // loadSingleService({serviceId: match.params.serviceId,}).then(res => {
+      // updateFormFromBackend(res);
+      loadSingleService({serviceId: match.params.serviceId, next})
 
         // console.log(formData);
-      });
-    }
+      } else {
+        setAdminLoading(false)
+      }
   }, [])
+  
 
 
   const [ productSearch, setProductSearch ] = useState(false)
-  const { productName, serviceType, servicePrice } = formData
+  const { productName, serviceType, servicePrice, featured } = formData
 
 
   const selectProduct = ({productInfo}) => {
@@ -80,8 +92,15 @@ const AddService = ({match}) => {
   const handleCloseProductSearch = e => {
     setProductSearch(false)
   }
-  
 
+  const handleFeaturedOnChange = e => {
+    setFormData({
+      ...formData,
+      featured: !featured
+    });
+  }
+  
+  if( loading ) return <Spinner></Spinner>
   return (
     <div id='add-service' className='row'>
       <div id='border-div' className='col mp-0 s12 m6  z-depth-2'>
@@ -182,14 +201,25 @@ const AddService = ({match}) => {
                   Service Price
                 </label>
               </div>
-              <button
-                className='btn waves-effect waves-light mt-1 mb-1'
-                type='button'
-                onClick={e => submitAddorUpdate()}
-              >
-                Submit
-                <i class='material-icons right'>send</i>
-              </button>
+              <div className='row mp-0'>
+                <span className='flexrow justify-content-space-between mt-1 mb-1'>
+                  <label className="ml-1">
+                    <input 
+                      name="featured"
+                      onChange= { e => handleFeaturedOnChange(e)}
+                      type='checkbox' checked={featured ? true : false} />
+                    <span>Featured</span>
+                  </label>
+                  <button
+                    className='btn waves-effect waves-light  mr-1'
+                    type='button'
+                    onClick={e => submitAddorUpdate()}
+                  >
+                    Submit
+                    <i className='material-icons right'>send</i>
+                  </button>
+                </span>
+              </div>
             </div>
             {/* End of Service Info Section */}
           </Fragment>

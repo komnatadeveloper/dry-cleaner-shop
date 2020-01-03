@@ -1,6 +1,6 @@
 import React, {useContext, useEffect, Fragment, } from 'react'
 import { Link } from 'react-router-dom'
-import AddClothesModal from './TOBE/AddClothesModal';
+import AddClothesModal from '../TOBEDELETED/TOBE/AddClothesModal';
 import OrdersItem from './TOBE/OrdersItem'
 import Spinner from '../../layout/Spinner'
 import adminContext from '../../../context/admin/adminContext'

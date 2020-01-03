@@ -183,7 +183,7 @@ router.get('/query', authAdmin, async (req, res) => {
           }
         }
       ]
-    });
+    }).select('-password');
 
     res.status(200).json(userList);
 
@@ -222,7 +222,11 @@ router.post('/payment/:customerId', authAdmin, async (req, res) => {
     
     const user = await User.findById(req.params.customerId);
 
-    user.balance += req.body.payment;
+    const payment = parseFloat(parseFloat(req.body.payment).toFixed(2))
+
+    user.balance = parseFloat(user.balance).toFixed(2);
+
+    user.balance += payment;
 
     await user.save();
 

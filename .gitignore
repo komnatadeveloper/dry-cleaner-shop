@@ -28,6 +28,8 @@ node_modules/
 # CONFIG FILES AND/OR ENVIRONMENT VARIABLES
 config/default.json
 
+# TOBEDELETED
+TOBEDELETED/
 
 
 

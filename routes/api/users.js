@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const User = require("../../models/User");
 const Order = require("../../models/Order");
+const Service = require("../../models/Service");
 const UserActivity = require("../../models/UserActivity");
 const bcrypt = require('bcryptjs')
 const jwt = require('jsonwebtoken')
@@ -74,30 +75,60 @@ router.post('/orders', auth, async (req, res) => {
 
   try {
 
-    const customerId = req.user.id
-
+    const user = req.user.id
+    
     const {
       // customerId,  DISABLED
       // date,        DISABLED
       serviceList,
-      orderStatus,
-      orderTotalPrice
     } = req.body;
 
     // Check if there is that customer exists
-    const customer = await User.findById(customerId);
+    const customer = await User.findById(user);
     if (!customer) {
       return res.status().json('User does not exist')
     }
 
+    // Add In Progress to All Service List
+    serviceList.map( service => {
+      service.unitServiceStatus = "In Progress"
+    })
+    // Add Order Status as In Progress
+    const orderStatus = "In Progress"
+
+    // Iterate and create serviceList search array
+    const serviceQuery = serviceList.map( service => (
+      {_id: service.service}
+    ) )
+    const serviceListFromDB = await Service.find( {
+      $or: [ ...serviceQuery ]        
+    }).populate('serviceList.service', 'productName serviceType')
+    // console.log(serviceListFromDB);    
+
+    let orderTotalPrice = 0
+    serviceList.map( service => {
+      // console.log('SERVICE LIST', serviceListFromDB);
+      const relatedService = serviceListFromDB.filter(item => item._id.toString() === service.service.toString())
+
+      if(!relatedService[0]) return res.json('SERVICE NOT FoUnD')
+      service.unitPrice = relatedService[0].servicePrice;
+      service.unitTotalPrice = service.quantity * relatedService[0].servicePrice;
+      orderTotalPrice += service.unitTotalPrice
+    })
+
+
+
+
     const newOrder = new Order({
-      customerId,
+      user,
       serviceList,
       orderStatus,
       orderTotalPrice
     });
 
-    await newOrder.save();
+    await newOrder.save()
+    // console.log('NEW ORDER', newOrder);
+    // console.log('SERVICE LIST', serviceList);
 
     customer.balance = customer.balance - orderTotalPrice
     await customer.save()
@@ -106,11 +137,20 @@ router.post('/orders', auth, async (req, res) => {
     const userActivity = new UserActivity({
       customerId: customer._id,
       activityType: "order",
-      amount: orderTotalPrice
+      amount: orderTotalPrice,
+      orderId: newOrder._id
     });
     await userActivity.save()
 
-    res.status(200).json(newOrder)
+    res.status(200).json({
+      msg: 'Order successfully added',
+      order: {
+        _id: newOrder._id,
+        user: newOrder.user,
+        serviceList,
+        orderStatus,
+        date: newOrder.date
+      }})
 
   } catch (err) {
     console.error(err.message);
@@ -124,7 +164,7 @@ router.get('/orders', auth, async (req, res) => {
 
   try {
 
-    const orderList = await Order.find( {customerId: req.user.id});
+    const orderList = await Order.find({ user: req.user.id }).populate('serviceList.service', 'productName serviceType');
     
     res.status(200).json(orderList)
 
@@ -139,16 +179,17 @@ router.get('/orders', auth, async (req, res) => {
 router.get('/orders/:orderId', auth, async (req, res) => { 
 
   try {
-    const order = await Order.findById( req.params.orderId);
-    if( !order || order.customerId !== req.user.id ) {
-      return res.status(400).send('Order Not Found')
+    const order = await Order.findById(req.params.orderId).populate('serviceList.service', 'productName serviceType');
+
+    if( !order || order.user.toString() !== req.user.id ) {
+      return res.status(400).send({ errors: [{ msg: "Order not found" }] })
     }
     
     res.status(200).json(order)
 
   } catch (err) {
     console.error(err.message);
-    res.status(500).send("Server Error");
+    res.status(500).send({ errors: [{ msg: "Order not found" }] });
   }
 } )
 
@@ -159,7 +200,7 @@ router.put('/orders/:orderId', auth, async (req, res) => {
   try {
     const order = await Order.findById( req.params.orderId);
     if (!order || order.customerId !== req.user.id ) {
-      return res.status(400).send('Order Not Found')
+      return res.status(400).send({ errors: [{ msg: "Order not found" }] })
     }
     
     const { 

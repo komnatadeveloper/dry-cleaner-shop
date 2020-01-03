@@ -9,13 +9,16 @@ router.post('/',  async (req, res) => {
 
   try {
 
+    console.log(req.body)
+
     const {
       product,
       serviceType,
-      servicePrice
+      servicePrice,
+      featured
     } = req.body;
 
-    // Check if related Product exists
+    // Check Product Existence
     const product1 = await Product.findById(product);
     if(!product1) {
       return res
@@ -23,7 +26,7 @@ router.post('/',  async (req, res) => {
         .send({ errors: [{ msg: "Related product does not exist!" }] });
     }
 
-    // Check if that service does not already exist
+    // Check Service Existence
     const checkExistence = await Service.find({
       product,
       serviceType 
@@ -37,6 +40,7 @@ router.post('/',  async (req, res) => {
     service.product = product;
     service.serviceType = serviceType;
     service.servicePrice = servicePrice;
+    service.featured = featured;
 
     await service.save()
 
@@ -59,13 +63,15 @@ router.put('/:serviceId', async (req, res) => {
     const { 
       // productOfService, NOT PERMITTED
       serviceType,
-      servicePrice
+      servicePrice, 
+      featured
     } = req.body
 
     const service = await Service.findById(req.params.serviceId);
 
     service.serviceType = serviceType
     service.servicePrice = servicePrice
+    service.featured = featured
 
     await service.save()
 
@@ -109,6 +115,7 @@ router.delete('/:serviceId', async (req, res) => {
   }
 })
 
+
 // Get All Services
 router.get('/', async (req, res) => {
   
@@ -128,16 +135,19 @@ router.get('/', async (req, res) => {
 router.get('/info/:serviceId', async (req, res) => {
 
   try{
-  
-  const service = await Service.findById(req.params.serviceId);
+    
+    const service = await Service.findById(req.params.serviceId);
 
-  res.status(200).json(service);
+    res.status(200).json(service);
 
   } catch (err) {
-    console.error(err.message);
+    if(err.kind === 'ObjectId') {
+      return res.status(404).json({ errors: [{ msg: "Service not found" }] })
+    }
     res.status(500).send("Server Error");
   }
 })
+
 
 // Query Services
 router.get('/query', async (req, res) => {

@@ -3,12 +3,13 @@ import adminContext from '../../../context/admin/adminContext'
 import OrderServiceItem from './OrderServiceItem'
 import OrderUserItem from './OrderUserItem'
 import ServiceItemInOrders from './ServiceItemInOrders';
+import Spinner from '../../layout/Spinner'
 
 
 
 
 
-const NewOrder = ({match}) => {
+const NewOrder = ({match, history}) => {
   // If Edit
   const orderId = match.params.orderId || null;
 
@@ -20,9 +21,11 @@ const NewOrder = ({match}) => {
     serviceStatuses,
     loadQueriedUsers,
     userQuery,
+    clearUserQuery,
     submitNewOrder,
     loadSingleOrder,
-    updateOrder
+    updateOrder,
+    loading
   } = adminContext1;
   const [orderData, setOrderData] = useState( {
     user: {
@@ -37,7 +40,11 @@ const NewOrder = ({match}) => {
   const [sectionSelection, setSectionSelection ] = useState('none')
 
   // If Edit
-  const updateFormFromBackend = res => {
+  const next = res => {
+    
+    if(!res) {
+      return history.push('/dashboard/orders')
+    }
     setOrderData({
       ...orderData,
       _id: res._id,
@@ -46,7 +53,7 @@ const NewOrder = ({match}) => {
         username: res.user.username
       },
       serviceList: res.serviceList.map(item => {
-        console.log(item);
+
 
         const mapped = {
           service: item.service._id,      // service id OR productId
@@ -57,7 +64,7 @@ const NewOrder = ({match}) => {
           unitServiceStatus: item.unitServiceStatus,
           unitTotalPrice: item.unitTotalPrice
         }
-        console.log(mapped);
+
         // const prev = new Object({item})
         // const mapped = {
         //   service: prev.service.id,
@@ -72,16 +79,13 @@ const NewOrder = ({match}) => {
   }
 
   useEffect(() => {
-    loadServiceStatuses()
-    
+    if(!orderId) {
+      loadServiceStatuses()
+    }    
 
+    // If not a new order, we are editting order
     if(orderId) {
-      // do smt
-
-      loadSingleOrder(orderId)
-        .then(res => {
-          updateFormFromBackend(res)
-        })
+      loadSingleOrder({orderId, next})
     }
 
   }, [])
@@ -180,6 +184,7 @@ const NewOrder = ({match}) => {
 
     // Close Users Opening Dynamic Section
     setSectionSelection('none')
+    clearUserQuery()
 
   }  // End of Select User
 
@@ -264,7 +269,7 @@ const NewOrder = ({match}) => {
 
 
   
-
+  if(loading) return <Spinner></Spinner>
   return (
     <Fragment>
       <div className='row'></div>

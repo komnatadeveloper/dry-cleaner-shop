@@ -3,10 +3,12 @@ import axios from "axios";
 import adminContext from "./adminContext";
 import adminReducer from "./adminReducer";
 import alertContext from "../alert/alertContext";
+import authContext from "../auth/authContext";
 
 import {
   CUSTOMERS_LOADED,
   ORDERS_LOADED,
+  PAYMENTS_LOADED,
   SERVICES_LOADED,
   SERVICE_ADDED,
   SERVICE_UPDATED,
@@ -26,7 +28,8 @@ import {
   SERVICE_DELETED,
   SINGLE_ORDER_LOADED,
   ORDER_FORM_UPDATED,
-  SET_ADMIN_LOADING
+  SET_ADMIN_LOADING,
+  CLEAR_QUERIED_USERS
 } from "../types";
 
 const AdminState = props => {
@@ -40,11 +43,17 @@ const AdminState = props => {
     userQuery: [],
     products: [],
     productsQuery: [],
-    loading: true
+    loading: true,
+    payments: []
   }; // initialState END-OF
 
   const alertContext1 = useContext(alertContext);
   const { setAlert } = alertContext1;
+
+  const authContext1 = useContext(authContext);
+  const { handleAuthError } = authContext1;
+
+  
 
   const [state, dispatch] = useReducer(adminReducer, initialState);
 
@@ -347,8 +356,9 @@ const AdminState = props => {
     }
   };
 
-  // Load Single Service
-  const loadSingleService = async ({serviceId}) => {
+  // Load Single Service, this method will be synchronised to component Admin/Services/AddService.js by passing a parameter next method, so be careful when you decide to edit
+  const loadSingleService = async ({serviceId, next}) => {
+    setAdminLoading(true)
     try {
       const config = {
         headers: {
@@ -357,19 +367,23 @@ const AdminState = props => {
       };     
       const res = await axios.get(`/api/admin/services/info/${serviceId}`, config);
 
+      next(res.data) // This is a method passing from component Admin/Services/AddService.js
+
       dispatch({
         type: SINGLE_SERVICE_LOADED,
         payload: res.data
       });
-
-      return res.data
+      
     } catch (err) {
       const errors = err.response.data.errors;
+
+      next(null)
 
       if (errors) {
         errors.forEach(error => setAlert(error.msg, "danger", 2500));
       }
     }
+    setAdminLoading(false)
   }
 
   
@@ -467,31 +481,41 @@ const AdminState = props => {
 
 
   // Load Single Order
-  const loadSingleOrder = async (id) => {
+  const loadSingleOrder = async ({orderId, next}) => {
+    setAdminLoading(true)
     try {
+
       const config = {
         headers: {
           "Content-Type": "application/json"
         }
-      };   
+      };       
+      await loadServiceStatuses()
 
-      const res = await axios.get(`/api/admin/orders/${id}`, config);
+      const res = await axios.get(`/api/admin/orders/${orderId}`, config);
 
-      // console.log(res.data);
+      next(res.data)
 
       dispatch({
         type: SINGLE_ORDER_LOADED,
         payload: res.data
       });
-      return res.data
+      // return res.data
 
     } catch (err) {
+      console.log('LOAD SINGLE ORDER ERROR')
+      
+      next(null)
+
+      console.log(err.request.status === 401);
+      if (err.request.status === 401) handleAuthError();
       const errors = err.response.data.errors;
 
       if (errors) {
         errors.forEach(error => setAlert(error.msg, "danger", 2500));
       }
     }
+    setAdminLoading(false)
   }
 
   // Load Orders
@@ -526,6 +550,101 @@ const AdminState = props => {
     }
   }
 
+  //-----------------------USER ACTIVITIES------------------------------ 
+  const loadPayments = async () => {
+    setAdminLoading(true)
+    try{ 
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };      
+      const res = await axios.get("/api/admin/useractivities/payments", config);
+
+      console.log('HELLO FROM LOAD PAYMENTS');
+
+      // console.log(res.data);
+
+      dispatch({
+        type: PAYMENTS_LOADED,
+        payload: res.data
+      });      
+
+    } catch (err) {
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+      }
+    }
+    setAdminLoading(false);
+  }
+
+  const getSingleUserActivity= async ({activityId, next}) => {
+    setAdminLoading(true);
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };
+
+      const res = await axios.get(
+        `/api/admin/useractivities/payments/${activityId}`,
+        config
+      );
+
+      next(res.data);
+
+      // return res.data
+    } catch (err) {
+      console.log("LOAD SINGLE ORDER ERROR");
+
+      next(null);
+
+      console.log(err.request.status === 401);
+      if (err.request.status === 401) handleAuthError();
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+      }
+    }
+    setAdminLoading(false);
+  }
+
+
+  // Update Payment
+  const updatePayment = async ({formData, next}) => {
+    console.log(formData);
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };      
+      
+      const res = await axios.put(
+        `/api/admin/useractivities/payments/${formData._id}`, formData,
+        config
+      );
+      
+      next(res.data)
+
+      setAlert(res.data.msg, "success", 3000);
+           
+
+    } catch (err ) {
+      const errors = err.response.data.errors;
+
+      next(null)
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+      }
+    }
+  }
   
 
   
@@ -553,7 +672,7 @@ const AdminState = props => {
         payload: res.data.customer
       });
 
-      console.log(res.data);
+
 
       setAlert(res.data.msg, "success", 3000);
 
@@ -578,7 +697,7 @@ const AdminState = props => {
       };      
       const res = await axios.put(`/api/admin/customers/info/${id}`, formData, config);
 
-      console.log(res.data);
+
       
       dispatch({
         type: CUSTOMER_UPDATED,
@@ -651,6 +770,38 @@ const AdminState = props => {
     } catch (err) {}
   };
 
+  const clearUserQuery = () => {
+    dispatch({
+      type: CLEAR_QUERIED_USERS
+    });
+  }
+
+  const addPayment = async ({formData}) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };
+      
+      const { customerId, payment} = formData
+
+      const res = await axios.post(
+        `/api/admin/customers/payment/${customerId}`, formData,
+        config
+      );
+
+      setAlert(res.data.msg, "success", 3000);      
+      
+    } catch (err) {
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+      }
+    }
+  }
+
   
 
 
@@ -693,13 +844,21 @@ const AdminState = props => {
 
   return (
     <adminContext.Provider
-      value={{        
+      value={{ 
+        // General Purpose
+        setAdminLoading,       
         // Customers
         loadCustomers,
         updateCustomer,
         addNewCustomer,
         loadQueriedUsers,
+        clearUserQuery,
         loadSingleCustomer,
+        addPayment,
+        // User Activities
+        loadPayments,
+        getSingleUserActivity,
+        updatePayment,
         // Orders
         loadOrders,
         loadSingleOrder,
@@ -719,6 +878,7 @@ const AdminState = props => {
         addProduct,
         deleteProduct,
         loadQueriedProducts,
+        // State variables
         customers: state.customers,
         orders: state.orders,
         services: state.services,
@@ -729,7 +889,8 @@ const AdminState = props => {
         products: state.products,
         productsQuery: state.productsQuery,
         orderToBeEditted: state.orderToBeEditted,
-        loading: state.loading
+        loading: state.loading,
+        payments: state.payments
       }}
     >
       {props.children}

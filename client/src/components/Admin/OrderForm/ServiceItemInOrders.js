@@ -29,8 +29,10 @@ const ServiceItemInOrders = ({
     productName,
     quantity,
     unitPrice,
+    // eslint-disable-next-line
     unitServiceStatus,
     serviceType,
+    // eslint-disable-next-line
     servicePrice,
     unitTotalPrice
   } = service;

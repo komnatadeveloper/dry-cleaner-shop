@@ -1,6 +1,7 @@
 import {
   CUSTOMERS_LOADED,
   ORDERS_LOADED,
+  PAYMENTS_LOADED,
   SERVICES_LOADED,
   SINGLE_SERVICE_LOADED,
   CUSTOMER_ADDED,
@@ -20,9 +21,10 @@ import {
   SERVICE_DELETED,
   SINGLE_ORDER_LOADED,
   ORDER_FORM_UPDATED,
-  SET_ADMIN_LOADING
+  SET_ADMIN_LOADING,
+  CLEAR_QUERIED_USERS
 } from "../types";
-import ServiceItemsInRows from "../../components/Admin/Services/ServiceItemsInRows";
+
 
 
 
@@ -81,6 +83,11 @@ export default (state, action) => {
         ...state,
         orders: payload
       };
+    case PAYMENTS_LOADED:
+      return {
+        ...state,
+        payments: payload
+      };
     case SERVICES_LOADED:
       return {
         ...state,
@@ -110,6 +117,11 @@ export default (state, action) => {
       return {
         ...state,
         userQuery: payload
+      };
+    case CLEAR_QUERIED_USERS:
+      return {
+        ...state,
+        userQuery: []
       };
     case PRODUCTS_INFO_LOADED:
       return {

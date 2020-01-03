@@ -17,6 +17,10 @@ const ServiceSchema = new Schema({
     type: String,
     required: true
   },
+  featured: {
+    type: Boolean,
+    required: true
+  },
   servicePrice: {
     type: Number,
     required: true

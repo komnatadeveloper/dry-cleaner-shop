@@ -4,7 +4,7 @@ import DeleteConfirmationModel from './DeleteConfirmationModal'
 import M from 'materialize-css'
 
  const ServiceItemsInRows = ({serviceInfo, deleteService}) => {
-  const { _id, productName, product, serviceType, servicePrice } = serviceInfo
+  const { _id, productName, product, serviceType, servicePrice, featured } = serviceInfo
   useEffect(() => {
     // M.Modal.init(`service-delete-${_id}`);
     M.AutoInit()
@@ -16,20 +16,27 @@ import M from 'materialize-css'
       <td>{serviceType}</td>
       {/* <td>{totalOrders}</td> */}
       <td>{servicePrice}</td>
+      <td>
+        {featured && (
+          <span className="flexrow mp-0 justify-content-center">
+            <i className='m-auto material-icons small'>done</i>
+          </span>
+        )}
+      </td>
       <td className='center-align'>
         <a
-          className='waves-effect waves-light grey darken-1 btn-small modal-trigger mr-1'
+          className='waves-effect waves-light modal-trigger mr-1'
           href={`#sd-${_id}`}
           // href={`#service-delete`}
           // onClick={e => deleteService(_id)}
         >
-          <i className='material-icons small'>delete_forever</i>
+          <i className='material-icons small red-text'>delete_forever</i>
         </a>
         <Link
           to={`/dashboard/services/edit/${_id}`}
-          className='waves-effect waves-light grey darken-1 btn-small mr-1'
+          className='waves-effect waves-light mr-1'
         >
-          <i className='material-icons small'>edit</i>
+          <i className='material-icons small grey-text text-darken-1'>edit</i>
         </Link>
         {/* MODAL BEGIN */}
         <div id={`sd-${_id}`} className='modal'>

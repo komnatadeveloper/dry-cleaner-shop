@@ -1,28 +1,20 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useContext, useEffect} from 'react';
 import {Link} from 'react-router-dom';
 // import CustomerLoginModal from '../login/CustomerLoginModal';
 import authContext from '../../context/auth/authContext'
+import M from 'materialize-css'
 
 
 
 
 const Navbar = () => {
-  const[ isOpen, setIsOpen] = useState(false)
-
 
   const authContext1 = useContext(authContext)
   const { loading, userType, user, isAuthenticated, logout } = authContext1
 
   useEffect( () => {
-
-  }, [])
-
-
-  const toggle = () => {
-    setIsOpen( !isOpen);
-  }
-
-
+    M.AutoInit()
+  }, [])  
 
 
   const adminMenu = () => (
@@ -51,16 +43,58 @@ const Navbar = () => {
         </Link>
       </li>
       <li>
-        <Link onClick={logout} to='#!'>
+        <a style={{ height: 'inherit' }} onClick={e => logout()} className="flexrow justify-elements-flex-begin">
           <span>
             <i className='material-icons'>exit_to_app</i>
           </span>
-        </Link>
+          <span className="ml-1">{`Logout `}</span>
+        </a>
       </li>
     </>
   );  
 
+  
 
+
+
+  
+
+  const userMenu = () => (
+    <>
+      <li>
+        <Link to='/about'>About</Link>
+      </li>
+      
+      <li>
+        <Link
+          className='waves-effect waves-light mr-2'
+          to='/user-main'
+        >
+          Orders
+        </Link>
+        <Link
+          className='waves-effect waves-light mr-2'
+          to='/cart'
+        >
+          <i className='material-icons right'>shopping_cart</i>
+        </Link>
+      </li>
+      <li>
+        <Link
+          to="#logout"
+          onClick={ e => {
+            e.preventDefault()
+            logout()}} 
+            className="flexrow justify-elements-flex-begin"
+          >
+          <span>
+            <i className='material-icons'>exit_to_app</i>
+          </span>
+          <span className="ml-1">{`Logout `}</span>
+        </Link>
+      </li>      
+    </>
+  )
 
   const publicMenu = () => (
     <>
@@ -70,17 +104,16 @@ const Navbar = () => {
       <li>
         <Link
           to='/user-login'
-          className='waves-effect waves-light lighten-1'          
-        >
-          <i className='material-icons right'>exit_to_app</i>
+          className='waves-effect waves-light'
+        >Login
         </Link>
       </li>
       <li>
         <Link
-          className='waves-effect waves-light btn-small light-blue lighten-1'
-          to='/admin/addclothes'
+          className='waves-effect waves-light mr-2'
+          to='/cart'
         >
-          Add Clothes
+          <i className='material-icons right'>shopping_cart</i>
         </Link>
       </li>
     </>
@@ -92,7 +125,7 @@ const Navbar = () => {
       <div className='navbar-fixed'>
         <nav>
           <div className='nav-wrapper'>
-            <Link to='/' className='brand-logo'>
+            <Link to='/' className='brand-logo ml-2'>
               Logo
             </Link>
             <a href='#' data-target='mobile-demo' className='sidenav-trigger'>
@@ -103,7 +136,20 @@ const Navbar = () => {
                 userType === "Admin" 
                 && user 
                 && isAuthenticated 
-                  ? adminMenu() : 
+                  && adminMenu() 
+              }
+              {!loading && 
+                userType === "user" 
+                && user 
+                && isAuthenticated 
+                  && 
+                  userMenu()
+              }
+              {!loading && 
+                !userType 
+                && !user 
+                && !isAuthenticated 
+                  && 
                   publicMenu()
               }
             </ul>

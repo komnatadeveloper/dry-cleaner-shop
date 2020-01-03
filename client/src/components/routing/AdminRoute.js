@@ -7,11 +7,12 @@ const AdminRoute = ({ component: Component, ...rest }) => {
   const { isAuthenticated, loading, user, userType, loadAdmin } = authContext1;
 
   useEffect(() => {
-
+    
     if(!isAuthenticated || !user || userType !== 'Admin') {
-      console.log('HELLOOOO');
+      // eslint-disable-next-line
       loadAdmin()
     }
+    // eslint-disable-next-line
   }, [])
 
 

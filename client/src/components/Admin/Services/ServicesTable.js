@@ -18,6 +18,7 @@ const ServicesTable = ({services }) => {
             <th>Product</th>
             <th>Service</th>
             <th>Price</th>
+            <th className="center-align">Featured</th>
             <th style={{textAlign:'center'}}>Actions</th>
           </tr>
         </thead>

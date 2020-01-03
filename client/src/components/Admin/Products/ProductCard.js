@@ -16,9 +16,11 @@ const ProductCard = ({productInfo}) => {
   });
 
   useEffect(() => {
-
+// eslint-disable-next-line
     setFormData({...formData, name: productInfo.name })
+    // eslint-disable-next-line
     M.AutoInit()
+    // eslint-disable-next-line
   }, [productInfo])
 
 

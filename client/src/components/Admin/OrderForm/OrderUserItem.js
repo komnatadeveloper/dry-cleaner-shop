@@ -6,6 +6,7 @@ const newUserItem = ({ userInfo, selectUser }) => {
   const fullName = [name, middleName, surName].join(" ").trim();
   // console.log(object);
 
+
   return (
     <tr>
       <td>{`${username}`}</td>

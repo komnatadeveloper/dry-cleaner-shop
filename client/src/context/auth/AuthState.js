@@ -17,7 +17,7 @@ import {
   LOGOUT,
   SET_AUTH_LOADING
 } from "../types";
-import { RSA_NO_PADDING } from "constants";
+
 
 const AuthState = props => {
   const initialState = {
@@ -40,6 +40,17 @@ const AuthState = props => {
 
   const [state, dispatch] = useReducer(authReducer, initialState);
 
+
+
+  // ------------------------------------------GENERAL PURPOSE-----------------------------
+  const handleAuthError = () => {
+    console.log('HELLO FROM HANDLEAUTHERROR');
+    dispatch({
+      type: AUTH_ERROR
+    });
+  }
+
+
   // ------------------------------------------ADMIN-----------------------------
 
   // Load Admin
@@ -50,9 +61,12 @@ const AuthState = props => {
     }
 
     try {
+      setAuthLoading(true)
       const res = await axios.get("/api/auth/admin");
       // console.log(res.data.admin);
       // console.log(res.data.userType);
+
+      console.log(res.body);
 
 
       dispatch({
@@ -60,9 +74,13 @@ const AuthState = props => {
         payload: res.data
       });
 
+
+
     } catch (err) {
+      console.log('ADMIN LOAD ERROR');
       dispatch({ type: AUTH_ERROR });
     }
+    setAuthLoading(false)
   };
 
   // Login Admin
@@ -113,6 +131,8 @@ const AuthState = props => {
         payload: res.data
       });
 
+
+
     } catch (err) {
       
       dispatch({ type: AUTH_ERROR });
@@ -157,6 +177,7 @@ const AuthState = props => {
     });
   }
 
+  // BOTH For User and Admin
   const logout = () => {
     dispatch({ type: LOGOUT });
   }
@@ -168,8 +189,6 @@ const AuthState = props => {
   return (
     <authContext.Provider
       value={{
-        userLogin,
-        adminLogin,
         token: state.token,
         isAuthenticated: state.isAuthenticated,
         loading: state.loading,
@@ -177,14 +196,14 @@ const AuthState = props => {
         userType: state.userType,
         error: state.error,
         // register,
+        userLogin,
+        adminLogin,
         loadUser,
         loadAdmin,
         setAuthLoading,
-        
-        
-        // login,
-        logout
+        logout,  
         // clearErrors
+        handleAuthError
       }}
     >
       {props.children}

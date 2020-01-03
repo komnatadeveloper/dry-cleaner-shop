@@ -1,4 +1,4 @@
-import React, {Fragment, useEffect} from 'react'
+import React, { useEffect} from 'react'
 import {Link} from 'react-router-dom'
 
 
@@ -14,12 +14,15 @@ const CustomersItem = (
 
   const {
     _id,
-    name, 
-    middleName, 
-    surName, 
+    name,
+    // eslint-disable-next-line
+    middleName,
+    surName,
     username,
+    // eslint-disable-next-line
     email,
     balance,
+    // eslint-disable-next-line
     address
   } = customer;
 

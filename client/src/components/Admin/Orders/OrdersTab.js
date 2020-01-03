@@ -1,85 +1,119 @@
-import React, {useContext, useEffect, Fragment, } from 'react'
+import React, {useContext, useEffect, Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
-import AddClothesModal from '../TOBEDELETED/TOBE/AddClothesModal';
 import OrdersItem from './OrdersItem'
+import PaymentItem from './PaymentItem'
+
 import Spinner from '../../layout/Spinner'
 import adminContext from '../../../context/admin/adminContext'
-import CustomersItem from '../Customers/CustomersItem';
+import M from 'materialize-css'
 
 const OrdersTab = () => {
   const adminContext1 = useContext(adminContext)
-  const { loadOrders, orders, loading } = adminContext1
+  const { loadOrders, orders, loading, loadPayments, payments} = adminContext1
+
+  const [selectChoice, setSelectChoice] = useState("orders"); 
 
 
 
   useEffect(() => {
-    if( orders.length === 0) {
-      loadOrders()
-    }
-
+    // eslint-disable-next-line
+    M.AutoInit()
+    // eslint-disable-next-line
+    loadOrders()
+    // eslint-disable-next-line
+    loadPayments()
+    // eslint-disable-next-line
   }, [])
-
-  // const clothesRow = (orderId, username, quantity, price, status) => {
-  //   return (
-  //     <tr>
-  //       <td>{orderId}</td>
-  //       <td>{username}</td>
-  //       <td>{quantity}</td>
-  //       <td>{price}</td>
-  //       <td><span className="badge red">{status}</span></td>
-  //       <td>
-  //         {/* <a class="waves-effect waves-light grey darken-1 btn-small mr-1">Edit</a> */}
-  //         <a className="waves-effect waves-light btn-small blue lighten-2 ">Details</a>
-  //       </td>
-  //     </tr>
-  //   )
-  // }
+  
   return (
     <Fragment>
       {loading ? (
         <Spinner></Spinner>
       ) : (
         <div id='admin-clothes-tab'>
-          <div>
+          <div className='row'>
+            <div
+              style={{ maxWidth: "110px", display: "inline-block" }}
+              className='input-field'
+            >
+              <select
+                onChange={e => {
+                  setSelectChoice(e.target.value);
+                  console.log("HELLO FROM SELECT");
+                  console.log(selectChoice);
+                  console.log(e.target.value);
+                }}
+                className='browser-default'
+              >
+                <option value='orders' selected>
+                  Orders
+                </option>
+                <option value='payments'>Payments</option>
+              </select>
+              {/* <label>Materialize Select</label> */}
+            </div>
             <Link
               to='/dashboard/orders/add'
               className='waves-effect waves-light btn blue lighten-2 mt-1 ml-1'
             >
               Order <i className='material-icons small'>add</i>
             </Link>
+            <Link
+              to='/dashboard/payments/add-payment'
+              className='waves-effect waves-light btn blue lighten-2 mt-1 ml-1'
+            >
+              Payment <i className='material-icons small'>payment</i>
+            </Link>
           </div>
-          <AddClothesModal />
-          <table>
-            <thead>
-              <tr>
-                <th>Order Date</th>
-                <th>Username</th>
-                {/* <th>Quantity</th> */}
-                <th>Price</th>
-                <th>Status</th>
-                {/* Buttons */}
-                <th>Actions</th>
-              </tr>
-            </thead>
+          {/* If Orders Are Selected */}
+          {selectChoice === "orders" && (
+            <table>
+              <thead>
+                <tr>
+                  <th>Order Date</th>
+                  <th>Username</th>
+                  <th>Price</th>
+                  <th>Status</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
 
-            <tbody>
-              {orders ? (
-                orders.length > 0 &&
-                orders.map(order => (
-                  <OrdersItem key={order._id} order={order} />
-                ))
-              ) : (
-                <></>
-              )}
+              <tbody>
+                {orders ? (
+                  orders.length > 0 &&
+                  orders.map(order => (
+                    <OrdersItem key={order._id} order={order} />
+                  ))
+                ) : (
+                  <></>
+                )}
+              </tbody>
+            </table>
+          )}
+          {/* If Payments Are Selected */}
+          {selectChoice === "payments" && (
+            <table>
+              <thead>
+                <tr>
+                  <th>Payment Date</th>
+                  <th>Username</th>
+                  <th>Quantity</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
 
-              {/* {clothesRow('dsere45rw', 'usernameOz', 6, '$54.45', 'Process' )}
-          {clothesRow('dsere45rw', 'usernameOz', 6, '$54.45', 'Process' )}
-          {clothesRow('dsere45rw', 'usernameOz', 6, '$54.45', 'Process' )}
-          {clothesRow('dsere45rw', 'usernameOz', 6, '$54.45', 'Process' )}
-          {clothesRow('dsere45rw', 'usernameOz', 6, '$54.45', 'Process' )}
-          {clothesRow('dsere45rw', 'usernameOz', 6, '$54.45', 'Process' )}           */}
-            </tbody>
-          </table>
+              <tbody>
+                {payments ? (
+                  payments.length > 0 &&
+                  payments.map(payment => (
+                    <PaymentItem key={payment._id} payment={payment} />
+                  ))
+                ) : (
+                  <></>
+                )}
+              </tbody>
+            </table>
+          )}
         </div>
       )}
     </Fragment>

@@ -1,10 +1,11 @@
 import React, { useState, useContext } from "react";
-import authContext from "../../context/auth/authContext";
+import {Redirect} from 'react-router-dom'
+import authContext from '../../context/auth/authContext'
 
 const CustomerLogin = () => {
-  const authContext1 = useContext(authContext);
-  console.log(authContext1);
-  const { userLogin } = authContext1;
+  const authContext1 =  useContext(authContext)
+
+  const { userLogin, isAuthenticated, userType, loading, user} = authContext1
 
   const [formData, setFormData] = useState({
     username: "",
@@ -12,77 +13,78 @@ const CustomerLogin = () => {
     password: ""
   });
 
-  const { username, email, password } = formData;
+  const { username, email, password } = formData
 
-  const onChange = e => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+    const onChange = e => {
+      setFormData({ ...formData, [e.target.name]: e.target.value })
+    };
 
-  const onSubmit = async e => {
-    e.preventDefault();
-    userLogin(formData);
-    // console.log('SUCCESS');
-  };
+    const onSubmit = async e => {
+      e.preventDefault();
+      userLogin(formData);      
+    };
+
+  // Redirect if Authenticated
+  if (isAuthenticated && userType === "user" && !loading && user) {    
+    return <Redirect to='/user-main' />;
+  }
+
+  // Redirect if Authenticated as an Admin
+  if (isAuthenticated && userType === "Admin" && !loading && user) {    
+    return <Redirect to='/dashboard' />;
+  }
 
   return (
-    <div id='user-login' className='modal modal-fixed-footer'>
-      <div
-        style={{ maxWidth: "600px", maxHeight: "400px" }}
-        className='modal-content center'
-      >
-        <div className='row'>
-          <form className='col s12' onSubmit={e => onSubmit(e)}>
-            <div className='row'>
-              <div className='input-field col s12'>
-                <h1 className='center'>User Login</h1>
-              </div>
+    <div id='user-login-component-div'>
+      <div className='row'>
+        <form className='col s12' onSubmit={e => onSubmit(e)}>
+          <div className='row'>
+            <div className='input-field col s12'>
+              <h1 className='center'>User Login</h1>
             </div>
-            {/* USERNAME */}
-            <div className='row'>
-              <div className='input-field col s6'>
-                <input
-                  placeholder='Username'
-                  required
-                  id='userName'
-                  type='text'
-                  className='validate'
-                  name='username'
-                  value={username}
-                  onChange={e => onChange(e)}
-                />
-                <label htmlFor='username'>Username</label>
-              </div>
-              {/* EMAIL */}
-              <div className='input-field col s6'>
-                <input
-                  placeholder='Email'
-                  required
-                  id='email'
-                  type='email'
-                  className='validate'
-                  name='email'
-                  value={email}
-                  onChange={e => onChange(e)}
-                />
-                <label htmlFor='Email'>Email</label>
-              </div>
+          </div>
+          <div className='row'>
+            <div className='input-field col s6'>
+              <input
+                placeholder='Username'
+                required
+                id='userName'
+                type='text'
+                className='validate'
+                name='username'
+                value={username}
+                onChange={e => onChange(e)}
+              />
+              <label htmlFor='username'>Username</label>
             </div>
-            {/* PASSWORD */}
-            <div className='row'>
-              <div className='input-field col s12'>
-                <input
-                  id='password'
-                  required
-                  type='password'
-                  className='validate'
-                  name='password'
-                  value={password}
-                  onChange={e => onChange(e)}
-                />
-                <label htmlFor='password'>Password</label>
-              </div>
+            <div className='input-field col s6'>
+              <input
+                placeholder='Email'
+                required
+                id='email'
+                type='email'
+                className='validate'
+                name='email'
+                value={email}
+                onChange={e => onChange(e)}
+              />
+              <label htmlFor='Email'>Email</label>
             </div>
-        </div>
+          </div>
+          <div className='row'>
+            <div className='input-field col s12'>
+              <input
+                id='password'
+                required
+                type='password'
+                className='validate'
+                name='password'
+                value={password}
+                onChange={e => onChange(e)}
+              />
+              <label htmlFor='password'>Password</label>
+            </div>
+          </div>
           <div className='row'>
             <div className='col s6 '>
               <a href='#'>Forgot Password?</a>

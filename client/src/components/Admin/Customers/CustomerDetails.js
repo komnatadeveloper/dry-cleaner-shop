@@ -1,10 +1,9 @@
 import React, {useContext, useEffect, useState} from 'react';
-import {withRouter, match, Link} from 'react-router-dom'
 import adminContext from '../../../context/admin/adminContext'
 
 const CustomerDetails =   ({match}) => {
   const adminContext1 = useContext(adminContext)
-  const { customers, updateCustomer, addNewCustomer, loadSingleCustomer } = adminContext1
+  const {  updateCustomer, addNewCustomer, loadSingleCustomer } = adminContext1
 
 
     const [formData, setFormData] = useState({

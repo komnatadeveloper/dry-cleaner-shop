@@ -12,8 +12,11 @@ const ProductsTab = () => {
   const [addStatus, setAddStatus] = useState(false)
 
   useEffect(() => { 
-    if(products.length === 0) // This is a try of turn-around to prevent re-render
+    if (products.length === 0)
+      // This is a try of turn-around to prevent re-render
+      // eslint-disable-next-line
       loadProductsWithoutImages();
+      // eslint-disable-next-line
   }, [])
 
   

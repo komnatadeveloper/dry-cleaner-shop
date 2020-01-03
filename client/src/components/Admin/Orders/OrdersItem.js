@@ -11,7 +11,6 @@ const OrdersItem = ({ order }) => {
     _id,
     user,
     date,
-    serviceList,
     orderStatus,
     orderTotalPrice
   } = order;

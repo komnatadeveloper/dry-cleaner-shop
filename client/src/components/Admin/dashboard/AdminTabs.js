@@ -1,7 +1,7 @@
 import React from 'react'
 import CustomersTab from '../Customers/CustomersTab'
-import OrdersTab from './OrdersTab'
-import ServicesTab from './TOBE/ServicesTab'
+import OrdersTab from '../Orders/OrdersTab'
+import ServicesTab from '../Services/ServicesTab'
 
 
 
