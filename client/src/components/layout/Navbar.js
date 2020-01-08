@@ -132,42 +132,40 @@ const Navbar = () => {
               <i className='material-icons'>menu</i>
             </a>
             <ul className='right hide-on-med-and-down'>
-              {!loading && 
-                userType === "Admin" 
-                && user 
-                && isAuthenticated 
-                  && adminMenu() 
-              }
-              {!loading && 
-                userType === "user" 
-                && user 
-                && isAuthenticated 
-                  && 
-                  userMenu()
-              }
-              {!loading && 
-                !userType 
-                && !user 
-                && !isAuthenticated 
-                  && 
-                  publicMenu()
-              }
+              {!loading &&
+                userType === "Admin" &&
+                user &&
+                isAuthenticated &&
+                adminMenu()}
+              {!loading &&
+                userType === "user" &&
+                user &&
+                isAuthenticated &&
+                userMenu()}
+              {!loading &&
+                !userType &&
+                !user &&
+                !isAuthenticated &&
+                publicMenu()}
             </ul>
           </div>
         </nav>
       </div>
       <ul className='sidenav' id='mobile-demo'>
-        {!loading && 
-          userType === "Admin" 
-          && user 
-          && isAuthenticated 
-            ? adminMenu() : 
-            publicMenu()
-        }
+        {!loading &&
+          userType === "Admin" &&
+          user &&
+          isAuthenticated &&
+          adminMenu()}
+        {!loading &&
+          userType === "user" &&
+          user &&
+          isAuthenticated &&
+          userMenu()}
+        {!loading && !userType && !user && !isAuthenticated && publicMenu()}
       </ul>
 
       {/* <CustomerLoginModal /> */}
-
     </>
   );
 }

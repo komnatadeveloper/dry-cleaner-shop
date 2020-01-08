@@ -7,7 +7,7 @@ const Product = require("../../models/Product");
 const Service = require("../../models/Service");
 const authAdmin = require('../../middleware/authAdmin')
 const { fileCheck, resizeFile } = require('../../utils/UploadFile')
-const getStream = require('get-stream')
+
 
 // Serve Hero Image as jpeg
 router.get('/hero', async (req,res) => {

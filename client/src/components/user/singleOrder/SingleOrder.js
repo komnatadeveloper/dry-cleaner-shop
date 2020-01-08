@@ -2,6 +2,7 @@ import React, {Fragment, useContext, useState,  useEffect} from 'react'
 import userContext from '../../../context/user/userContext'
 import ServiceFormInOrderForm from './ServiceRowInOrderForm'
 import Spinner from '../../layout/Spinner'
+import Moment from 'react-moment'
 
 const SingleOrder = ({match, history}) => {
   
@@ -42,12 +43,18 @@ const SingleOrder = ({match, history}) => {
   if( loading) return <Spinner></Spinner>
   return (
     <Fragment>
-      <a 
-        onClick= { e => history.push('/user-main')}
-        className="waves-effect waves-light btn-small grey darken-1 mt-1 mb-1 ml-1">Back to Orders</a>
-      <div className="row mp-0">
-        <div className="flexrow justify-content-space-between">
-          <span>Order Date: {date}</span>
+      <a
+        onClick={e => history.push("/user-main")}
+        className='waves-effect waves-light btn-small grey darken-1 mt-1 mb-1 ml-1'
+      >
+        Back to Orders
+      </a>
+      <div className='row mp-0'>
+        <div className='flexrow justify-content-space-between'>
+          <span>
+            Order Date:
+            <Moment format='YYYY-MM-DD HH:mm'>{date}</Moment>
+          </span>
           <span>Order Status: {orderStatus}</span>
         </div>
       </div>
@@ -70,11 +77,9 @@ const SingleOrder = ({match, history}) => {
           ))}
         </tbody>
       </table>
-      <button
-        onClick={e => console.log(formData)}
-      >BASS</button>
+      <button onClick={e => console.log(formData)}>BASS</button>
     </Fragment>
-  )
+  );
 }
 
 export  default SingleOrder

@@ -501,34 +501,9 @@ const NewOrder = ({match, history}) => {
               </span>
             </div>
           </div>
-        </div>
-
-        <div id='order-form-radio' className='col m8 s12'>
-          Username: SOON COMING
-        </div>
+        </div>        
       </div>
-
-      <div className='row'>
-        <div className='col s12 m4'></div>
-
-        <a
-          onClick={e => {
-            console.log(orderData);
-          }}
-          className='btn'
-        >
-          BASS
-        </a>
-        <a
-          onClick={e => {
-            calculatePrice();
-            console.log(orderData);
-          }}
-          className='btn'
-        >
-          TOPLA
-        </a>
-      </div>
+      
     </Fragment>
   );
 }

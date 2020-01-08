@@ -1,13 +1,9 @@
 import React, { useEffect } from "react";
-import { Link } from 'react-router-dom'
+import { Link } from "react-router-dom";
 
 const OrdersItem = ({ order }) => {
+  useEffect(() => {}, [order]);
 
-  useEffect(() => {
-
-  }, [order])
-
-  
   const {
     _id,
     // eslint-disable-next-line
@@ -18,8 +14,6 @@ const OrdersItem = ({ order }) => {
     orderStatus,
     orderTotalPrice
   } = order;
-
-
 
   return (
     <tr>
@@ -34,8 +28,9 @@ const OrdersItem = ({ order }) => {
         {/* <a class="waves-effect waves-light grey darken-1 btn-small mr-1">Edit</a> */}
         <Link
           to={`/user-main/orders/${_id}`}
-          className='waves-effect waves-light btn-small grey darken-1 '>
-          <i className="material-icons small">edit</i>
+          className='waves-effect waves-light btn-small grey darken-1 '
+        >
+          <i className='material-icons small'>edit</i>
         </Link>
       </td>
     </tr>

@@ -1,5 +1,6 @@
 import React, {useEffect} from "react";
 import{ Link } from 'react-router-dom'
+import Moment from "react-moment"
 
 const OrdersItem = ({ order }) => {
 
@@ -19,7 +20,9 @@ const OrdersItem = ({ order }) => {
 
   return (
     <tr>
-      <td>{date}</td>
+      <td>
+        <Moment format='YYYY-MM-DD HH:mm'>{date}</Moment>
+      </td>
       <td>{user.username}</td>
       {/* <td>{orderStatus}</td> */}
       <td>{orderTotalPrice}</td>
@@ -28,10 +31,11 @@ const OrdersItem = ({ order }) => {
       </td>
       <td>
         {/* <a class="waves-effect waves-light grey darken-1 btn-small mr-1">Edit</a> */}
-        <Link 
+        <Link
           to={`/dashboard/orders/edit/${_id}`}
-          className='waves-effect waves-light btn-small grey darken-1 '>
-          <i className="material-icons small">edit</i>
+          className='waves-effect waves-light btn-small grey darken-1 '
+        >
+          <i className='material-icons small'>edit</i>
         </Link>
       </td>
     </tr>
