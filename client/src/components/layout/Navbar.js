@@ -1,5 +1,8 @@
 import React, { useContext, useEffect} from 'react';
-import {Link} from 'react-router-dom';
+import {
+  Link,
+  withRouter
+} from 'react-router-dom';
 // import CustomerLoginModal from '../login/CustomerLoginModal';
 import authContext from '../../context/auth/authContext'
 import M from 'materialize-css'
@@ -7,7 +10,9 @@ import M from 'materialize-css'
 
 
 
-const Navbar = () => {
+const Navbar = ({
+  location
+}) => {
 
   const authContext1 = useContext(authContext)
   const { loading, userType, user, isAuthenticated, logout } = authContext1
@@ -19,25 +24,25 @@ const Navbar = () => {
 
   const adminMenu = () => (
     <>
-      <li>
-        <Link to='/about'>About</Link>
+      <li className= {location.pathname === '/about' ? 'active' : ''}>
+        <Link  to='/about'>About</Link>
       </li>
-      <li>
+      <li className= {location.pathname === '/dashboard' ? 'active' : ''}>
         <Link to='/dashboard'>Dashboard</Link>
       </li>
-      <li>
+      <li className= {location.pathname === '/dashboard/customers' ? 'active' : ''}>
         <Link to='/dashboard/customers'>Customers</Link>
       </li>
-      <li>
+      <li className= {location.pathname === '/dashboard/orders' ? 'active' : ''}>
         <Link to='/dashboard/orders'>Orders</Link>
       </li>
-      <li>
+      <li className= {location.pathname === '/dashboard/services' ? 'active' : ''}>
         <Link to='/dashboard/services'>Services</Link>
       </li>
-      <li>
+      <li className= {location.pathname === '/dashboard/products' ? 'active' : ''}>
         <Link to='/dashboard/products'>Products</Link>
       </li>
-      <li>
+      <li className= {location.pathname === '/dashboard/settings' ? 'active' : ''}>
         <Link to='/dashboard/settings'>
           <i className='material-icons'>settings_applications</i>
         </Link>
@@ -61,17 +66,19 @@ const Navbar = () => {
 
   const userMenu = () => (
     <>
-      <li>
+      <li className= {location.pathname === '/about' ? 'active' : ''}>
         <Link to='/about'>About</Link>
       </li>
       
-      <li>
+      <li className= {location.pathname === '/user-main' ? 'active' : ''}>
         <Link
           className='waves-effect waves-light mr-2'
           to='/user-main'
         >
           Orders
         </Link>
+      </li>
+      <li className= {location.pathname === '/cart' ? 'active' : ''}>
         <Link
           className='waves-effect waves-light mr-2'
           to='/cart'
@@ -117,7 +124,7 @@ const Navbar = () => {
         </Link>
       </li>
     </>
-  );
+  );  
  
 
   return (
@@ -125,8 +132,11 @@ const Navbar = () => {
       <div className='navbar-fixed'>
         <nav>
           <div className='nav-wrapper'>
-            <Link to='/' className='brand-logo ml-2'>
-              Logo
+            <Link 
+              to='/' 
+              className='brand-logo ml-2'
+            >
+              Home
             </Link>
             <a href='#' data-target='mobile-demo' className='sidenav-trigger'>
               <i className='material-icons'>menu</i>
@@ -170,4 +180,4 @@ const Navbar = () => {
   );
 }
 
-export default Navbar;
+export default withRouter(Navbar);

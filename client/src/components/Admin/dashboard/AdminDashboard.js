@@ -24,10 +24,6 @@ const AdminDashboard = ({ match }) => {
   }
   return (
     <>
-    This is AdminDashboard
-    <div>
-      this is admin main page admin name:{match.params.adminUsername}
-    </div>
     <AdminTabs />
     </>
 

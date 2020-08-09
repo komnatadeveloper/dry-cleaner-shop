@@ -17,7 +17,7 @@ const ServicesTable = ({services }) => {
           <tr>
             <th>Product</th>
             <th>Service</th>
-            <th>Price</th>
+            <th className='right-align'>Price</th>
             <th className="center-align">Featured</th>
             <th style={{textAlign:'center'}}>Actions</th>
           </tr>

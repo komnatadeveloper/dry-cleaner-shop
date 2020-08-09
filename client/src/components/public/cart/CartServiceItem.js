@@ -10,8 +10,8 @@ const CartServiceItem = ({item}) => {
   return (
     <tr>
       <td>{`${item.productName} ${item.serviceType}`}</td>
-      <td>{`$${item.unitPrice}`}</td>
-      <td>
+      <td className='right-align'>{`$${item.unitPrice.toFixed(2)}`}</td>
+      <td className='right-align pr-2'>
         {/* keyboard_arrow_left
         keyboard_arrow_right */}
         <a
@@ -36,7 +36,7 @@ const CartServiceItem = ({item}) => {
           <i className='material-icons  red-text'>keyboard_arrow_right</i>
         </a>
       </td>
-      <td>{item.unitTotalPrice}</td>
+      <td className='right-align'>{item.unitTotalPrice.toFixed(2)}</td>
       <td>
         <a
           href='#!'

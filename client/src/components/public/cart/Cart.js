@@ -30,7 +30,29 @@ const Cart = ({history}) => {
   }
 
 
-
+  if( !cart || !cart.serviceList || cart.serviceList.length <= 0 ) {
+    return (
+      <div
+        className='row center-align pt-4' 
+      >
+        <i 
+          className='material-icons'
+          style={{
+            fontSize: '12rem',
+            color:'grey'
+          }}
+        >
+          shopping_cart
+        </i>
+        <p
+          style={{
+            fontSize: '1.5rem',
+            color:'grey'
+          }}
+        >Your Cart is currently Empty</p>
+      </div>
+    );
+  }
 
   return (
     <div>
@@ -39,14 +61,14 @@ const Cart = ({history}) => {
           <thead>
             <tr>
               <th>Service</th>
-              <th>Price</th>
-              <th>Quantity</th>
-              <th>Total</th>
+              <th className='right-align'>Price</th>
+              <th className='right-align pr-2'>Quantity</th>
+              <th className='right-align'>Total</th>
             </tr>
           </thead>
           <tbody>
               {/* ITEMS IN CART */}
-            {cart && cart.serviceList&& cart.serviceList.length > 0 && cart.serviceList.map( item => (
+            {cart && cart.serviceList && cart.serviceList.length > 0 && cart.serviceList.map( item => (
                 <CartServiceItem 
                   key= {item.service}
                   item = {item}
@@ -63,7 +85,7 @@ const Cart = ({history}) => {
             <h4>Cart Totals</h4>
             <div className="flexrow justify-content-space-between">
               <p>Total: </p>
-              <p>{`$${cart && cart.orderTotalPrice }`}</p>
+              <p>{`$${cart && cart.orderTotalPrice.toFixed(2) }`}</p>
             </div>
             <a
               href="#!"
@@ -74,8 +96,7 @@ const Cart = ({history}) => {
             ><i className="material-icons right">send</i>Checkout</a>
           </div>
         </div>
-      </div>  
-      <button onClick={e => console.log(cart)}>BASS</button>    
+      </div>
     </div>
   )
 }

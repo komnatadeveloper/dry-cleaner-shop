@@ -25,9 +25,9 @@ const OrdersItem = ({ order }) => {
       </td>
       <td>{user.username}</td>
       {/* <td>{orderStatus}</td> */}
-      <td>{orderTotalPrice}</td>
-      <td>
-        <span className='badge red'>{orderStatus}</span>
+      <td className='right-align'>{orderTotalPrice.toFixed(2)}</td>
+      <td className='center-align'>
+        <span className='badge red center-align'>{orderStatus}</span>
       </td>
       <td>
         {/* <a class="waves-effect waves-light grey darken-1 btn-small mr-1">Edit</a> */}

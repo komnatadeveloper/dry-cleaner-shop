@@ -42,7 +42,7 @@ const ServiceItemInOrders = ({
   return (
     <tr>
       <td className='service-column-items'>{`${productName} ${serviceType}`}</td>
-      <td className='price-column-items'>{unitPrice}</td>
+      <td className='price-column-items'>{unitPrice.toFixed(2)}</td>
       {/* <td>{quantity}</td> */}
       <td>
         <input
@@ -57,7 +57,7 @@ const ServiceItemInOrders = ({
 
       {/* <td>{"In Progress"}</td> */}
       <td>
-        <div className='browser-default'>
+        <div className='browser-default ml-2'>
           <select
             onChange={e =>
               setServiceStatus({
@@ -85,7 +85,7 @@ const ServiceItemInOrders = ({
         </div>
       </td>
 
-      <td className='total-price-column-items'>{unitTotalPrice}</td>
+      <td className='total-price-column-items' style={{fontWeight:'bold'}}>{unitTotalPrice.toFixed(2)}</td>
     </tr>
   );
 };
