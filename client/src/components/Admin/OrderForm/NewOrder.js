@@ -401,8 +401,8 @@ const NewOrder = ({match, history}) => {
                     <th className='service-column'>Service</th>
                     <th className='price-column'>Price</th>
                     <th className='quantity-column'>Quantity</th>
-                    <th className='status-column'>Status</th>
-                    <th className='total-price-column'>Tot. Price</th>
+                    <th className='status-column center-align'>Status</th>
+                    <th className='total-price-column right-align' style={{paddingRight:'1rem'}}>Tot. Price</th>
                   </tr>
                 </thead>
                 <tbody id='services-list'>

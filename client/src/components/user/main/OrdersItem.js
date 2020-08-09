@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
+import Moment from 'react-moment';
 
 const OrdersItem = ({ order }) => {
   useEffect(() => {}, [order]);
@@ -17,11 +18,13 @@ const OrdersItem = ({ order }) => {
 
   return (
     <tr>
-      <td>{date}</td>
+      <td>
+        <Moment format='YYYY-MM-DD HH:mm'>{date}</Moment>
+      </td>
       {/* <td>{user.username}</td> */}
       {/* <td>{orderStatus}</td> */}
-      <td>{orderTotalPrice}</td>
-      <td>
+      <td className='right-align pr-2'>{orderTotalPrice.toFixed(2)}</td>
+      <td className='center-align'>
         <span className='badge red'>{orderStatus}</span>
       </td>
       <td>

@@ -45,27 +45,29 @@ const SingleOrder = ({match, history}) => {
     <Fragment>
       <a
         onClick={e => history.push("/user-main")}
-        className='waves-effect waves-light btn-small grey darken-1 mt-1 mb-1 ml-1'
+        className='waves-effect waves-light btn-small grey darken-1 mt-2 mb-2 ml-2 valign-wrapper'
+        
       >
-        Back to Orders
+        <i className='material-icons left'>chevron_left</i>
+        Back to Orders        
       </a>
       <div className='row mp-0'>
-        <div className='flexrow justify-content-space-between'>
-          <span>
+        <div className='flexrow justify-content-space-between ml-2'>
+          <span >
             Order Date:
-            <Moment format='YYYY-MM-DD HH:mm'>{date}</Moment>
+            <Moment className='ml-2' format='YYYY-MM-DD HH:mm'>{date}</Moment>
           </span>
-          <span>Order Status: {orderStatus}</span>
+          <span className='mr-3'>Order Status: {orderStatus}</span>
         </div>
       </div>
       <table>
         <thead>
           <tr>
-            <th className='service-column'>Service</th>
-            <th className='price-column'>Price</th>
-            <th className='quantity-column'>Quantity</th>
-            <th className='status-column'>Status</th>
-            <th className='total-price-column'>Tot. Price</th>
+            <th className='service-column pl-2'>Service</th>
+            <th className='right-align pr-3'>Price</th>
+            <th className='right-align pr-2'>Quantity</th>
+            <th className='center-align'>Status</th>
+            <th className='right-align pr-3'>Tot. Price</th>
           </tr>
         </thead>
         <tbody id='services-list'>
@@ -77,7 +79,6 @@ const SingleOrder = ({match, history}) => {
           ))}
         </tbody>
       </table>
-      <button onClick={e => console.log(formData)}>BASS</button>
     </Fragment>
   );
 }

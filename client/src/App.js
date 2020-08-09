@@ -24,9 +24,10 @@ import AlertState from './context/alert/AlertState'
 import AuthState from './context/auth/AuthState'
 import AdminState from './context/admin/AdminState'
 import UserState from './context/user/UserState'
-
+// Private Routes
 import AdminRoute from './components/routing/AdminRoute'
 import UserRoute from './components/routing/UserRoute'
+
 import CustomersTab from './components/Admin/Customers/CustomersTab'
 import OrdersTab from "./components/Admin/Orders/OrdersTab";
 import ServicesTab from './components/Admin/Services/ServicesTab'

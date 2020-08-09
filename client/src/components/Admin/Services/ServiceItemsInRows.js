@@ -15,7 +15,7 @@ import M from 'materialize-css'
       <td>{productName}</td>
       <td>{serviceType}</td>
       {/* <td>{totalOrders}</td> */}
-      <td>{servicePrice}</td>
+      <td className='right-align'>{servicePrice.toFixed(2)}</td>
       <td>
         {featured && (
           <span className="flexrow mp-0 justify-content-center">
