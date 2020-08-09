@@ -27,6 +27,8 @@ node_modules/
 
 # CONFIG FILES AND/OR ENVIRONMENT VARIABLES
 config/default.json
+# CONFIG FILES AND/OR ENVIRONMENT VARIABLES for Production
+config/production.json
 
 # TOBEDELETED
 TOBEDELETED/
