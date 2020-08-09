@@ -34,11 +34,12 @@ const CustomersTab = () => {
     <div id='admin-customers-tab'>
       <div>
         <Link
-          className='waves-effect waves-teal red btn-flat modal-trigger'
+          className='waves-effect waves-teal blue btn-flat modal-trigger ml-2 mt-2'
           to='/dashboard/customers/add'
           // onClick={() => addCustomer()}
         >
-          ADD
+          ADD CUSTOMER
+          <i className='material-icons right'>add</i>
         </Link>
       </div>
       {/* <AddCustomerModal /> */}
@@ -48,7 +49,7 @@ const CustomersTab = () => {
             <th>Name</th>
             <th>Username</th>
             {/* <th>Total Orders</th> */}
-            <th>Balance</th>
+            <th className='right-align'>Balance</th>
             {/* Buttons */}
             <th className='center-align'>Options</th>
           </tr>

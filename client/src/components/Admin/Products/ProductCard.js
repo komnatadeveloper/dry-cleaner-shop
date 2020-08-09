@@ -131,7 +131,7 @@ const ProductCard = ({productInfo}) => {
               <div className='btn'>
                 <span>File</span>
                 {/* <span>
-                  FILE<i class='material-icons right'>file_upload</i>
+                  FILE<i class='ns right'>file_upload</i>
                 </span> */}
                 <input type='file' onChange={e => fileSelectedHandler(e)} />
               </div>

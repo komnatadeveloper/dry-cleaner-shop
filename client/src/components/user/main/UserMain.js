@@ -32,8 +32,8 @@ const UserMain = () => {
               <thead>
                 <tr>
                   <th>Order Date</th>
-                  <th>Order Total</th>
-                  <th>Status</th>
+                  <th className='pr-2 right-align'>Order Total</th>
+                  <th className='center-align'>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>

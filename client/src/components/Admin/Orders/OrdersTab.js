@@ -31,10 +31,16 @@ const OrdersTab = () => {
         <Spinner></Spinner>
       ) : (
         <div id='admin-clothes-tab'>
-          <div className='row'>
+          <div 
+            style={{
+              display:'flex',
+              flexDirection:'row',
+              alignItems:'center'
+            }}
+          >
             <div
               style={{ maxWidth: "110px", display: "inline-block" }}
-              className='input-field'
+              className='input-field ml-1'
             >
               <select
                 onChange={e => {
@@ -54,15 +60,27 @@ const OrdersTab = () => {
             </div>
             <Link
               to='/dashboard/orders/add'
-              className='waves-effect waves-light btn blue lighten-2 mt-1 ml-1'
+              className='waves-effect waves-light btn blue lighten-2  ml-1'
+              style={{
+                display:'flex',
+                flexDirection:'row',
+                alignItems:'center'
+              }}
             >
-              Order <i className='material-icons small'>add</i>
+              <p>Order</p>
+              <i className='material-icons small'>add</i>
             </Link>
             <Link
               to='/dashboard/payments/add-payment'
-              className='waves-effect waves-light btn blue lighten-2 mt-1 ml-1'
+              className='waves-effect waves-light btn blue lighten-2  ml-1'
+              style={{
+                display:'flex',
+                flexDirection:'row',
+                alignItems:'center'
+              }}
             >
-              Payment <i className='material-icons small'>payment</i>
+              <p>Payment</p>
+              <i className='material-icons small'>payment</i>
             </Link>
           </div>
           {/* If Orders Are Selected */}
@@ -70,10 +88,12 @@ const OrdersTab = () => {
             <table>
               <thead>
                 <tr>
-                  <th>Order Date</th>
+                  <th>
+                    Order Date
+                  </th>
                   <th>Username</th>
-                  <th>Price</th>
-                  <th>Status</th>
+                  <th className='right-align'>Price</th>
+                  <th className='center-align'>Status</th>
                   <th>Actions</th>
                 </tr>
               </thead>

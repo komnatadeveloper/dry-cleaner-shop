@@ -33,15 +33,16 @@ const ServicesTab = () => {
   if(loading) return <Spinner></Spinner>
   return (
     <div id='admin-customers-tab'>
-      <div className='row flexrow justify-content-space-between mt-1'>
+      <div className='flexrow justify-content-space-between mt-1'>
         <span>
           <Link
             to='/dashboard/services/add'
-            className='waves-effect waves-teal red btn-flat'
+            className='waves-effect waves-teal blue btn-flat ml-2'
             // href='#addCustomerModal'
             // onClick={() => console.log("SERVICES TAB BUTTON")}
           >
             ADD SERVICE
+            <i className='material-icons right'>add</i>
           </Link>
         </span>
       </div>
