@@ -117,8 +117,8 @@ const OrdersTab = () => {
                 <tr>
                   <th>Payment Date</th>
                   <th>Username</th>
-                  <th>Quantity</th>
-                  <th>Actions</th>
+                  <th className='right-align'>Quantity</th>
+                  <th className='center-align'>Actions</th>
                 </tr>
               </thead>
 
