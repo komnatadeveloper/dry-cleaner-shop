@@ -1,4 +1,4 @@
-import React, {useContext, useState, useEffect, Fragment} from 'react';
+import React, { useContext, useState, useEffect, Fragment } from 'react';
 import adminContext from '../../../context/admin/adminContext'
 import OrderServiceItem from './OrderServiceItem'
 import OrderUserItem from './OrderUserItem'
@@ -9,7 +9,7 @@ import Spinner from '../../layout/Spinner'
 
 
 
-const NewOrder = ({match, history}) => {
+const NewOrder = ({ match, history }) => {
   // If Edit
   const orderId = match.params.orderId || null;
 
@@ -27,7 +27,7 @@ const NewOrder = ({match, history}) => {
     updateOrder,
     loading
   } = adminContext1;
-  const [orderData, setOrderData] = useState( {
+  const [orderData, setOrderData] = useState({
     user: {
       id: "",
       username: ""
@@ -37,12 +37,12 @@ const NewOrder = ({match, history}) => {
     orderTotalPrice: 0
   })
 
-  const [sectionSelection, setSectionSelection ] = useState('none')
+  const [sectionSelection, setSectionSelection] = useState('none')
 
   // If Edit
   const next = res => {
-    
-    if(!res) {
+
+    if (!res) {
       return history.push('/dashboard/orders')
     }
     setOrderData({
@@ -59,7 +59,7 @@ const NewOrder = ({match, history}) => {
           service: item.service._id,      // service id OR productId
           productName: item.service.productName,
           serviceType: item.service.serviceType,
-          unitPrice:  item.unitPrice,
+          unitPrice: item.unitPrice,
           quantity: item.quantity,
           unitServiceStatus: item.unitServiceStatus,
           unitTotalPrice: item.unitTotalPrice
@@ -72,25 +72,25 @@ const NewOrder = ({match, history}) => {
         //   serviceType: prev.service.serviceType 
         // }
         return mapped
-      } ),
+      }),
       orderTotalPrice: res.orderTotalPrice,
       orderStatus: res.orderStatus
     });
   }
 
   useEffect(() => {
-    if(!orderId) {
+    if (!orderId) {
       loadServiceStatuses()
-    }    
+    }
 
     // If not a new order, we are editting order
-    if(orderId) {
-      loadSingleOrder({orderId, next})
+    if (orderId) {
+      loadSingleOrder({ orderId, next })
     }
 
   }, [])
 
-  const statusList = serviceStatuses.map( status => ({
+  const statusList = serviceStatuses.map(status => ({
     servStatus: status.servStatus,
     description: status.description
   }))
@@ -113,7 +113,7 @@ const NewOrder = ({match, history}) => {
 
 
   const addToOrder = service => {
-    
+
     const newList = orderData.serviceList;
 
     const { productName, _id, serviceType, servicePrice } = service;
@@ -129,10 +129,10 @@ const NewOrder = ({match, history}) => {
     });
 
     // Check if that service already in order list
-    const indexNum = newList.findIndex( item => item.service === newService.service)
+    const indexNum = newList.findIndex(item => item.service === newService.service)
 
     // update List according to existence
-    if(indexNum >= 0) {
+    if (indexNum >= 0) {
       newList[indexNum].quantity += 1;
     } else {
       newList.push(newService);
@@ -146,7 +146,9 @@ const NewOrder = ({match, history}) => {
     orderMutate()
 
   }  // End of AddToOrder
-  
+
+  console.log('orderData.user.username ->',orderData.user.username)
+
 
   // Iterate List, and Set Order Status and Prices
   const orderMutate = () => {
@@ -157,7 +159,7 @@ const NewOrder = ({match, history}) => {
       item.unitTotalPrice = item.unitPrice * item.quantity;
       orderTotal += item.unitTotalPrice;
 
-      if (item.unitServiceStatus !== "Ready"){ 
+      if (item.unitServiceStatus !== "Ready") {
         orderStatus = "In Progress";
       }
     });
@@ -171,11 +173,11 @@ const NewOrder = ({match, history}) => {
   }
 
   // Select User
-    const selectUser = ({userInfo}) => {
-      const { username, _id } = userInfo;
-      const selectedUser = new Object({
-        username, _id
-      })       
+  const selectUser = ({ userInfo }) => {
+    const { username, _id } = userInfo;
+    const selectedUser = new Object({
+      username, _id
+    })
 
     setOrderData({
       ...orderData,
@@ -191,42 +193,42 @@ const NewOrder = ({match, history}) => {
 
   // Calculate unit total Price and Order Total Price
   const calculatePrice = () => {
-    const newList = orderData.serviceList; 
+    const newList = orderData.serviceList;
     let orderTotal = 0;
-    newList.map( item => {
+    newList.map(item => {
       item.unitTotalPrice = item.unitPrice * item.quantity
       orderTotal += item.unitTotalPrice
     })
-      
+
     setOrderData({
       ...orderData,
       orderTotalPrice: orderTotal,
       serviceList: newList
     });
-    
+
   }
-  
+
 
   const setOrderStatus = () => {
     const newList = orderData.serviceList;
     let orderStatus = 'Ready';
     newList.map(item => {
-      if (item.unitServiceStatus !== 'Ready')  
-      orderStatus = 'In Progress';
-      
+      if (item.unitServiceStatus !== 'Ready')
+        orderStatus = 'In Progress';
+
     });
-    setOrderData( {
-    ...orderData,
-    orderStatus,
-    });      
+    setOrderData({
+      ...orderData,
+      orderStatus,
+    });
   }
 
 
 
   // Change Quantity
-  const changeQuantity = ( {service, newValue} ) => {
-    const newList = orderData.serviceList;    
-    const indexNum = newList.findIndex( item => item.service === service)
+  const changeQuantity = ({ service, newValue }) => {
+    const newList = orderData.serviceList;
+    const indexNum = newList.findIndex(item => item.service === service)
     newList[indexNum].quantity = parseInt(newValue)
     setOrderData({
       ...orderData,
@@ -238,7 +240,7 @@ const NewOrder = ({match, history}) => {
 
 
   // Set Service Status
-  const setServiceStatus = ({service, selectValue}) => {
+  const setServiceStatus = ({ service, selectValue }) => {
 
     console.log(selectValue);
     const newList = orderData.serviceList;
@@ -255,7 +257,7 @@ const NewOrder = ({match, history}) => {
 
   const handleSubmit = (e) => {
 
-    if(! orderId) {
+    if (!orderId) {
       // If New Order
       submitNewOrder({ formData: orderData });
     } else {
@@ -264,12 +266,12 @@ const NewOrder = ({match, history}) => {
   }
 
 
-    
-    
 
 
-  
-  if(loading) return <Spinner></Spinner>
+
+
+
+  if (loading) return <Spinner></Spinner>
   return (
     <Fragment>
       <div className='row'></div>
@@ -299,8 +301,8 @@ const NewOrder = ({match, history}) => {
                 <thead>
                   <tr>
                     <th>Service Name</th>
-                    <th>Price</th>
-                    <th>Options</th>
+                    <th className='right-align'>Price</th>
+                    <th className='center-align'>Options</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -363,8 +365,8 @@ const NewOrder = ({match, history}) => {
             </div>
           </div>
         ) : (
-          <Fragment></Fragment>
-        )}
+            <Fragment></Fragment>
+          )}
         {/* End of Dynamic Users Section */}
 
         {/* Order Form */}
@@ -373,13 +375,18 @@ const NewOrder = ({match, history}) => {
         >
           <div id='new-order-orders' className='z-depth-2'>
             <div id='new-order-orders-table'>
-              <div id='upper-row' className='row'>
-                <span style={{ marginLeft: "1rem" }} className='col s12 m6'>
-                  User: {orderData.user.username ? orderData.user.username : ""}
-                  {" ......... "}
+              <div 
+                id='upper-row' 
+                className='row'
+              >
+                <span 
+                  style={{ marginLeft: "1rem" }} 
+                  className='col s12 m6'
+                  >
+                    User: {orderData.user.username ? orderData.user.username : ""}
                   {/* User Select or Update Button */}{" "}
                   <a
-                    className='btn-small  waves-effect waves-light grey darken-1'
+                    className='btn-small  waves-effect waves-light grey darken-1 ml-3'                    
                     // type='button'
                     onClick={e => {
                       if (sectionSelection !== "users") {
@@ -389,7 +396,17 @@ const NewOrder = ({match, history}) => {
                       }
                     }}
                   >
-                    <i class='material-icons small'>edit</i>
+                    <span
+                      style={{
+                        display:'flex',
+                        alignItems:'center'
+                      }}
+                    >
+                      {
+                        orderData.user.username === '' ? 'Select User' : 'Edit User'
+                      }
+                      <i class='material-icons small ml-1'>edit</i>
+                    </span>
                   </a>
                   {/* End of User Select or Update Button */}
                 </span>
@@ -402,7 +419,7 @@ const NewOrder = ({match, history}) => {
                     <th className='price-column'>Price</th>
                     <th className='quantity-column'>Quantity</th>
                     <th className='status-column center-align'>Status</th>
-                    <th className='total-price-column right-align' style={{paddingRight:'1rem'}}>Tot. Price</th>
+                    <th className='total-price-column right-align' style={{ paddingRight: '1rem' }}>Tot. Price</th>
                   </tr>
                 </thead>
                 <tbody id='services-list'>
@@ -431,7 +448,7 @@ const NewOrder = ({match, history}) => {
                         marginLeft: "2rem"
                       }}
                     >
-                      ${orderData.orderTotalPrice}
+                      ${orderData.orderTotalPrice.toFixed(2)}
                     </span>
                   </li>
                 </ul>
@@ -477,11 +494,11 @@ const NewOrder = ({match, history}) => {
                       <i class='material-icons right '>add</i>
                     </Fragment>
                   ) : (
-                    <Fragment>
-                      Services
-                      <i class='material-icons right '>close</i>
-                    </Fragment>
-                  )}
+                      <Fragment>
+                        Services
+                        <i class='material-icons right '>close</i>
+                      </Fragment>
+                    )}
                 </button>
                 {/* End of Open Services Section Button */}
               </span>
@@ -501,9 +518,9 @@ const NewOrder = ({match, history}) => {
               </span>
             </div>
           </div>
-        </div>        
+        </div>
       </div>
-      
+
     </Fragment>
   );
 }

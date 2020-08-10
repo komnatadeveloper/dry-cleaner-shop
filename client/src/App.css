@@ -61,6 +61,10 @@
 .pb-4  { padding-bottom: 2rem; }
 /* END Of MARGIN CLASSES */
 
+.font-weight-bold {
+  font-weight: bold;
+}
+
 /* Flexbox */
 .flexrow {
   display: flex;

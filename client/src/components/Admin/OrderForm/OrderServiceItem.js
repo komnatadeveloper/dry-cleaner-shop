@@ -6,8 +6,8 @@ const newServiceItem = ({service, addToOrder}) => {
   return (
     <tr>
       <td>{`${productName} ${serviceType}`}</td>
-      <td>{servicePrice}</td>
-      <td>
+      <td className='right-align'>{`$${servicePrice.toFixed(2)}`}</td>
+      <td className='center-align'>
         <a
           onClick={e => addToOrder(service)}
           className='btn-floating small waves-effect waves-light btn-small blue'
