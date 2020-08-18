@@ -113,37 +113,19 @@ const PublicState = props => {
     }
   }
 
-  const setCartDirectly = ({ cart}) => {
+
+  const setCartDirectly = (cart) => {
     console.log(cart)
-      dispatch({
-        type: SET_CART,
-        payload: cart.cart
-      })
+    dispatch({
+      type: SET_CART,
+      payload: cart
+    })
   }
-  // const setCart = ({type, cart}) => {
-  //   console.log(cart)
-  //   if( type === 'json') {
-  //     // console.log(cart);
-  //     const parsed = JSON.parse(cart)
-  //     dispatch({
-  //       type: SET_CART,
-  //       payload: {...parsed}
-  //     })
-  //   }
-  //   if(type === 'js') {
-  //     dispatch({
-  //       type: SET_CART,
-  //       payload: {cart}
-  //     })
-  //   }
-  // }
+  
 
   const handleCartCalculations = (cart) => {
-
-
     let orderTotalPrice = 0;
     let deleteIndex = -1;
-
     // eslint-disable-next-line
     cart.serviceList.map( (item, index) => {
       item.unitTotalPrice = item.quantity * item.unitPrice;

@@ -61,10 +61,11 @@ const UserState = props => {
 
       // setCart({type: 'js',
       // cart:null})
-      setCartDirectly({  cart: {cart:null}})
+      setCartDirectly( null );
       localStorage.removeItem('cart')
 
     } catch (err) {
+      // console.log('UserState -> addToOrderFromCart -> errors OCCURED ->');
       console.log(err.response)
       console.log(err)
       const errors = err.response.data.errors;
@@ -86,12 +87,6 @@ const UserState = props => {
         }
       };
       const res = await axios.get("/api/users/orders", config);
-
-      // console.log('HELLO FROM LOAD ORDERS', res.data);
-
-      // console.log(res.data);
-      
-
       dispatch({
         type: USER_ORDERS_LOADED,
         payload: res.data
@@ -124,7 +119,7 @@ const UserState = props => {
       next(res.data)
       
     } catch (err) {
-      console.log(err.response);
+      // console.log(err.response);
       next(null)
       const errors = err.response.data.errors;
       
