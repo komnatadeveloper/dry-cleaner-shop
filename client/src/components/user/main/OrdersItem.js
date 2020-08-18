@@ -16,6 +16,13 @@ const OrdersItem = ({ order }) => {
     orderTotalPrice
   } = order;
 
+  let calculatedTotalPrice = 0;
+  if( !orderTotalPrice ) {
+    for( let i = 0; i < serviceList.length; i++ ) {
+      calculatedTotalPrice += serviceList[i].unitTotalPrice;  
+    }
+  }
+
   return (
     <tr>
       <td>
@@ -23,7 +30,13 @@ const OrdersItem = ({ order }) => {
       </td>
       {/* <td>{user.username}</td> */}
       {/* <td>{orderStatus}</td> */}
-      <td className='right-align pr-2'>{orderTotalPrice.toFixed(2)}</td>
+      <td className='right-align pr-2'>
+        {
+          orderTotalPrice 
+            ? orderTotalPrice.toFixed(2)
+            : calculatedTotalPrice.toFixed(2)
+        }
+      </td>
       <td className='center-align'>
         <span className='badge red'>{orderStatus}</span>
       </td>

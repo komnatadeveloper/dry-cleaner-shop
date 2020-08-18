@@ -56,39 +56,33 @@ const Navbar = ({
         </a>
       </li>
     </>
-  );  
-
+  ); 
   
-
-
-
-  
-
   const userMenu = () => (
     <>
       <li className= {location.pathname === '/about' ? 'active' : ''}>
-        <Link to='/about'>About</Link>
+        <a href='/about'>About</a>
       </li>
       
       <li className= {location.pathname === '/user-main' ? 'active' : ''}>
-        <Link
+        <a
           className='waves-effect waves-light mr-2'
-          to='/user-main'
+          href='/user-main'
         >
           Orders
-        </Link>
+        </a>
       </li>
       <li className= {location.pathname === '/cart' ? 'active' : ''}>
-        <Link
+        <a
           className='waves-effect waves-light mr-2'
-          to='/cart'
+          href='/cart'
         >
           <i className='material-icons right'>shopping_cart</i>
-        </Link>
+        </a>
       </li>
       <li>
-        <Link
-          to="#logout"
+        <a
+          href="#logout"
           onClick={ e => {
             e.preventDefault()
             logout()}} 
@@ -98,30 +92,30 @@ const Navbar = ({
             <i className='material-icons'>exit_to_app</i>
           </span>
           <span className="ml-1">{`Logout `}</span>
-        </Link>
+        </a>
       </li>      
     </>
   )
 
   const publicMenu = () => (
     <>
-      <li>
-        <Link to='/about'>About</Link>
+      <li className= {location.pathname === '/about' ? 'active' : ''}>
+        <a href='/about'>About</a>
       </li>
-      <li>
-        <Link
-          to='/user-login'
+      <li className= {location.pathname === '/user-login' ? 'active' : ''}>
+        <a
+          href='/user-login'
           className='waves-effect waves-light'
         >Login
-        </Link>
+        </a>
       </li>
-      <li>
-        <Link
+      <li className= {location.pathname === '/cart' ? 'active' : ''}>
+        <a
           className='waves-effect waves-light mr-2'
-          to='/cart'
+          href='/cart'
         >
           <i className='material-icons right'>shopping_cart</i>
-        </Link>
+        </a>
       </li>
     </>
   );  
