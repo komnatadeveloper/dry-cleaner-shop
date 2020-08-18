@@ -39,14 +39,18 @@ const UserMain = () => {
               </thead>
 
               <tbody>
-                {orders ? (
-                  orders.length > 0 &&
-                  orders.map(order => (
-                    <OrdersItem key={order._id} order={order} />
-                  ))
-                ) : (
-                    <></>
-                  )}
+                {
+                orders 
+                  ? (
+                    orders.length > 0 &&
+                    orders.map(order => (
+                      <OrdersItem key={order._id} order={order} />
+                    ))
+                  ) 
+                  : (
+                      <></>
+                  )
+                }
               </tbody>
             </table>
           </div>
