@@ -8,6 +8,7 @@ import alertContext from '../alert/alertContext'
 
 import {
   USER_LOGIN_SUCCESS,
+  USER_REGISTER_SUCCESS,
   USER_LOGIN_FAIL,
   USER_LOADED,
   AUTH_ERROR,
@@ -170,6 +171,51 @@ const AuthState = props => {
     }
   };
 
+  // Register New User
+  const userRegister = async formData => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+
+    try {
+      let updatedFormData = {
+        name: formData.personName,
+        ...formData
+      };
+      updatedFormData.personName = undefined;
+      const res = await axios.post(
+        "/api/users/register", // BE CAREFUL NOT <<auth>> BUT <<users>> ROUTER
+        JSON.stringify(
+          updatedFormData
+        ), 
+        config
+        );
+        
+        // if( errors ) {
+        //   errors.forEach(error => setAlert(error.msg, "danger"));
+        // }
+      dispatch({
+        type: USER_REGISTER_SUCCESS,
+        payload: res.data
+      });
+
+      dispatch(loadUser())
+    } catch (err) {
+      const errors = err.response.data.errors;
+
+
+      if( errors ) {
+        errors.forEach(error => setAlert(error.msg, "danger"));
+      }
+      dispatch({
+        type: USER_LOGIN_FAIL,
+        payload: err.response.data.msg
+      });
+    }
+  };
+
   const setAuthLoading =  (newStatus) => {
     dispatch({ 
       type: SET_AUTH_LOADING,
@@ -197,6 +243,7 @@ const AuthState = props => {
         error: state.error,
         // register,
         userLogin,
+        userRegister,
         adminLogin,
         loadUser,
         loadAdmin,
