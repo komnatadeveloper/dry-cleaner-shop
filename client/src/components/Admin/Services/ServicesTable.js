@@ -8,8 +8,6 @@ const ServicesTable = ({services }) => {
   const adminContext1 = useContext(admincontext)
   const { deleteService} = adminContext1
   
-  debugger;
-  
   return (
     <Fragment>
       <table>

@@ -1,13 +1,13 @@
-import React, {useContext, useEffect} from 'react'
+import React, { useContext, useEffect } from 'react'
 import publicContext from '../../../../context/public/publicContext'
 import ServicesItem from './ServicesItem'
 import M from 'materialize-css'
 
-
-const FeaturedServicesTab = () => {
+const SingleCategoryTab = ({
+  serviceList
+}) => {
   const publicContext1 = useContext(publicContext)
-  const { publicServices } = publicContext1
-  const featuredServices = publicServices && publicServices.filter(item => !!item.featured )
+  const { publicServices } = publicContext1 
 
   useEffect(() => {
     M.AutoInit()
@@ -16,19 +16,15 @@ const FeaturedServicesTab = () => {
   return (
     <div>
       <div className='row'>
-
-
-        {featuredServices && featuredServices.map(service => (
+        {serviceList && serviceList.map(service => (
           <ServicesItem
             key={service._id}
             service={service}
           />
         ))}
-
-
       </div>
     </div>
   )
 }
 
-export default FeaturedServicesTab
+export default SingleCategoryTab

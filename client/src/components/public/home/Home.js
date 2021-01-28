@@ -7,14 +7,14 @@ import publicContext from '../../../context/public/publicContext'
 const Home = () => {
   const publicContext1 = useContext(publicContext)
   const {
-    getServices,
+    getServicesAndCategories,
     loading
   } = publicContext1
   
   // eslint-disable-next-line
   useEffect(() => {
     // eslint-disable-next-line
-    getServices();
+    getServicesAndCategories();
     // eslint-disable-next-line
   }, []);
 

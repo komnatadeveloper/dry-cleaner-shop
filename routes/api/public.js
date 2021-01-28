@@ -5,6 +5,7 @@ const path = require('path')
 const Public = require("../../models/Public");
 const Product = require("../../models/Product");
 const Service = require("../../models/Service");
+const Category = require("../../models/Category");
 const authAdmin = require('../../middleware/authAdmin')
 const { fileCheck, resizeFile } = require('../../utils/UploadFile')
 
@@ -133,13 +134,15 @@ router.get('/product/:productId', async (req, res) => {
 })
 
 
-// Serve Featured Services
-router.get( '/featured-services', async (req, res) => {
+// Serve All Services & Categories
+router.get( '/services-and-categories', async (req, res) => {
   try {
-    const featuredServices = await Service.find({});
-    
-
-    res.status(200).json(featuredServices)
+    const services = await Service.find({});
+    const categories = await Category.find({});
+    res.status(200).json({
+      services,
+      categories
+    });
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

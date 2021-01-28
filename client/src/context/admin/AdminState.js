@@ -379,7 +379,6 @@ const AdminState = props => {
           "Content-Type": "multipart/form-data"
         }
       };
-      debugger;
       const formData1 = new FormData();
       formData1.append("image", formData.image);
       formData1.append("serviceName", formData.serviceName);
@@ -427,7 +426,6 @@ const AdminState = props => {
         formData1.append("category", formData.category);
         formData1.append("featured", formData.featured);
       }
-      debugger;
       let res; 
       if ( formData.isImageUpdated ) {
         res = await axios.put(`/api/admin/services/image-updated/${serviceId}`, formData1, config);
@@ -571,7 +569,6 @@ const AdminState = props => {
     if(searched){
       const res = await axios.get(`/api/admin/services/query?searched=${searched}`, config);
       // console.log(res.data);
-      debugger;
       dispatch({
         type: QUERIED_SERVICES_LOADED,
         payload: res.data

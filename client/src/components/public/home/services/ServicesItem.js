@@ -1,5 +1,6 @@
 import React, {useContext} from 'react'
 import publicContext from '../../../../context/public/publicContext'
+import { uint8ArrayToImageSource } from '../../../../utils/helpers';
 
 
 const ServicesItem = ({
@@ -12,10 +13,17 @@ const ServicesItem = ({
         const {
           // eslint-disable-next-line
           _id,
+          image,
+          serviceName,
+          categoryName,
+          category,
+          servicePrice,
+          featured,
+          // old ones
           productName,
           product,
           serviceType,
-          servicePrice
+          // servicePrice
         } = service;
 
         return (
@@ -23,12 +31,14 @@ const ServicesItem = ({
             <div className='card '>
               <div className='card-image'>
                 <img
-                  alt={`${productName}-${serviceType}`}
-                  src={`/api/public/products/${product}`}
+                  alt={`${serviceName}`}
+                  // src={`/api/public/products/${product}`}
+                  src={uint8ArrayToImageSource(image.data)}
                 />
               </div>
               <span className='card-title  grey-text text-darken-4'>
-                {productName} {serviceType}
+                {/* {productName} {serviceType} */}
+                {serviceName}
               </span>
               <div className='card-content'>
                 <div className='flexrow justify-content-flex-end mp-1'>

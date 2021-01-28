@@ -1,19 +1,16 @@
 import React, { useContext, useEffect, useState } from "react";
 import publicContext from "../../../../context/public/publicContext";
-import FeaturedServicesTab from "./FeaturedServicesTab";
-import IronTab from "./IronTab";
-import DryCleanTab from "./DryCleanTab";
+import SingleCategoryTab from "./SingleCategoryTab";
 import M from 'materialize-css'
-
-
 const Services = () => {
   const publicContext1 = useContext(publicContext)
   const {
-    publicServices
+    publicServices,
+    publicCategories
   } = publicContext1
 
   const [publicServicesList, setPublicServicesList] = useState([]);
-  const [servicesChoice, setServicesChoice] = useState('featured')
+  const [servicesChoice, setServicesChoice] = useState(publicCategories[0].name);
 
   useEffect(() => {
     // eslint-disable-next-line
@@ -47,53 +44,43 @@ const Services = () => {
         <nav id='home-services-nav' className='white  z-depth-0'>
           <div>
             <ul className='flexrow justify-content-space-around'>
-              <li>
-                <a
-                  onClick={e => handleFeaturedClick(e)}
-                  href='#!'
-                  className={
-                    servicesChoice === "featured"
-                      ? "red-text  border-bottom"
-                      : "red-text text-lighten-3"
-                  }
-                >
-                  <span>FEATURED</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={e => handleDryCleanClick(e)}
-                  href='#!'
-                  className={
-                    servicesChoice === "Dry Clean"
-                      ? "red-text  border-bottom"
-                      : "red-text text-lighten-3"
-                  }
-                >
-                  DRY CLEAN
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={e => handleIronClick(e)}
-                  href='#!'
-                  className={
-                    servicesChoice === "Iron"
-                      ? "red-text  border-bottom"
-                      : "red-text text-lighten-3"
-                  }
-                >
-                  IRON
-                </a>
-              </li>
+              {
+                publicCategories && publicCategories.length > 0 &&
+                publicCategories.map(
+                  categoryItem => (
+                    <li>
+                      <a
+                        onClick={e => {
+                          e.preventDefault();
+                          setServicesChoice(categoryItem.name);
+                        }}
+                        href='#!'
+                        className={
+                          servicesChoice === categoryItem.name
+                            ? "red-text  border-bottom"
+                            : "red-text text-lighten-3"
+                        }
+                      >
+                        <span>{categoryItem.name}</span>
+                      </a>
+                    </li>
+                  )
+                )
+              }             
             </ul>
           </div>
         </nav>
         {/*  END OF SERVICES MENU */}
         <div style={{ margin: "auto" }} className='col s12'>
-          {servicesChoice === "featured" && <FeaturedServicesTab />}
+          {/* {servicesChoice === "featured" && <FeaturedServicesTab />}
           {servicesChoice === "Dry Clean" && <DryCleanTab />}
-          {servicesChoice === "Iron" && <IronTab />}
+          {servicesChoice === "Iron" && <IronTab />} */}
+          { <SingleCategoryTab
+              serviceList={publicServices.filter(
+                serviceItem => serviceItem.categoryName === servicesChoice
+              )}
+            /> 
+          }
         </div>
       </div>
       {/* This Section Will Be DISABLED Due to Jquery Overlap Problem */}
