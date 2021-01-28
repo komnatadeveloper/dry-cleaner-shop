@@ -8,15 +8,16 @@ const ServicesTable = ({services }) => {
   const adminContext1 = useContext(admincontext)
   const { deleteService} = adminContext1
   
-  
+  debugger;
   
   return (
     <Fragment>
       <table>
         <thead>
           <tr>
-            <th>Product</th>
-            <th>Service</th>
+            <th>Service Name</th>
+            <th>Image</th>
+            <th>Category</th>
             <th className='right-align'>Price</th>
             <th className="center-align">Featured</th>
             <th style={{textAlign:'center'}}>Actions</th>

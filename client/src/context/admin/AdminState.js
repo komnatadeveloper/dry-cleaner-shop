@@ -24,6 +24,11 @@ import {
   PRODUCT_ADDED,
   PRODUCT_UPDATED,
   QUERIED_PRODUCTS_LOADED,
+  // Categories
+  CATEGORIES_LOADED,
+  CATEGORY_ADDED,
+  CATEGORY_DELETED,
+  CLEAR_QUERIED_CATEGORIES,
   PRODUCT_DELETED,
   SERVICE_DELETED,
   SINGLE_ORDER_LOADED,
@@ -36,6 +41,8 @@ const AdminState = props => {
   const initialState = {
     customers: [],
     orders: [],
+    categories: [],
+    categoryQuery: [],
     services: [],
     serviceToBeEditted: null,
     serviceQuery: [],
@@ -225,23 +232,167 @@ const AdminState = props => {
   
 
 
-  //-----------------------SERVICES------------------------------
+  //-----------------------CATEGORIES------------------------------
 
-  // Add a Service
-  const addNewService = async ({ formData }) => {
+  
+  const addCategory = async ({ formData }) => {
+    if (!formData.image || !formData.name) {
+      return;
+    }
+    const formData1 = new FormData();
+    formData1.append("image", formData.image);
+    formData1.append("name", formData.name);
+    console.log(formData);
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+      const res = await axios.post(
+        `/api/admin/categories`, 
+        formData1, 
+        config
+      );
+      dispatch({
+        type: CATEGORY_ADDED,
+        payload: res.data.category
+      });
+      setAlert(res.data.msg, 'success', 3000)
+
+    } catch (err) {
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+      }
+    }
+  };  // End of addCategory
+
+  // Delete a Category
+  const deleteCategory = async (_id, cb) => {
     try {
       const config = {
         headers: {
           "Content-Type": "application/json"
         }
       };
+      const res = await axios.delete(`/api/admin/categories/${_id}`, config);
+      dispatch({
+        type: CATEGORY_DELETED,
+        payload: res.data.category
+      });
+      setAlert(res.data.msg, "success", 3000);
+      if ( cb ){
+        cb();
+      }
+    } catch (err) {
+      const errors = err.response.data.errors;
+      if ( cb ){
+        cb();
+      }
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+      }
+    }
+  };  // End of Delete a Category
 
-      const res = await axios.post(`/api/admin/services`, formData, config);
+  // Load All Categories
+  const loadCategories = async () => {
+    try {
+      setAdminLoading(true);
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };      
+      const res = await axios.get("/api/admin/categories", config);
+      // console.log(res.data);
+
+      dispatch({
+        type: CATEGORIES_LOADED,
+        payload: res.data
+      });
+      setAdminLoading(false);
+    } catch (err) {
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+      }
+    }
+  }  // End of loadCategories
+
+  // Query Categories
+  const loadQueriedCategories = async (
+    searched,
+    cb
+  ) => {
+    try {    
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };
+      if(searched){
+        const res = await axios.get(`/api/admin/categories/query?searched=${searched}`, config);
+        // console.log(res.data);
+        return cb( res.data );  // queried categories list   
+        // dispatch({
+        //   type: QUERIED_CATEGORIES_LOADED,
+        //   payload: res.data
+        // });
+      } else {
+        dispatch({
+          type: CLEAR_QUERIED_CATEGORIES        
+        });  
+        return cb( [] );   
+      } 
+    } catch (err) {
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+      }
+      return cb ( [] );
+    }
+  }  // End of loadQueriedCategories
+
+
+
+
+  //-----------------------SERVICES------------------------------
+
+  
+  // Add a Service
+  const addNewService = async ({ formData }) => {
+    if (
+      !formData.image 
+      || !formData.category
+      || !formData.serviceName
+    ) {
+      return;
+    }    
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+      debugger;
+      const formData1 = new FormData();
+      formData1.append("image", formData.image);
+      formData1.append("serviceName", formData.serviceName);
+      formData1.append("servicePrice", formData.servicePrice);
+      formData1.append("category", formData.category);
+      formData1.append("featured", formData.featured);
+
+      const res = await axios.post(`/api/admin/services`, formData1, config);
 
       if (res.data) {
         dispatch({
           type: SERVICE_ADDED,
-          payload: res.data
+          payload: res.data.service
         });
       }
       setAlert(res.data.msg, "success", 3000);
@@ -259,26 +410,46 @@ const AdminState = props => {
     try {
       const config = {
         headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+      const config2 = {
+        headers: {
           "Content-Type": "application/json"
         }
       };
-
-      const res = await axios.put(`/api/admin/services/${serviceId}`, formData, config);
-
+      const formData1 = new FormData();
+      if ( formData.isImageUpdated ) {
+        formData1.append("image", formData.image);
+        formData1.append("isImageUpdated", formData.isImageUpdated);
+        formData1.append("serviceName", formData.serviceName);
+        formData1.append("servicePrice", formData.servicePrice);
+        formData1.append("category", formData.category);
+        formData1.append("featured", formData.featured);
+      }
+      debugger;
+      let res; 
+      if ( formData.isImageUpdated ) {
+        res = await axios.put(`/api/admin/services/image-updated/${serviceId}`, formData1, config);
+      } else {
+        let formData2 = {...formData};
+        formData2.image = undefined;
+        res = await axios.put(`/api/admin/services/no-image-update/${serviceId}`, formData2, config2);
+      }      
       dispatch({
         type: SERVICE_UPDATED,
         payload: res.data.service
       });
       setAlert(res.data.msg, "success", 3000);
-
     } catch (err) {
       const errors = err.response.data.errors;
-
       if (errors) {
         errors.forEach(error => setAlert(error.msg, "danger", 2500));
       }
     }
-  };
+  };  // End of Update a Service
+  
+  
 
   // Delete a Service
   const deleteService = async (_id) => {
@@ -400,7 +571,7 @@ const AdminState = props => {
     if(searched){
       const res = await axios.get(`/api/admin/services/query?searched=${searched}`, config);
       // console.log(res.data);
-
+      debugger;
       dispatch({
         type: QUERIED_SERVICES_LOADED,
         payload: res.data
@@ -864,6 +1035,11 @@ const AdminState = props => {
         loadSingleOrder,
         submitNewOrder,
         updateOrder,
+        // Categories
+        addCategory,
+        deleteCategory,
+        loadCategories,
+        loadQueriedCategories,
         // Services
         loadServices,
         addNewService,
@@ -881,6 +1057,7 @@ const AdminState = props => {
         // State variables
         customers: state.customers,
         orders: state.orders,
+        categories: state.categories,
         services: state.services,
         serviceToBeEditted: state.serviceToBeEditted,
         serviceQuery: state.serviceQuery,

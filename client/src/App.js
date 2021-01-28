@@ -32,6 +32,8 @@ import CustomersTab from './components/Admin/Customers/CustomersTab'
 import OrdersTab from "./components/Admin/Orders/OrdersTab";
 import ServicesTab from './components/Admin/Services/ServicesTab'
 import ProductsTab from './components/Admin/Products/ProductsTab'
+import CategoriesPage from './components/Admin/Categories/CategoriesPage';
+import AddCategory from './components/Admin/Categories/AddCategory';
 import CustomerDetails from './components/Admin/Customers/CustomerDetails'
 import NewOrder from './components/Admin/OrderForm/NewOrder';
 import AddPayment  from './components/Admin/payment/AddPayment'
@@ -105,6 +107,16 @@ const  App =  () => {
                         exact
                         path='/dashboard/orders'
                         component={OrdersTab}
+                      />
+                      <AdminRoute
+                        exact
+                        path='/dashboard/categories'
+                        component={CategoriesPage}
+                      />
+                      <AdminRoute
+                        exact
+                        path='/dashboard/categories/add'
+                        component={AddCategory}
                       />
                       <AdminRoute
                         exact

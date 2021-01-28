@@ -1,10 +1,11 @@
 import React, {useEffect} from 'react'
 import {Link} from 'react-router-dom'
 import DeleteConfirmationModel from './DeleteConfirmationModal'
+import { uint8ArrayToImageSource } from "../../../utils/helpers";
 import M from 'materialize-css'
 
  const ServiceItemsInRows = ({serviceInfo, deleteService}) => {
-  const { _id, productName, product, serviceType, servicePrice, featured } = serviceInfo
+  const { _id, serviceName, category, categoryName, image, servicePrice, featured } = serviceInfo
   useEffect(() => {
     // M.Modal.init(`service-delete-${_id}`);
     M.AutoInit()
@@ -12,8 +13,11 @@ import M from 'materialize-css'
 
   return (
     <tr>
-      <td>{productName}</td>
-      <td>{serviceType}</td>
+      <td>{serviceName}</td>
+      <td>
+        <img src={uint8ArrayToImageSource(image.data)} width='80' />
+      </td>
+      <td>{categoryName}</td>
       {/* <td>{totalOrders}</td> */}
       <td className='right-align'>{servicePrice.toFixed(2)}</td>
       <td>

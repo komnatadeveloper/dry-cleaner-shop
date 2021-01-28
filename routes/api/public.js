@@ -166,6 +166,22 @@ router.get( '/products/:productId', async (req, res) => {
 })
 
 
+// Serve Single Service Pic
+router.get( '/services/:serviceId', async (req, res) => {
+  try {
+    const service = await Service.findById(req.params.serviceId);    
+    if (!service) {
+      return res.status(400).json()
+    }
+    res.set('Content-Type', 'image/jpeg')
+    res.send(service.image);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+})
+
+
 
 
 module.exports = router;

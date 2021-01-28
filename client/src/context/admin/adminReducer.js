@@ -1,28 +1,38 @@
 import {
   CUSTOMERS_LOADED,
-  ORDERS_LOADED,
   PAYMENTS_LOADED,
   SERVICES_LOADED,
   SINGLE_SERVICE_LOADED,
   CUSTOMER_ADDED,
   CUSTOMER_UPDATED,
-  QUERIED_SERVICES_LOADED,
-  CLEAR_QUERIED_SERVICES,
   SERVICE_STATUSES_LOADED,
   QUERIED_USERS_LOADED,
   ORDER_FORM_SUBMITTED,
+  // Categories
+  CATEGORIES_LOADED,
+  CATEGORY_ADDED,
+  CATEGORY_DELETED,
+  QUERIED_CATEGORIES_LOADED,
+  CLEAR_QUERIED_CATEGORIES,
+  // Products
   PRODUCTS_INFO_LOADED,
   PRODUCT_ADDED,
   PRODUCT_UPDATED,
   QUERIED_PRODUCTS_LOADED,
+  // Services
   SERVICE_ADDED,
   SERVICE_UPDATED,
   PRODUCT_DELETED,
   SERVICE_DELETED,
+  QUERIED_SERVICES_LOADED,
+  CLEAR_QUERIED_SERVICES,
+  // Orders
   SINGLE_ORDER_LOADED,
   ORDER_FORM_UPDATED,
+  ORDERS_LOADED,
+  // Users
+  CLEAR_QUERIED_USERS,
   SET_ADMIN_LOADING,
-  CLEAR_QUERIED_USERS
 } from "../types";
 
 
@@ -56,6 +66,23 @@ export default (state, action) => {
           product._id === payload._id ? payload : product
         )
       };
+    case CATEGORIES_LOADED:
+      return {
+        ...state,
+        categories: payload
+      };
+    case CATEGORY_ADDED:
+      return {
+        ...state,
+        categories: [...state.categories, payload]
+      };
+    case CATEGORY_DELETED:
+      return {
+        ...state,
+        categories: state.categories.filter(
+          category => category._id !== payload._id
+        )
+      };
     case SERVICE_ADDED:
       return {
         ...state,
@@ -71,7 +98,7 @@ export default (state, action) => {
     case SERVICE_DELETED:
       return {
         ...state,
-        services: state.products.filter(service => service._id !== payload._id)
+        services: state.services.filter(service => service._id !== payload._id)
       };
     case CUSTOMERS_LOADED:
       return {

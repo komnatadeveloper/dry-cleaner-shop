@@ -36,6 +36,9 @@ const Navbar = ({
       <li className= {location.pathname === '/dashboard/orders' ? 'active' : ''}>
         <Link to='/dashboard/orders'>Orders</Link>
       </li>
+      <li className= {location.pathname === '/dashboard/categories' ? 'active' : ''}>
+        <Link to='/dashboard/categories'>Categories</Link>
+      </li>
       <li className= {location.pathname === '/dashboard/services' ? 'active' : ''}>
         <Link to='/dashboard/services'>Services</Link>
       </li>
