@@ -6,6 +6,10 @@ import alertContext from "../alert/alertContext";
 import authContext from "../auth/authContext";
 
 import {
+  // Customers
+  CUSTOMER_ADDED,
+  CUSTOMER_UPDATED,
+  CUSTOMER_DELETED,
   CUSTOMERS_LOADED,
   ORDERS_LOADED,
   PAYMENTS_LOADED,
@@ -13,8 +17,6 @@ import {
   SERVICE_ADDED,
   SERVICE_UPDATED,
   SINGLE_SERVICE_LOADED,
-  CUSTOMER_ADDED,
-  CUSTOMER_UPDATED,
   CLEAR_QUERIED_SERVICES,
   SERVICE_STATUSES_LOADED,
   ORDER_FORM_SUBMITTED,
@@ -874,6 +876,37 @@ const AdminState = props => {
     }
   }
 
+  // Delete Customer
+  const deleteCustomer = async ({
+    id, 
+    cb  // callBack
+  }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };      
+      const res = await axios.delete(`/api/admin/customers/info/${id}`,  config);      
+      dispatch({
+        type: CUSTOMER_DELETED,
+        payload: res.data.customer
+      });
+      if ( !cb ) {
+        cb(res.data.customer);
+      }
+      setAlert(res.data.msg, "success", 3000);
+      return res.data
+    } catch (err ) {
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+      }
+    }
+  }  // End of Delete Customer
+
+
+
   // Load Customers
   const loadCustomers = async () => {
     try {
@@ -975,9 +1008,6 @@ const AdminState = props => {
       // console.log(res.data);
 
       if (res.data) return res.data;
-
-
-
     } catch (err) {
       
     }
@@ -1005,8 +1035,9 @@ const AdminState = props => {
         setAdminLoading,       
         // Customers
         loadCustomers,
-        updateCustomer,
         addNewCustomer,
+        updateCustomer,
+        deleteCustomer,
         loadQueriedUsers,
         clearUserQuery,
         loadSingleCustomer,

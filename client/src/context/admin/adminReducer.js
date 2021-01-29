@@ -1,5 +1,7 @@
 import {
+  // Customers
   CUSTOMERS_LOADED,
+  CUSTOMER_DELETED,
   PAYMENTS_LOADED,
   SERVICES_LOADED,
   SINGLE_SERVICE_LOADED,
@@ -95,6 +97,13 @@ export default (state, action) => {
       return {
         ...state,
         customers: payload
+      };
+    case CUSTOMER_DELETED:
+      return {
+        ...state,
+        customers: state.customers.filter(
+          customerItem => customerItem._id !== payload._id
+        )
       };
     case ORDERS_LOADED:
       return {
