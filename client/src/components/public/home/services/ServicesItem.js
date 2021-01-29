@@ -19,11 +19,6 @@ const ServicesItem = ({
           category,
           servicePrice,
           featured,
-          // old ones
-          productName,
-          product,
-          serviceType,
-          // servicePrice
         } = service;
 
         return (

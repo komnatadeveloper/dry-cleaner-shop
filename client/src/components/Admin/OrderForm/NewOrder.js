@@ -4,57 +4,69 @@ import OrderServiceItem from './OrderServiceItem'
 import OrderUserItem from './OrderUserItem'
 import ServiceItemInOrders from './ServiceItemInOrders';
 import Spinner from '../../layout/Spinner'
-
+import alertContext from '../../../context/alert/alertContext';
 
 
 
 
 const NewOrder = ({ match, history }) => {
   // If Edit
-  const orderId = match.params.orderId || null;
+  const [orderId, setOrderID ] = useState(match.params.orderId || null);
+  const _cbSetOrderId = ( id ) => setOrderID(id);
+
 
   const adminContext1 = useContext(adminContext)
   const {
     loadQueriedServices,
-    serviceQuery,
     loadServiceStatuses,
     serviceStatuses,
     loadQueriedUsers,
-    userQuery,
-    clearUserQuery,
     submitNewOrder,
     loadSingleOrder,
     updateOrder,
     loading
   } = adminContext1;
+  const alertContext1 =  useContext(alertContext);
+  const { 
+    setAlert
+  } = alertContext1;
   const [orderData, setOrderData] = useState({
-    user: {
-      id: "",
-      username: ""
-    },
+    user: '', // userID => will be SENT TO API
+    username: '',  // NOT TO SEND TO API (for UI)
     serviceList: [],
     orderStatus: '',
     orderTotalPrice: 0
   })
 
   const [sectionSelection, setSectionSelection] = useState('none')
+  const [userObject, setUserObject] = useState( {} );
+  const [ queriedUsersList, setQueriedUsersList ] = useState( [] );
+  const _cbSetQueriedUsersList = ( arr ) => {
+    setQueriedUsersList(arr);
+  }
+  const [serviceSearchText, setServiceSearchText] = useState('');
+  const [ queriedServicesList, setQueriedServicesList ] = useState( [] );
+  const _cbSetQueriedServicesList = ( arr ) => {
+    setQueriedServicesList(arr);
+  }
+  
 
   // If Edit
   const next = res => {
-
     if (!res) {
       return history.push('/dashboard/orders')
     }
+    debugger;
     setOrderData({
       ...orderData,
       _id: res._id,
-      user: {
-        _id: res.user._id,
-        username: res.user.username
-      },
+      // user: {
+      //   _id: res.user._id,
+      //   username: res.user.username
+      // },
+      user: res.user._id,
+      username: res.user.username,
       serviceList: res.serviceList.map(item => {
-
-
         const mapped = {
           service: item.service._id,      // service id OR productId
           productName: item.service.productName,
@@ -64,30 +76,22 @@ const NewOrder = ({ match, history }) => {
           unitServiceStatus: item.unitServiceStatus,
           unitTotalPrice: item.unitTotalPrice
         }
-
-        // const prev = new Object({item})
-        // const mapped = {
-        //   service: prev.service.id,
-        //   productName: prev.service.productName,
-        //   serviceType: prev.service.serviceType 
-        // }
         return mapped
       }),
       orderTotalPrice: res.orderTotalPrice,
       orderStatus: res.orderStatus
     });
+    setUserObject({...res.user})
   }
 
   useEffect(() => {
     if (!orderId) {
       loadServiceStatuses()
     }
-
     // If not a new order, we are editting order
     if (orderId) {
       loadSingleOrder({ orderId, next })
     }
-
   }, [])
 
   const statusList = serviceStatuses.map(status => ({
@@ -96,58 +100,35 @@ const NewOrder = ({ match, history }) => {
   }))
 
 
-
-  // serviceList[
-  //   {
-  //     service: "5df55f1fcac13bc2d8220c01",
-  //     productName: "Pants",
-  //     quantity: 10,
-  //     unitPrice: 10,
-  //     unitServiceStatus: "In Progress",
-  //     serviceType: "Iron",
-  //     servicePrice: 14.05
-  //   }
-  // ]; 
-
-
-
-
   const addToOrder = service => {
-
     const newList = orderData.serviceList;
-
-    const { productName, _id, serviceType, servicePrice } = service;
-
+    const { 
+      _id,
+      serviceName,
+      servicePrice,
+    } = service;
     // Create a new Order Element
     const newService = new Object({
       service: _id,
-      productName,
-      serviceType, // not to DB
+      serviceName,
       quantity: 1,
       unitPrice: servicePrice,
       unitServiceStatus: statusList[0].servStatus
     });
-
     // Check if that service already in order list
     const indexNum = newList.findIndex(item => item.service === newService.service)
-
     // update List according to existence
     if (indexNum >= 0) {
       newList[indexNum].quantity += 1;
     } else {
       newList.push(newService);
     }
-
     setOrderData({
       ...orderData,
       serviceList: newList
     });
-
-    orderMutate()
-
+    orderMutate();  
   }  // End of AddToOrder
-
-  console.log('orderData.user.username ->',orderData.user.username)
 
 
   // Iterate List, and Set Order Status and Prices
@@ -172,23 +153,7 @@ const NewOrder = ({ match, history }) => {
     });
   }
 
-  // Select User
-  const selectUser = ({ userInfo }) => {
-    const { username, _id } = userInfo;
-    const selectedUser = new Object({
-      username, _id
-    })
-
-    setOrderData({
-      ...orderData,
-      user: selectedUser
-    });
-
-    // Close Users Opening Dynamic Section
-    setSectionSelection('none')
-    clearUserQuery()
-
-  }  // End of Select User
+  
 
 
   // Calculate unit total Price and Order Total Price
@@ -215,7 +180,6 @@ const NewOrder = ({ match, history }) => {
     newList.map(item => {
       if (item.unitServiceStatus !== 'Ready')
         orderStatus = 'In Progress';
-
     });
     setOrderData({
       ...orderData,
@@ -241,7 +205,6 @@ const NewOrder = ({ match, history }) => {
 
   // Set Service Status
   const setServiceStatus = ({ service, selectValue }) => {
-
     console.log(selectValue);
     const newList = orderData.serviceList;
     const indexNum = newList.findIndex(item => item.service === service);
@@ -250,16 +213,20 @@ const NewOrder = ({ match, history }) => {
       ...orderData,
       serviceList: newList
     });
-
     setOrderStatus()
   }
 
 
   const handleSubmit = (e) => {
-
+    if ( !userObject._id ) {
+      return setAlert('Please Select Customer', "danger");   
+    }
     if (!orderId) {
       // If New Order
-      submitNewOrder({ formData: orderData });
+      submitNewOrder({ 
+        formData: orderData,
+        cb: _cbSetOrderId
+      });
     } else {
       updateOrder({ formData: orderData, orderId });
     }
@@ -275,100 +242,7 @@ const NewOrder = ({ match, history }) => {
   return (
     <Fragment>
       <div className='row'></div>
-      <div className='row'>
-        {/* Dynamic Services Section */}
-        {sectionSelection === "services" && (
-          <div className='col s12 m4'>
-            <div id='new-order-services'>
-              {/* Search Bar for Orders */}
-              <form autoComplete='off'>
-                <div className='input-field'>
-                  <i className='material-icons prefix'>search</i>
-                  <input
-                    id='search'
-                    type='search'
-                    onChange={e => loadQueriedServices(e.target.value)}
-                    name='search'
-                    placeholder='Search for Services'
-                  />
-                  <label className='label-icon' htmlFor='search'></label>
-                  <i className='material-icons'>close</i>
-                </div>
-              </form>
-              {/* End of Search Bar for Orders */}
-              {/* Service List from DB */}
-              <table>
-                <thead>
-                  <tr>
-                    <th>Service Name</th>
-                    <th className='right-align'>Price</th>
-                    <th className='center-align'>Options</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {serviceQuery &&
-                    serviceQuery.map(service => (
-                      <OrderServiceItem
-                        key={service._id}
-                        service={service}
-                        addToOrder={addToOrder}
-                      />
-                    ))}
-                </tbody>
-              </table>
-              {/* End of Service List from DB */}
-            </div>
-          </div>
-        )}
-        {/* End of Dynamic Services Section */}
-
-        {/* Dynamic Users Section */}
-        {sectionSelection === "users" ? (
-          <div className='col s12 m4'>
-            <div id='new-order-users'>
-              {/* Search Bar for Users */}
-              <form autoComplete='off'>
-                <div className='input-field'>
-                  <i className='material-icons prefix'>search</i>
-                  <input
-                    id='search'
-                    type='search'
-                    onChange={e => loadQueriedUsers(e.target.value)}
-                    name='search'
-                    placeholder='Search for Customers'
-                  />
-                  <label className='label-icon' htmlFor='search'></label>
-                  <i className='material-icons'>close</i>
-                </div>
-              </form>
-              {/* End of Search Bar for Users */}
-              {/* User List from DB */}
-              <table>
-                <thead>
-                  <tr>
-                    <th>username</th>
-                    <th>Name</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {userQuery &&
-                    userQuery.map(user => (
-                      <OrderUserItem
-                        key={user._id}
-                        userInfo={user}
-                        selectUser={selectUser}
-                      />
-                    ))}
-                </tbody>
-              </table>
-              {/* End of User List from DB */}
-            </div>
-          </div>
-        ) : (
-            <Fragment></Fragment>
-          )}
-        {/* End of Dynamic Users Section */}
-
+      <div className='row'>  
         {/* Order Form */}
         <div
           className={sectionSelection === "none" ? "col m9 s12" : "col m8 s12"}
@@ -381,36 +255,73 @@ const NewOrder = ({ match, history }) => {
               >
                 <span 
                   style={{ marginLeft: "1rem" }} 
-                  className='col s12 m6'
+                  // className='col s12 m6 flexrow justify-content-center'
+                  className='input-field'
                   >
-                    User: {orderData.user.username ? orderData.user.username : ""}
-                  {/* User Select or Update Button */}{" "}
-                  <a
-                    className='btn-small  waves-effect waves-light grey darken-1 ml-3'                    
-                    // type='button'
-                    onClick={e => {
-                      if (sectionSelection !== "users") {
-                        setSectionSelection("users");
-                      } else {
-                        setSectionSelection("none");
-                      }
+                    User: 
+                    {/* {orderData.user.username ? orderData.user.username : ""} */}
+                  {" "}
+                  <i className='material-icons prefix'>search</i>
+                  <input
+                    type='search'
+                    label='User'
+                    value={orderData.username}
+                    placeholder='Search for Users'
+                    style={{
+                      display:'inline-block',
+                      width: 240
                     }}
-                  >
-                    <span
-                      style={{
-                        display:'flex',
-                        alignItems:'center'
-                      }}
-                    >
-                      {
-                        orderData.user.username === '' ? 'Select User' : 'Edit User'
-                      }
-                      <i class='material-icons small ml-1'>edit</i>
-                    </span>
-                  </a>
-                  {/* End of User Select or Update Button */}
+                    onChange= { e => {
+                      setOrderData({
+                        ...orderData,
+                        user: '',
+                        username: e.target.value
+                      });
+                      setUserObject({});
+                      loadQueriedUsers( 
+                        e.target.value,
+                        _cbSetQueriedUsersList
+                      );                      
+                    }}
+                  />
                 </span>
               </div>
+              {
+                queriedUsersList.length > 0 && (
+                  <table>
+                    <tr>
+                      <th>Username</th>
+                      <th>Name</th>
+                      <th>Middle</th>
+                      <th>Surname</th>
+                      <th>Balance</th>
+                    </tr>
+                    {
+                      queriedUsersList.map( userItem => (
+                          <tr
+                            onClick= { () => {
+                              const tempUser = userItem;
+                              setUserObject({...tempUser});
+                              setOrderData({
+                                ...orderData,
+                                user: tempUser._id,
+                                username: tempUser.username
+                              });
+                              setQueriedUsersList([]);
+                            }}
+                          >
+                            <td>{userItem.username}</td>
+                            <td>{userItem.name}</td>
+                            <td>{userItem.middleName}</td>
+                            <td>{userItem.surName}</td>
+                            <td>{userItem.balance.toFixed(2)}</td>
+                          </tr>
+                        )
+                      )
+                    }
+                  </table>
+                )
+              }
 
               <table>
                 <thead>
@@ -433,7 +344,43 @@ const NewOrder = ({ match, history }) => {
                     />
                   ))}
                 </tbody>
-              </table>
+              </table>              
+              <div className="row">
+                <input
+                  type='text'
+                  label='Search Service'
+                  placeholder='Search for Services'
+                  value={serviceSearchText}
+                  style={{
+                    display:'inline-block',
+                    width: 280
+                  }}
+                  onChange= { e => {
+                    setServiceSearchText( e.target.value );
+                    loadQueriedServices(
+                      e.target.value,
+                      _cbSetQueriedServicesList
+                    );
+                  }}
+                />
+              </div>
+              {
+                queriedServicesList.length > 0 && queriedServicesList.map(  serviceItem => (
+                    <tr 
+                      key={serviceItem._id}
+                      onClick={ () => {
+                        console.log('service Item Click -> serviceItem -> ', serviceItem);
+                        addToOrder({...serviceItem});
+                        setQueriedServicesList([]);
+                        setServiceSearchText('');
+                      }}
+                    >
+                      <td>{serviceItem.serviceName}</td>
+                      <td>{serviceItem.servicePrice}</td>
+                    </tr>
+                  )
+                )
+              }
             </div>
             <div className='row'>
               {/* <span className="col s6 m9"></span> */}
@@ -473,35 +420,7 @@ const NewOrder = ({ match, history }) => {
                 </ul>
               </div>
             </div>
-            <div className='row'>
-              <span className='col s7 m9 l10'>
-                {/* Open Services Section Button */}
-                <button
-                  style={{ marginLeft: "1rem" }}
-                  className='btn waves-effect waves-light grey darken-1'
-                  type='button'
-                  onClick={e => {
-                    if (sectionSelection !== "services") {
-                      setSectionSelection("services");
-                    } else {
-                      setSectionSelection("none");
-                    }
-                  }}
-                >
-                  {sectionSelection !== "services" ? (
-                    <Fragment>
-                      Services
-                      <i class='material-icons right '>add</i>
-                    </Fragment>
-                  ) : (
-                      <Fragment>
-                        Services
-                        <i class='material-icons right '>close</i>
-                      </Fragment>
-                    )}
-                </button>
-                {/* End of Open Services Section Button */}
-              </span>
+            <div className='row flexrow justify-content-flex-end'>
               <span className='col s5 m3 l2 '>
                 <button
                   style={{ marginRight: "2rem" }}

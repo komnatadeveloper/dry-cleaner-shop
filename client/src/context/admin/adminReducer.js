@@ -3,17 +3,11 @@ import {
   PAYMENTS_LOADED,
   SERVICES_LOADED,
   SINGLE_SERVICE_LOADED,
-  CUSTOMER_ADDED,
-  CUSTOMER_UPDATED,
-  SERVICE_STATUSES_LOADED,
-  QUERIED_USERS_LOADED,
-  ORDER_FORM_SUBMITTED,
+  SERVICE_STATUSES_LOADED,  
   // Categories
   CATEGORIES_LOADED,
   CATEGORY_ADDED,
   CATEGORY_DELETED,
-  QUERIED_CATEGORIES_LOADED,
-  CLEAR_QUERIED_CATEGORIES,
   // Products
   PRODUCTS_INFO_LOADED,
   PRODUCT_ADDED,
@@ -24,11 +18,8 @@ import {
   SERVICE_UPDATED,
   PRODUCT_DELETED,
   SERVICE_DELETED,
-  QUERIED_SERVICES_LOADED,
   CLEAR_QUERIED_SERVICES,
   // Orders
-  SINGLE_ORDER_LOADED,
-  ORDER_FORM_UPDATED,
   ORDERS_LOADED,
   // Users
   CLEAR_QUERIED_USERS,
@@ -120,11 +111,6 @@ export default (state, action) => {
         ...state,
         services: payload
       };
-    case QUERIED_SERVICES_LOADED:
-      return {
-        ...state,
-        serviceQuery: payload
-      };
     case CLEAR_QUERIED_SERVICES:
       return {
         ...state,
@@ -139,11 +125,6 @@ export default (state, action) => {
       return {
         ...state,
         serviceToBeEditted: payload
-      };
-    case QUERIED_USERS_LOADED:
-      return {
-        ...state,
-        userQuery: payload
       };
     case CLEAR_QUERIED_USERS:
       return {

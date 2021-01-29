@@ -15,10 +15,8 @@ import {
   SINGLE_SERVICE_LOADED,
   CUSTOMER_ADDED,
   CUSTOMER_UPDATED,
-  QUERIED_SERVICES_LOADED,
   CLEAR_QUERIED_SERVICES,
   SERVICE_STATUSES_LOADED,
-  QUERIED_USERS_LOADED,
   ORDER_FORM_SUBMITTED,
   PRODUCTS_INFO_LOADED,
   PRODUCT_ADDED,
@@ -28,7 +26,6 @@ import {
   CATEGORIES_LOADED,
   CATEGORY_ADDED,
   CATEGORY_DELETED,
-  CLEAR_QUERIED_CATEGORIES,
   PRODUCT_DELETED,
   SERVICE_DELETED,
   SINGLE_ORDER_LOADED,
@@ -339,14 +336,7 @@ const AdminState = props => {
         const res = await axios.get(`/api/admin/categories/query?searched=${searched}`, config);
         // console.log(res.data);
         return cb( res.data );  // queried categories list   
-        // dispatch({
-        //   type: QUERIED_CATEGORIES_LOADED,
-        //   payload: res.data
-        // });
-      } else {
-        dispatch({
-          type: CLEAR_QUERIED_CATEGORIES        
-        });  
+      } else {  
         return cb( [] );   
       } 
     } catch (err) {
@@ -558,35 +548,37 @@ const AdminState = props => {
   
 
   // Query Services
-  const loadQueriedServices = async (searched) => {
-    try {
-    
+  const loadQueriedServices = async (
+    searched,
+    cb  // callBack Function
+  ) => {
+    try {    
       const config = {
         headers: {
           "Content-Type": "application/json"
-      }
-    };
-    if(searched){
-      const res = await axios.get(`/api/admin/services/query?searched=${searched}`, config);
-      // console.log(res.data);
-      dispatch({
-        type: QUERIED_SERVICES_LOADED,
-        payload: res.data
-      });
-    } else {
-      dispatch({
-        type: CLEAR_QUERIED_SERVICES        
-      });     
-    }  
-
+        }
+      };
+      if(searched){
+        const res = await axios.get(`/api/admin/services/query?searched=${searched}`, config);
+        // console.log(res.data);
+        // dispatch({
+        //   type: QUERIED_SERVICES_LOADED,
+        //   payload: res.data
+        // });
+        cb(res.data);
+      } else {
+        // dispatch({
+        //   type: CLEAR_QUERIED_SERVICES        
+        // }); 
+        cb( [] );    
+      } 
     } catch (err) {
       const errors = err.response.data.errors;
-
       if (errors) {
         errors.forEach(error => setAlert(error.msg, "danger", 2500));
       }
     }
-  }
+  }  // End of loadQueriedServices
 
 
 
@@ -595,7 +587,10 @@ const AdminState = props => {
   //-----------------------ORDERS---------------------------------
  
   // Submit New Order
-  const submitNewOrder = async ({ formData }) => {
+  const submitNewOrder = async ({ 
+    formData,
+    cb
+  }) => {
     // console.log(formData);
     try {
       const config = {
@@ -604,17 +599,16 @@ const AdminState = props => {
         }
       };
       const res = await axios.post(`/api/admin/orders`, formData, config);
-
+      if ( cb ) {
+        cb( res.data.order._id );
+      }
       dispatch({
         type: ORDER_FORM_SUBMITTED,
         payload: res.data.order
       });
-
       setAlert(res.data.msg, "success", 3000);
-
     } catch (err) {
       const errors = err.response.data.errors;
-
       if (errors) {
         errors.forEach(error => setAlert(error.msg, "danger", 2500));
       }
@@ -652,18 +646,14 @@ const AdminState = props => {
   const loadSingleOrder = async ({orderId, next}) => {
     setAdminLoading(true)
     try {
-
       const config = {
         headers: {
           "Content-Type": "application/json"
         }
       };       
-      await loadServiceStatuses()
-
+      await loadServiceStatuses();
       const res = await axios.get(`/api/admin/orders/${orderId}`, config);
-
-      next(res.data)
-
+      next(res.data);
       dispatch({
         type: SINGLE_ORDER_LOADED,
         payload: res.data
@@ -911,7 +901,10 @@ const AdminState = props => {
   }  
 
   // Load Queried Users
-  const loadQueriedUsers = async searched => {
+  const loadQueriedUsers = async (
+    searched,
+    cb  // callBack
+  ) => {
     try {
       const config = {
         headers: {
@@ -923,19 +916,16 @@ const AdminState = props => {
           `/api/admin/customers/query?searched=${searched}`,
           config
         );
-
-        // console.log(res.data);
-
-        dispatch({
-          type: QUERIED_USERS_LOADED,
-          payload: res.data
-        });
+        cb(res.data);
       } else {
-        dispatch({
-          type: CLEAR_QUERIED_SERVICES
-        });
+        cb( [] );
       }
-    } catch (err) {}
+    } catch (err) {
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+      }
+    }
   };
 
   const clearUserQuery = () => {

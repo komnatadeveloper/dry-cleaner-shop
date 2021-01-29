@@ -19,6 +19,10 @@ const OrderSchema = new Schema({
         ref: "service",
         required: true
       },
+      serviceName: {
+        type: String,
+        // required: true
+      },
       quantity: {
         type: Number,
         required: true
@@ -28,8 +32,8 @@ const OrderSchema = new Schema({
         required: true
       },
       unitServiceStatus: {
-        type: String,
-        required: true
+        type: String, // 'In Progress' || 'Ready'
+        required: true 
       },
       unitTotalPrice: {
         type: Number,

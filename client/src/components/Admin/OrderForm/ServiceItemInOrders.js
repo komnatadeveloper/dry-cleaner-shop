@@ -26,7 +26,7 @@ const ServiceItemInOrders = ({
   }
   console.log(status1);
   const {
-    productName,
+    serviceName,
     quantity,
     unitPrice,
     // eslint-disable-next-line
@@ -41,7 +41,7 @@ const ServiceItemInOrders = ({
 
   return (
     <tr>
-      <td className='service-column-items'>{`${productName} ${serviceType}`}</td>
+      <td className='service-column-items'>{serviceName}</td>
       <td className='price-column-items'>{unitPrice.toFixed(2)}</td>
       {/* <td>{quantity}</td> */}
       <td>
