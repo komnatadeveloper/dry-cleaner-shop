@@ -56,7 +56,6 @@ const NewOrder = ({ match, history }) => {
     if (!res) {
       return history.push('/dashboard/orders')
     }
-    debugger;
     setOrderData({
       ...orderData,
       _id: res._id,

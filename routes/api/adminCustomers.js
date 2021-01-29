@@ -50,8 +50,7 @@ router.post('/add', authAdmin,  async (req, res) => {
     res.status(200).json({
       msg: "User is added successfully",
       customer: userForClient
-    });
-    
+    });    
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

@@ -19,6 +19,10 @@ const CustomerDetails =   ({match}) => {
     });
 
     const updateFormFromBackend = (res) => {
+      let balance;
+      if (res.balance === 0 ) {
+        balance = res.balance.toFixed(2)
+      } 
         setFormData({
           ...formData,
           name: res.name || "",
@@ -28,7 +32,8 @@ const CustomerDetails =   ({match}) => {
           email: res.email || "",
           tel1: res.tel1 || "",
           tel2: res.tel2 || "",
-          balance: res.balance || ""
+          // balance: res.balance || "",
+          balance: balance || ""
         });
     }
 
@@ -56,7 +61,9 @@ const CustomerDetails =   ({match}) => {
     tel2,
     address,
     balance,
-  } = formData
+  } = formData;
+
+
 
   const onChange = e => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -73,7 +80,10 @@ const CustomerDetails =   ({match}) => {
     } else {
 
       // If New Customer
-      addNewCustomer({formData})
+      addNewCustomer({
+        formData,
+        cb: updateFormFromBackend
+      });
     }
 
   }
@@ -88,27 +98,27 @@ const CustomerDetails =   ({match}) => {
         <h4 className='center'>Add Customer</h4>
       )}
       {/* If Add New User */}
-      {!match.params.id && (
-        <div className='row mp-0'>
-          <div className='col s12 m4 input-field'>
-            <input
-              placeholder='Username'
-              required={true}
-              id='username'
-              type='text'
-              className='validate'
-              name='username'
-              value={username}
-              onChange={e => onChange(e)}
-            />
-            <label className='active' htmlFor='name'>
-              Name
-            </label>
-          </div>
-        </div>
-      )}
       <div className='row'>
         <form className='col s12' onSubmit={e => onSubmit(e)}>
+          {!match.params.id && (
+            <div className='row mp-0'>
+              <div className='col s12 m4 input-field'>
+                <input
+                  placeholder='Username'
+                  required={true}
+                  id='username'
+                  type='text'
+                  className='validate'
+                  name='username'
+                  value={username}
+                  onChange={e => onChange(e)}
+                />
+                <label className='active' htmlFor='name'>
+                  User Name
+                </label>
+              </div>
+            </div>
+          )}
           <div className='row'>
             <div className='input-field col s6 m4'>
               <input

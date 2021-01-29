@@ -811,34 +811,32 @@ const AdminState = props => {
   //-----------------------CUSTOMERS------------------------------
 
   // Add a Customer
-  const addNewCustomer = async ({ formData }) => {
+  const addNewCustomer = async ({ 
+    formData,
+    cb  // callBack 
+  }) => {
     try {
       const config = {
         headers: {
           "Content-Type": "application/json"
         }
       };
-
       const res = await axios.post(
         `/api/admin/customers/add`,
         formData,
         config
       );
-
       dispatch({
         type: CUSTOMER_ADDED,
         payload: res.data.customer
       });
-
-
-
+      if ( cb ) {
+        cb(res.data.customer);
+      }
       setAlert(res.data.msg, "success", 3000);
-
       return res.data;
-
     } catch (err) {
       const errors = err.response.data.errors;
-
       if (errors) {
         errors.forEach(error => setAlert(error.msg, "danger", 2500));
       }
