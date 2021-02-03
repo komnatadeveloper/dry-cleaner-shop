@@ -6,7 +6,6 @@ import {
 } from 'react-router-dom';
 // import CustomerLoginModal from '../login/CustomerLoginModal';
 import authContext from '../../context/auth/authContext'
-import M from 'materialize-css'
 // Material UI
 // import AppBar from '@material-ui/core/AppBar';
 // import Toolbar from '@material-ui/core/Toolbar';
@@ -31,9 +30,7 @@ const Navbar = ({
   const authContext1 = useContext(authContext)
   const { loading, userType, user, isAuthenticated, logout } = authContext1
   
-  useEffect( () => {
-    M.AutoInit();    
-  }, [])  
+  
   
   let classes;
   const useStyles = makeStyles( () => ({
@@ -43,6 +40,7 @@ const Navbar = ({
     desktopDrawer: {
       width: 180,
       top: 64,
+      backgroundColor:'#888'
       // height: 'calc(100% - 64px )'
     }
   }));
@@ -214,41 +212,39 @@ const Navbar = ({
         color='secondary'
       > */}
         {/* <Toolbar> */}
-        {/* <Drawer
-          anchor='left'
-          open
-          classes={{paper: classes.desktopDrawer}}
-        >
-            <IconButton>
-              <Menu />
-            </IconButton>
-            <Link 
-              to='/' 
-              className='brand-logo ml-2'
-            >
-              Home
-            </Link> */}
-            {/* <a href='#' data-target='mobile-demo' className='sidenav-trigger'>
-              <i className='material-icons'>menu</i>
-            </a> */}
-            {/* <ul className='right hide-on-med-and-down'> */}
-              {/* {!loading &&
-                userType === "Admin" &&
-                user &&
-                isAuthenticated &&
-                adminMenu()}
-              {!loading &&
-                userType === "user" &&
-                user &&
-                isAuthenticated &&
-                userMenu()}
-              {!loading &&
-                !userType &&
-                !user &&
-                !isAuthenticated &&
-                publicMenu()} */}
-            {/* </ul> */}
-        {/* </Drawer> */}
+        {/* ---------------------------------------- */}
+        {
+          (
+            userType === "Admin" 
+            ||  userType === "user"
+          ) && isAuthenticated
+          && user && (
+            <Drawer
+              anchor='left'
+              variant='permanent'
+              classes={{paper: classes.desktopDrawer}}
+            >            
+              <ul className='right hide-on-med-and-down'>
+                {!loading &&
+                  userType === "Admin" &&
+                  user &&
+                  isAuthenticated &&
+                  adminMenu()}
+                {!loading &&
+                  userType === "user" &&
+                  user &&
+                  isAuthenticated &&
+                  userMenu()}
+                {!loading &&
+                  !userType &&
+                  !user &&
+                  !isAuthenticated &&
+                  publicMenu()}
+              </ul>
+            </Drawer>
+          )
+        }
+        {/* ---------------------------------------- */}
         {/* </Toolbar> */}
         {/* <nav>
           <div className='nav-wrapper'>

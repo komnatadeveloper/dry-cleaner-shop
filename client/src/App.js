@@ -10,7 +10,7 @@ import ContentBody from './components/layout/ContentBody';
 import Navbar from "./components/layout/Navbar";
 import GlobalStyles from './components/layout/GlobalStyles';
 import Alert from './components/layout/Alert';
-
+import {makeStyles} from '@material-ui/core/styles';
 
 import About from './components/public/About';
 import Home from "./components/public/home/Home";
@@ -61,7 +61,7 @@ import SingleOrder from './components/user/singleOrder/SingleOrder'
 
 
 
-const  App =  () => {
+const  App =  () => { 
 
 
   useEffect(  () => {
@@ -78,19 +78,34 @@ const  App =  () => {
     
   }, []);
 
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      display: 'flex'
+    },
+    content: {
+      flexGrow: 1,
+      backgroundColor: theme.palette.background.default,
+      padding: theme.spacing(3)
+    }
+  }));
+  const classes = useStyles();
+
   return (
-    <div className='App'>
+    <div 
+      className='App' 
+      // style={{display: 'flex'}}
+    >
       <AlertState>
         <AuthState>
           <PublicState>
             <UserState>
               <AdminState>
                 <BrowserRouter>
+                  <ContentBody>
                   <Navbar />
                   <Alert />
                   <AuthLoader />
                   {/* <div style={{ minHeight: "90vh" }} className='mp-0'> */}
-                  <ContentBody>
                     <GlobalStyles />
                     <Switch>
                       <Route exact path='/' component={Home} />
@@ -196,8 +211,8 @@ const  App =  () => {
                       <Route exact path='/user/:userId' component={UserPage} />
                     </Switch>
                   {/* </div> */}
-                  </ContentBody>
                   <Footer />
+                  </ContentBody>
                 </BrowserRouter>
               </AdminState>
             </UserState>

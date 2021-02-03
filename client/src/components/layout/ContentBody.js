@@ -1,5 +1,6 @@
 import React, {useContext} from 'react';
 import authContext from '../../context/auth/authContext';
+import {makeStyles} from '@material-ui/core/styles';
 
 
 const ContentBody = ({children}) =>  {
@@ -22,6 +23,17 @@ const ContentBody = ({children}) =>  {
     minHeight: '90vh',
     overflow: 'scroll'
   }
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      display: 'flex'
+    },
+    content: {
+      flexGrow: 1,
+      backgroundColor: theme.palette.background.default,
+      paddingLeft: 180
+    }
+  }));
+  const classes = useStyles();
   return (    
     (
       userType === "Admin" 
@@ -30,6 +42,7 @@ const ContentBody = ({children}) =>  {
     && user
       ?   (
         <div
+          className={classes.content}
           // style={desktopPrivate}
         >
           {children}

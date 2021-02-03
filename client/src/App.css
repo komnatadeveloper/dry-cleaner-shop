@@ -124,6 +124,9 @@
 .text-bold {
   font-weight: bold;
 }
+.text-white {
+  color: #fff;
+}
 
 
 /* client/src/components/Admin/OrderForm/ServiceItemInOrders.js */
@@ -406,3 +409,9 @@ div#admin-clothes-tab td a.btn-small {
   padding-right: 1rem;
 }
 /* End Of  Shopping Cart */
+
+
+
+.page-footer {
+  background-color: #424242 !important;
+}
