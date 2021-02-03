@@ -121,6 +121,9 @@
 .text-center {
   text-align: center;
 }
+.text-bold {
+  font-weight: bold;
+}
 
 
 /* client/src/components/Admin/OrderForm/ServiceItemInOrders.js */

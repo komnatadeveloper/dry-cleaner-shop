@@ -1,10 +1,7 @@
-import React, {useContext, useEffect, Fragment, useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import React, {useContext, useEffect, } from 'react'
+import {  NavLink } from 'react-router-dom'
 import OrdersItem from './OrdersItem'
-
-import Spinner from '../../layout/Spinner'
 import adminContext from '../../../context/admin/adminContext'
-import M from 'materialize-css'
 import {
   CircularProgress,
   Container,
@@ -24,13 +21,7 @@ const OrdersTab = () => {
   const adminContext1 = useContext(adminContext)
   const { loadOrders, orders, loading, loadPayments, payments} = adminContext1
 
-  const [selectChoice, setSelectChoice] = useState("orders"); 
-
-
-
   useEffect(() => {
-    // eslint-disable-next-line
-    M.AutoInit()
     // eslint-disable-next-line
     loadOrders()
     // eslint-disable-next-line
