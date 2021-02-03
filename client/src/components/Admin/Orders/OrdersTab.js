@@ -1,11 +1,24 @@
 import React, {useContext, useEffect, Fragment, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 import OrdersItem from './OrdersItem'
-import PaymentItem from './PaymentItem'
 
 import Spinner from '../../layout/Spinner'
 import adminContext from '../../../context/admin/adminContext'
 import M from 'materialize-css'
+import {
+  CircularProgress,
+  Container,
+  TextField,
+  Button,
+  TableContainer,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Paper
+} from '@material-ui/core';
+import {  withStyles, makeStyles } from '@material-ui/core/styles';
 
 const OrdersTab = () => {
   const adminContext1 = useContext(adminContext)
@@ -23,120 +36,108 @@ const OrdersTab = () => {
     // eslint-disable-next-line
     loadPayments()
     // eslint-disable-next-line
-  }, [])
+  }, []);
+
+  const StyledTableCell = withStyles( theme => ({
+    head: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white
+    },
+    body: {
+      fontSize: 14
+    }
+  }))(TableCell);
+
+  const useStyles = makeStyles({
+    table: {
+      minWidth: 700
+    }
+  });
+  const classes = useStyles();
+
+  const StyledTableRow = withStyles( (theme) => ({
+    root: {
+      '&:nth-of-type(odd)':{ 
+        backgroundColor:  theme.palette.action.hover,        
+      },
+    }
+  }))(TableRow);
   
   return (
-    <Fragment>
-      {loading ? (
-        <Spinner></Spinner>
-      ) : (
-        <div id='admin-clothes-tab'>
-          <div 
-            style={{
-              display:'flex',
-              flexDirection:'row',
-              alignItems:'center'
-            }}
-          >
-            <div
-              style={{ maxWidth: "110px", display: "inline-block" }}
-              className='input-field ml-1'
-            >
-              <select
-                onChange={e => {
-                  setSelectChoice(e.target.value);
-                  console.log("HELLO FROM SELECT");
-                  console.log(selectChoice);
-                  console.log(e.target.value);
+    <Container
+      maxWidth='lg'
+      style={{
+        backgroundColor:'#ccc',
+        // paddingTop: 64,
+        minHeight:'90vh'
+      }}    
+    >
+      <div 
+        className='flexcol justify-content-space-between'
+        style={{
+          minHeight:'90vh'
+        }}
+      >
+        {
+          loading 
+          ? (
+              <div 
+                className='flexrow justify-content-center'
+                style={{
+                  minHeight: 180,
+                  paddingTop: 120
                 }}
-                className='browser-default'
               >
-                <option value='orders' selected>
-                  Orders
-                </option>
-                <option value='payments'>Payments</option>
-              </select>
-              {/* <label>Materialize Select</label> */}
+                <CircularProgress />
+              </div>
+            )
+          : (
+            <div>
+              <h2 className='text-center mt-2 mb-1'>Orders</h2>
+              <TableContainer component={Paper}>
+                <Table className={classes.table}>
+                    <TableHead>
+                    <TableRow>
+                      <StyledTableCell>
+                        Order Date
+                      </StyledTableCell>
+                      <StyledTableCell>Username</StyledTableCell>
+                      <StyledTableCell align='right'>Price</StyledTableCell>
+                      <StyledTableCell align='center'>Status</StyledTableCell>
+                      <StyledTableCell>Actions</StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+
+                <TableBody>
+                  {orders ? (
+                    orders.length > 0 &&
+                    orders.map(order => (
+                      <OrdersItem key={order._id} order={order} />
+                    ))
+                  ) : (
+                    <></>
+                  )}
+                </TableBody>
+                </Table>
+              </TableContainer>
             </div>
-            <Link
-              to='/dashboard/orders/add'
-              className='waves-effect waves-light btn blue lighten-2  ml-1'
-              style={{
-                display:'flex',
-                flexDirection:'row',
-                alignItems:'center'
-              }}
-            >
-              <p>Order</p>
-              <i className='material-icons small'>add</i>
-            </Link>
-            <Link
-              to='/dashboard/payments/add-payment'
-              className='waves-effect waves-light btn blue lighten-2  ml-1'
-              style={{
-                display:'flex',
-                flexDirection:'row',
-                alignItems:'center'
-              }}
-            >
-              <p>Payment</p>
-              <i className='material-icons small'>payment</i>
-            </Link>
-          </div>
-          {/* If Orders Are Selected */}
-          {selectChoice === "orders" && (
-            <table>
-              <thead>
-                <tr>
-                  <th>
-                    Order Date
-                  </th>
-                  <th>Username</th>
-                  <th className='right-align'>Price</th>
-                  <th className='center-align'>Status</th>
-                  <th>Actions</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {orders ? (
-                  orders.length > 0 &&
-                  orders.map(order => (
-                    <OrdersItem key={order._id} order={order} />
-                  ))
-                ) : (
-                  <></>
-                )}
-              </tbody>
-            </table>
-          )}
-          {/* If Payments Are Selected */}
-          {selectChoice === "payments" && (
-            <table>
-              <thead>
-                <tr>
-                  <th>Payment Date</th>
-                  <th>Username</th>
-                  <th className='right-align'>Quantity</th>
-                  <th className='center-align'>Actions</th>
-                </tr>
-              </thead>
-
-              <tbody>
-                {payments ? (
-                  payments.length > 0 &&
-                  payments.map(payment => (
-                    <PaymentItem key={payment._id} payment={payment} />
-                  ))
-                ) : (
-                  <></>
-                )}
-              </tbody>
-            </table>
-          )}
+          )
+        }
+        <div className='mb-2'>
+          <Button
+            component={NavLink}
+            to='/dashboard/orders/add'
+            color='secondary'
+            variant='contained'
+          >
+            Add Orders
+          </Button>
         </div>
-      )}
-    </Fragment>
+      </div>
+      
+      
+    </Container>
+
   );
 }
 

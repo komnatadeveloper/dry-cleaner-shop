@@ -42,7 +42,7 @@ router.get("/payments/:activityId", authAdmin, async (req, res) => {
     // Check if activity exists
     const userActivity = await UserActivity.findById(
       req.params.activityId
-    ).populate("customerId", "username name surName middleName", User);
+    ).populate("customerId", "username name surName middleName email balance", User);
 
     res.status(200).json(userActivity);
   } catch (err) {

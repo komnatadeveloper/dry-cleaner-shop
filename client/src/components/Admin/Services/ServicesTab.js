@@ -1,10 +1,21 @@
 import React, { useContext, useEffect  } from "react";
-import { Link} from 'react-router-dom'
+import {  NavLink} from 'react-router-dom'
 
 import adminContext from "../../../context/admin/adminContext";
 import ServicesTable from "./ServicesTable";
-import DeleteConfirmationModal from './DeleteConfirmationModal'
-import Spinner from '../../layout/Spinner'
+import {
+  Container,
+  CircularProgress,
+  Button,
+  TableContainer,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Paper
+} from '@material-ui/core';
+import {  withStyles, makeStyles } from '@material-ui/core/styles';
 
 
 const ServicesTab = () => {
@@ -30,25 +41,53 @@ const ServicesTab = () => {
   // };
 
 
-  if(loading) return <Spinner></Spinner>
   return (
-    <div id='admin-customers-tab'>
-      <div className='flexrow justify-content-space-between mt-1'>
-        <span>
-          <Link
+    <Container
+      maxWidth='lg'
+      style={{
+        backgroundColor:'#ccc',
+        // paddingTop: 64,
+        minHeight:'90vh'
+      }}
+    >
+      <div 
+        className='flexcol justify-content-space-between'
+        style={{
+          minHeight:'90vh'
+        }}
+      >
+        <div>
+          <h2 className='text-center mt-1 mb-1'>Services</h2>
+          {
+            loading 
+              ? (  
+                  <div 
+                    className='flexrow justify-content-center'
+                    style={{
+                      minHeight: 180,
+                      paddingTop: 120
+                    }}
+                  >
+                    <CircularProgress />
+                  </div>
+                )
+              : (
+                  <ServicesTable services={services} />
+                )
+          }
+        </div>
+        <div className='mb-2'>
+          <Button
+            component={NavLink}
+            color={  'secondary'  }
+            variant='contained'
             to='/dashboard/services/add'
-            className='waves-effect waves-teal blue btn-flat ml-2'
-            // href='#addCustomerModal'
-            // onClick={() => console.log("SERVICES TAB BUTTON")}
           >
-            ADD SERVICE
-            <i className='material-icons right'>add</i>
-          </Link>
-        </span>
-      </div>
-      {/* <DeleteConfirmationModal /> */}
-      <ServicesTable services={services} />
-    </div>
+            Add Service
+          </Button>
+        </div>
+      </div> 
+    </Container>
   );
 };
 

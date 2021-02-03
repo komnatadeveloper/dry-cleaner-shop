@@ -1,6 +1,6 @@
-import React, {useEffect} from "react";
-import{ Link, NavLink } from 'react-router-dom'
-import Moment from "react-moment"
+import React, { useEffect } from "react";
+import { Link, NavLink } from "react-router-dom";
+import Moment from "react-moment";
 import {
   Container,
   TextField,
@@ -17,20 +17,10 @@ import {
 import {  withStyles, makeStyles } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 
+const PaymentItem = ({ payment }) => {
+  useEffect(() => {}, [payment]);
 
-const OrdersItem = ({ order }) => {
-
-  useEffect(() => {
-
-  }, [order])
-
-  const {
-    _id,
-    user,
-    date,
-    orderStatus,
-    orderTotalPrice
-  } = order;
+  const { _id, customerId, date, amount } = payment;
 
   const StyledTableRow = withStyles( (theme) => ({
     root: {
@@ -50,30 +40,25 @@ const OrdersItem = ({ order }) => {
     }
   }))(TableCell);
 
-
-
   return (
     <StyledTableRow>
-      <StyledTableCell size='small'>
+      <StyledTableCell>
         <Moment format='YYYY-MM-DD HH:mm'>{date}</Moment>
       </StyledTableCell>
-      <StyledTableCell size='small'>{user.username}</StyledTableCell>
+      <StyledTableCell>{customerId.username}</StyledTableCell>
       {/* <td>{orderStatus}</td> */}
-      <StyledTableCell  align='right' size='small'>{orderTotalPrice.toFixed(2)}</StyledTableCell>
-      <StyledTableCell  align='center' size='small'>
-        <span className='badge red center-align'>{orderStatus}</span>
-      </StyledTableCell>
-      <StyledTableCell size='small'>
+      <StyledTableCell align='right'>{((-1) * amount).toFixed(2)}</StyledTableCell>
+      <StyledTableCell align='center'> 
         {/* <a class="waves-effect waves-light grey darken-1 btn-small mr-1">Edit</a> */}
         {/* <Link
-          to={`/dashboard/orders/edit/${_id}`}
+          to={`/dashboard/payments/edit/${_id}`}
           className='waves-effect waves-light btn-small grey darken-1 '
         >
           <i className='material-icons small'>edit</i>
         </Link> */}
         <IconButton
           component={NavLink}
-          to={`/dashboard/orders/edit/${_id}`}
+          to={`/dashboard/payments/edit/${_id}`}
         >
           <EditIcon />
         </IconButton>
@@ -82,4 +67,4 @@ const OrdersItem = ({ order }) => {
   );
 };
 
-export default OrdersItem;
+export default PaymentItem;

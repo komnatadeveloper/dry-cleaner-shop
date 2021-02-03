@@ -1,12 +1,17 @@
 import React, {useEffect } from 'react';
-import 'materialize-css/dist/css/materialize.min.css';
-import M from 'materialize-css/dist/js/materialize.min.js';
+// import 'materialize-css/dist/css/materialize.min.css';
+// import M from 'materialize-css/dist/js/materialize.min.js';
 
 import './Utilities.css';
 import './App.css';
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
+// Layout
+import ContentBody from './components/layout/ContentBody';
 import Navbar from "./components/layout/Navbar";
+import GlobalStyles from './components/layout/GlobalStyles';
 import Alert from './components/layout/Alert';
+
+
 import About from './components/public/About';
 import Home from "./components/public/home/Home";
 import UserPage from "./components/public/UserPage";
@@ -31,11 +36,11 @@ import UserRoute from './components/routing/UserRoute'
 import CustomersTab from './components/Admin/Customers/CustomersTab'
 import OrdersTab from "./components/Admin/Orders/OrdersTab";
 import ServicesTab from './components/Admin/Services/ServicesTab'
-import ProductsTab from './components/Admin/Products/ProductsTab'
 import CategoriesPage from './components/Admin/Categories/CategoriesPage';
 import AddCategory from './components/Admin/Categories/AddCategory';
 import CustomerDetails from './components/Admin/Customers/CustomerDetails'
 import NewOrder from './components/Admin/OrderForm/NewOrder';
+import  PaymentsPage  from './components/Admin/payment/PaymentsPage';
 import AddPayment  from './components/Admin/payment/AddPayment'
 import AddService from './components/Admin/Services/AddService'
 import Cart from './components/public/cart/Cart';
@@ -44,7 +49,8 @@ import Footer from './components/layout/Footer'
 // User
 import UserMain from './components/user/main/UserMain'
 import SingleOrder from './components/user/singleOrder/SingleOrder'
-  
+ 
+
 
 // if (localStorage.auth) {
 //   setAuthToken(localStorage.auth);
@@ -60,7 +66,7 @@ const  App =  () => {
 
   useEffect(  () => {
     // Initialize Materialize
-    M.AutoInit();
+    // M.AutoInit();
 
     if (localStorage.auth) {
       setAuthToken(localStorage.auth);
@@ -83,7 +89,9 @@ const  App =  () => {
                   <Navbar />
                   <Alert />
                   <AuthLoader />
-                  <div style={{ minHeight: "90vh" }} className='mp-0'>
+                  {/* <div style={{ minHeight: "90vh" }} className='mp-0'> */}
+                  <ContentBody>
+                    <GlobalStyles />
                     <Switch>
                       <Route exact path='/' component={Home} />
                       <Route exact path='/about' component={About} />
@@ -125,13 +133,13 @@ const  App =  () => {
                       />
                       <AdminRoute
                         exact
-                        path='/dashboard/products'
-                        component={ProductsTab}
+                        path={`/dashboard/orders/add`}
+                        component={NewOrder}
                       />
                       <AdminRoute
                         exact
-                        path={`/dashboard/orders/add`}
-                        component={NewOrder}
+                        path='/dashboard/payments'
+                        component={PaymentsPage}
                       />
                       <AdminRoute
                         exact
@@ -187,7 +195,8 @@ const  App =  () => {
                       <Route exact path='/cart' component={Cart} />
                       <Route exact path='/user/:userId' component={UserPage} />
                     </Switch>
-                  </div>
+                  {/* </div> */}
+                  </ContentBody>
                   <Footer />
                 </BrowserRouter>
               </AdminState>

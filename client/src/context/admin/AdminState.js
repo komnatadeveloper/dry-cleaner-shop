@@ -102,7 +102,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -128,7 +128,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -158,7 +158,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -193,7 +193,7 @@ const AdminState = props => {
 
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -264,7 +264,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };  // End of addCategory
@@ -292,7 +292,7 @@ const AdminState = props => {
         cb();
       }
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };  // End of Delete a Category
@@ -318,7 +318,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }  // End of loadCategories
@@ -344,7 +344,7 @@ const AdminState = props => {
     } catch (err) {
       const errors = err.response.data.errors;
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
       return cb ( [] );
     }
@@ -391,7 +391,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -434,7 +434,7 @@ const AdminState = props => {
     } catch (err) {
       const errors = err.response.data.errors;
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };  // End of Update a Service
@@ -442,7 +442,10 @@ const AdminState = props => {
   
 
   // Delete a Service
-  const deleteService = async (_id) => {
+  const deleteService = async (
+    _id,
+    cb  // callback
+  ) => {
     try {
       const config = {
         headers: {
@@ -450,19 +453,18 @@ const AdminState = props => {
         }
       };
       const res = await axios.delete(`/api/admin/services/${_id}`, config);
-
+      if(cb) { cb(); }
       dispatch({
         type: SERVICE_DELETED,
         payload: res.data.service
       });
-      setAlert(res.data.msg, "success", 3000);
-
+      setAlert(res.data.msg, "success", 3000);      
     } catch (err) {
       const errors = err.response.data.errors;
-
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
+      if(cb) { cb(); }
     }
   };
 
@@ -487,7 +489,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -512,7 +514,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -541,7 +543,7 @@ const AdminState = props => {
       next(null)
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
     setAdminLoading(false)
@@ -577,7 +579,7 @@ const AdminState = props => {
     } catch (err) {
       const errors = err.response.data.errors;
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }  // End of loadQueriedServices
@@ -612,7 +614,7 @@ const AdminState = props => {
     } catch (err) {
       const errors = err.response.data.errors;
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -638,7 +640,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -672,7 +674,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
     setAdminLoading(false)
@@ -705,7 +707,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -734,7 +736,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
     setAdminLoading(false);
@@ -767,7 +769,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
     setAdminLoading(false);
@@ -801,7 +803,7 @@ const AdminState = props => {
       next(null)
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -840,7 +842,7 @@ const AdminState = props => {
     } catch (err) {
       const errors = err.response.data.errors;
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -853,25 +855,19 @@ const AdminState = props => {
           "Content-Type": "application/json"
         }
       };      
-      const res = await axios.put(`/api/admin/customers/info/${id}`, formData, config);
-
-
-      
+      const res = await axios.put(`/api/admin/customers/info/${id}`, formData, config);      
       dispatch({
         type: CUSTOMER_UPDATED,
         payload: res.data.customer
       });
-      
-
       setAlert(res.data.msg, "success", 3000);
-
       return res.data      
 
     } catch (err ) {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -900,7 +896,7 @@ const AdminState = props => {
     } catch (err ) {
       const errors = err.response.data.errors;
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }  // End of Delete Customer
@@ -954,7 +950,7 @@ const AdminState = props => {
     } catch (err) {
       const errors = err.response.data.errors;
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -986,7 +982,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }

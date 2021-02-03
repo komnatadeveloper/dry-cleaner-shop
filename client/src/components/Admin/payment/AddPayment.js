@@ -1,7 +1,21 @@
 import React, {useContext, useState, Fragment, useEffect} from 'react'
 import adminContext from '../../../context/admin/adminContext'
 import PaymentUserItem from './PaymentUserItem'
-
+import {
+  Container,
+  TextField,
+  InputAdornment,
+  Button,
+  TableContainer,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Paper,
+  Grid
+} from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 
 const AddPayment = ({match, history}) => {
   const activityId = match.params.activityId || null
@@ -24,6 +38,7 @@ const AddPayment = ({match, history}) => {
   };
 
   const [formData, setFormData] = useState({ ...initialState });
+  const [selectedUserInfo, setSelectedUserInfo] = useState({});
   const [search, setSearched] = useState("");
 
 
@@ -33,7 +48,12 @@ const AddPayment = ({match, history}) => {
     if(res === null) {
       return history.push('/dashboard/orders')
     }
-    const { customerId, amount, date  } = res
+    const { 
+      customerId, // _id , username, email, name, middleName, surName, balance
+      amount, 
+      date  
+    } = res;
+    setSelectedUserInfo({...customerId});
     setFormData({
       _id: activityId,
       customerId: customerId._id,
@@ -41,7 +61,7 @@ const AddPayment = ({match, history}) => {
       fullName: [customerId.name, customerId.middleName, customerId.surName]
         .join(" ")
         .trim(),
-      payment: amount
+      payment: ((parseFloat(amount.toString()))*(-1)).toFixed(2)
     });
   }
 
@@ -72,9 +92,11 @@ const AddPayment = ({match, history}) => {
     fullName : [name, middleName, surName].join(" ").trim(),
     balance,
     });
+    setSelectedUserInfo({...userInfo});
 
-    clearUserQuery()
-    setSearched("")
+    // clearUserQuery()
+    setQueriedUsersList([]);
+    setSearched("");
   }
 
   const onChange = e => {
@@ -96,10 +118,18 @@ const AddPayment = ({match, history}) => {
   };
 
 
-
+  const [ queriedUsersList, setQueriedUsersList ] = useState( [] );
+  const _cbSetQueriedUsersList = ( arr ) => {
+    setQueriedUsersList(arr);
+  }
   const handleSearchChange = e => {
-    loadQueriedUsers(e.target.value);
-    setSearched(e.target.value)
+    setFormData({...initialState});
+    setSelectedUserInfo({});
+    setSearched(e.target.value);
+    loadQueriedUsers(
+      e.target.value,
+      _cbSetQueriedUsersList
+    );
   }
 
   const submitPayment = (e) => {
@@ -122,7 +152,7 @@ const AddPayment = ({match, history}) => {
           history.push('/dashboard/orders')
         }
 
-      } })
+      }})
     }
 
     setFormData({...initialState})
@@ -135,126 +165,212 @@ const AddPayment = ({match, history}) => {
   
 
   return (
-    <div>
-      {/* {sectionSelection === "users" ? ( */}
-      <div className='col s12'>
-        <h1 className='center-align' style={{ fontSize: "2rem" }}>
-          Add Payment For Customers
-        </h1>
+    <Container
+      maxWidth='lg'
+      style={{
+        backgroundColor:'#ccc',
+        paddingTop: 64,
+        minHeight:'90vh'
+      }}      
+    >
+      <div 
+        className='flexcol justify-content-space-between'
+        style={{
+          minHeight:'90vh'
+        }}
+      >
         <div>
+          <h2 className='text-center mt-3 mb-1'>
+           {activityId ? 'Update Payment for Customers' :  'Add Payment For Customers'}
+          </h2>
           {/* Search Bar for Users */}
-          <form autoComplete='off'>
-            <div className='input-field'>
-              <i className='material-icons prefix'>search</i>
-              <input
-                id='search'
-                type='search'
-                value={search}
-                onChange={e => handleSearchChange(e)}
-                name='search'
-                placeholder='Search for Customers'
-              />
-              <label className='label-icon' htmlFor='search'></label>
-              <i className='material-icons'>close</i>
-            </div>
+          <form autoComplete='off'>            
+            <TextField
+              required={true}
+              fullWidth={true}
+              placeholder='Search for Customers'
+              id='search'
+              name='search'
+              value={search}
+              size='medium'
+              type='search'
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position='start'>
+                    <SearchIcon />
+                  </InputAdornment>
+                )
+              }}
+              autoComplete={false}
+              onChange={e => handleSearchChange(e)}
+              label='Customer'
+            />
           </form>
           {/* End of Search Bar for Users */}
-          {/* User List from DB */}
-
-          {userQuery && userQuery.length > 0 && (
+          {/* User List from API */}
+          {queriedUsersList && queriedUsersList.length > 0 && (
             <Fragment>
               <span className='flexrow justify-content-flex-start'>
                 <div className='row mp-0'></div>
               </span>
-
-              <table>
-                <thead>
-                  <tr>
-                    <th>username</th>
-                    <th>Name</th>
-                    <th>Balance</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {userQuery &&
-                    userQuery.map(user => (
-                      <PaymentUserItem
-                        key={user._id}
-                        userInfo={user}
-                        selectUser={selectUser}
-                      />
-                    ))}
-                </tbody>
-              </table>
+              <TableContainer>
+                <Table>
+                  <TableHead>
+                    <TableRow>
+                      <TableCell>Username</TableCell>
+                      <TableCell>{'Name & Surname'}</TableCell>
+                      <TableCell>Balance</TableCell>
+                    </TableRow>
+                  </TableHead>
+                  <TableBody>
+                    {queriedUsersList &&
+                      queriedUsersList.map(userItem => (
+                        <PaymentUserItem
+                          key={userItem._id}
+                          userInfo={userItem}
+                          selectUser={selectUser}
+                        />
+                      ))}
+                  </TableBody>
+                </Table>
+              </TableContainer>
             </Fragment>
           )}
-          {/* End of User List from DB */}
+          {/* End of User List from API */}
 
-          {/* Payment Info */}
-
-          {username.length > 0 && (
+          {/* User And Balance Info for Selected User */}
+          {selectedUserInfo.username && (
             <Fragment>
-              <table style={{ maxWidth: "500px" }}>
-                <tbody>
-                  <tr>
-                    <td style={{ maxWidth: "150px" }}>Username:</td>
-                    <td>{username}</td>
-                  </tr>
-                  <tr>
-                    <td style={{ maxWidth: "150px" }}>Name:</td>
-                    <td>{fullName}</td>
-                  </tr>
-                  <tr>
-                    <td style={{ maxWidth: "150px" }}>Balance:</td>
-                    <td>{balance}</td>
-                  </tr>
-                </tbody>
-              </table>
-
-              <div className='row mp-0'>
-                <span className='ml-2'>Username: {username}</span>
-              </div>
-              <div className='row mp-0'>
-                <span className='ml-2'>Name: {fullName}</span>
-              </div>
-              <div className='row mp-0'>
-                <span className='ml-2'>Balance: {balance}</span>
-              </div>
-              <form>
-                <div className='row mp-0'>
-                  <div className='input-field col s6'>
-                    <input
+              <h3 className='text-center mt-4'>User Information</h3>
+              <Grid container spacing={3}>
+                <Grid
+                  xs={12}
+                >
+                  <TextField
+                    placeholder='Username'
+                    disabled={true}
+                    fullWidth={true}
+                    id='username'
+                    size='medium'
+                    type='text'
+                    autoComplete={false}
+                    value={selectedUserInfo.username}
+                    label='User Name'
+                  />
+                </Grid>
+                <Grid  xs={12} md={4}>
+                  <div className='mx-1 mt-1'>
+                    <TextField
+                      placeholder='Enter name'
+                      disabled={true}
+                      fullWidth={true}
+                      type='text'
+                      autoComplete={false}
+                      value={selectedUserInfo.name}
                       onChange={e => onChange(e)}
-                      onBlur={() => handlePaymentChange()}
-                      placeholder='Placeholder'
+                      label='Name'
+                    />
+                  </div>
+                </Grid>
+                <Grid  xs={12} md={4}>
+                  <div className='mx-1 mt-1'>
+                    <TextField
+                      placeholder='Middlename'
+                      fullWidth={true}
+                      disabled={true}
+                      type='text'
+                      autoComplete={false}
+                      value={selectedUserInfo.middleName ? selectedUserInfo.middleName : ''}
+                      label='Middlename'
+                    />
+                  </div>
+                </Grid>
+                <Grid  xs={12} md={4}>
+                  <div className='mx-1 mt-1'>
+                    <TextField
+                      fullWidth={true}
+                      disabled={true}
+                      type='text'
+                      autoComplete={false}
+                      value={selectedUserInfo.surName ? selectedUserInfo.surName : ''}
+                      label='Surname'
+                    />
+                  </div>
+                </Grid>
+                <Grid
+                  xs={12}
+                >
+                  <div className='mt-1'>
+                    <TextField
+                      disabled={true}
+                      fullWidth={true}
+                      size='medium'
+                      type='email'
+                      autoComplete={false}
+                      value={selectedUserInfo.email}
+                      label='Email'
+                    />
+                  </div>
+                </Grid>
+                <Grid
+                  xs={12}
+                >
+                  <div className='mt-1'>
+                    <TextField
+                      disabled={true}
+                      fullWidth={true}
+                      size='medium'
+                      type='text'
+                      autoComplete={false}
+                      value={ parseFloat(selectedUserInfo.balance.toString()).toFixed(2) }
+                      label='Balance'
+                    />
+                  </div>
+                </Grid> 
+                <Grid
+                  xs={12}
+                >
+                  <h4 className='text-center w-100 mb-2 mt-2'>Payment Quantity</h4>  
+                </Grid>
+                <Grid
+                  xs={12}
+                >
+                  <div className='mt-1'>
+                    <TextField
+                      required={true}
+                      fullWidth={true}
+                      placeholder='Enter Payment Quantity'
                       id='payment'
                       name='payment'
-                      type='text'
-                      class='validate'
                       value={payment}
-                      required
+                      size='medium'
+                      type='search'
+                      autoComplete={false}
+                      onChange={e => onChange(e)}
+                      onBlur={() => handlePaymentChange()}
+                      label='Payment'
+                      prefix={<SearchIcon />}
                     />
-                    <label for='payment'>Payment</label>
                   </div>
-                </div>
-                <div className='row mp-0'>
-                  <button
-                    onClick={e => submitPayment(e)}
-                    className='btn-large waves-effect waves-light'
-                    type='submit'
-                    name='action'
-                  >
-                    Submit Payment
-                    <i className='material-icons right'>send</i>
-                  </button>
-                </div>
-              </form>
+                </Grid> 
+              </Grid>
             </Fragment>
           )}
-          {/* End of Payment Info */}
+          {/* End of User And Balance Info for Selected User */}
+        </div>
+        <div className='mb-2'>
+          <Button
+            onClick={e => submitPayment(e)}
+            disabled={!selectedUserInfo.username}
+            type='submit'
+            color='secondary'
+            variant='contained'
+          >
+            {activityId ? 'Update Payment' : 'Submit Payment'}
+          </Button>
         </div>
       </div>
-    </div>
+    </Container>
   );
 }
 

@@ -5,8 +5,25 @@ import OrderUserItem from './OrderUserItem'
 import ServiceItemInOrders from './ServiceItemInOrders';
 import Spinner from '../../layout/Spinner'
 import alertContext from '../../../context/alert/alertContext';
-
-
+import {
+  Container,
+  CircularProgress,
+  Button,
+  Grid,
+  TextField,
+  InputAdornment,
+  TableContainer,
+  Paper,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Checkbox,
+  FormControlLabel
+} from '@material-ui/core';
+import {  withStyles, makeStyles } from '@material-ui/core/styles';
+import SearchIcon from '@material-ui/icons/Search';
 
 
 const NewOrder = ({ match, history }) => {
@@ -205,7 +222,7 @@ const NewOrder = ({ match, history }) => {
   // Set Service Status
   const setServiceStatus = ({ service, selectValue }) => {
     console.log(selectValue);
-    const newList = orderData.serviceList;
+    const newList = [...orderData.serviceList];
     const indexNum = newList.findIndex(item => item.service === service);
     newList[indexNum].unitServiceStatus = selectValue;
     setOrderData({
@@ -218,7 +235,7 @@ const NewOrder = ({ match, history }) => {
 
   const handleSubmit = (e) => {
     if ( !userObject._id ) {
-      return setAlert('Please Select Customer', "danger");   
+      return setAlert('Please Select Customer', "error");   
     }
     if (!orderId) {
       // If New Order
@@ -231,129 +248,171 @@ const NewOrder = ({ match, history }) => {
     }
   }
 
+  const useStyles = makeStyles({
+    table: {
+      minWidth: 700
+    }
+  });
+  const classes = useStyles();
+  const StyledTableCell = withStyles( theme => ({
+    head: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white
+    },
+    body: {
+      fontSize: 14
+    }
+  }))(TableCell);
 
 
 
 
 
 
-  if (loading) return <Spinner></Spinner>
+
+  // if (loading) return <Spinner></Spinner>
   return (
-    <Fragment>
-      <div className='row'></div>
-      <div className='row'>  
-        {/* Order Form */}
-        <div
-          className={sectionSelection === "none" ? "col m9 s12" : "col m8 s12"}
-        >
-          <div id='new-order-orders' className='z-depth-2'>
-            <div id='new-order-orders-table'>
-              <div 
-                id='upper-row' 
-                className='row'
-              >
-                <span 
-                  style={{ marginLeft: "1rem" }} 
-                  // className='col s12 m6 flexrow justify-content-center'
-                  className='input-field'
-                  >
-                    User: 
-                    {/* {orderData.user.username ? orderData.user.username : ""} */}
-                  {" "}
-                  <i className='material-icons prefix'>search</i>
-                  <input
-                    type='search'
-                    label='User'
-                    value={orderData.username}
-                    placeholder='Search for Users'
-                    style={{
-                      display:'inline-block',
-                      width: 240
-                    }}
-                    onChange= { e => {
-                      setOrderData({
-                        ...orderData,
-                        user: '',
-                        username: e.target.value
-                      });
-                      setUserObject({});
-                      loadQueriedUsers( 
-                        e.target.value,
-                        _cbSetQueriedUsersList
-                      );                      
-                    }}
-                  />
-                </span>
-              </div>
-              {
-                queriedUsersList.length > 0 && (
-                  <table>
-                    <tr>
-                      <th>Username</th>
-                      <th>Name</th>
-                      <th>Middle</th>
-                      <th>Surname</th>
-                      <th>Balance</th>
-                    </tr>
-                    {
-                      queriedUsersList.map( userItem => (
-                          <tr
-                            onClick= { () => {
-                              const tempUser = userItem;
-                              setUserObject({...tempUser});
-                              setOrderData({
-                                ...orderData,
-                                user: tempUser._id,
-                                username: tempUser.username
-                              });
-                              setQueriedUsersList([]);
-                            }}
-                          >
-                            <td>{userItem.username}</td>
-                            <td>{userItem.name}</td>
-                            <td>{userItem.middleName}</td>
-                            <td>{userItem.surName}</td>
-                            <td>{userItem.balance.toFixed(2)}</td>
-                          </tr>
-                        )
-                      )
-                    }
-                  </table>
-                )
-              }
-
-              <table>
-                <thead>
-                  <tr>
-                    <th className='service-column'>Service</th>
-                    <th className='price-column'>Price</th>
-                    <th className='quantity-column'>Quantity</th>
-                    <th className='status-column center-align'>Status</th>
-                    <th className='total-price-column right-align' style={{ paddingRight: '1rem' }}>Tot. Price</th>
-                  </tr>
-                </thead>
-                <tbody id='services-list'>
-                  {orderData.serviceList.map(service => (
-                    <ServiceItemInOrders
-                      key={service.service}
-                      service={service}
-                      changeQuantity={changeQuantity}
-                      statusList={statusList}
-                      setServiceStatus={setServiceStatus}
-                    />
-                  ))}
-                </tbody>
-              </table>              
-              <div className="row">
-                <input
-                  type='text'
-                  label='Search Service'
-                  placeholder='Search for Services'
-                  value={serviceSearchText}
-                  style={{
-                    display:'inline-block',
-                    width: 280
+    <Container
+      maxWidth='lg'
+      style={{
+        backgroundColor:'#ccc',
+        // paddingTop: 64,
+        minHeight:'90vh'
+      }}
+    >
+      <div
+        className='flexcol justify-content-space-between'
+        style={{
+          minHeight:'90vh'
+        }}
+      >
+        <div>
+          <div className="text-center mb-2 mt-2"> 
+            <h2>Add Order</h2>
+          </div>  
+          <Grid container spacing={3}>
+            <Grid
+              xs={12}
+            >                  
+              <div className="mb-2">
+                <TextField
+                  // id='categoryName'
+                  // name='categoryName'
+                  value={orderData.username}
+                  placeholder='Search User'
+                  label='User'
+                  InputProps={{
+                  startAdornment: (
+                      <InputAdornment position='start'>
+                        <SearchIcon />
+                      </InputAdornment>
+                    )
                   }}
+                  // required={true}
+                  fullWidth={true}
+                  size='medium'
+                  type='search'
+                  autoComplete={false}
+                  onChange= { e => {
+                    setOrderData({
+                      ...orderData,
+                      user: '',
+                      username: e.target.value
+                    });
+                    setUserObject({});
+                    loadQueriedUsers( 
+                      e.target.value,
+                      _cbSetQueriedUsersList
+                    );                      
+                  }}
+                />
+                {
+                  queriedUsersList.length > 0 && (
+                    <TableContainer>
+                      <Table>                      
+                        <TableRow>
+                          <TableCell>Username</TableCell>
+                          <TableCell>Name</TableCell>
+                          <TableCell>Middle</TableCell>
+                          <TableCell>Surname</TableCell>
+                          <TableCell>Balance</TableCell>
+                        </TableRow>
+                        {
+                          queriedUsersList.map( userItem => (
+                              <TableRow
+                                key={userItem._id}
+                                onClick= { () => {
+                                  const tempUser = userItem;
+                                  setUserObject({...tempUser});
+                                  setOrderData({
+                                    ...orderData,
+                                    user: tempUser._id,
+                                    username: tempUser.username
+                                  });
+                                  setQueriedUsersList([]);
+                                }}
+                              >
+                                <TableCell>{userItem.username}</TableCell>
+                                <TableCell>{userItem.name}</TableCell>
+                                <TableCell>{userItem.middleName}</TableCell>
+                                <TableCell>{userItem.surName}</TableCell>
+                                <TableCell>{userItem.balance.toFixed(2)}</TableCell>
+                              </TableRow>
+                            )
+                          )
+                        }
+                      </Table>
+                    </TableContainer>
+                  )
+                }
+              </div>
+            </Grid>
+            <Grid xs={12}>
+              <TableContainer component={Paper}>
+                <Table className={classes.table}>
+                  <TableHead>
+                    <TableRow>
+                      <StyledTableCell >Service</StyledTableCell>
+                      <StyledTableCell>Price</StyledTableCell>
+                      <StyledTableCell align='center'>Quantity</StyledTableCell>
+                      <StyledTableCell align='center'>Status</StyledTableCell>
+                      <StyledTableCell align='right' style={{ paddingRight: '1rem' }}>Tot. Price</StyledTableCell>
+                    </TableRow>
+                  </TableHead>
+                  <tbody id='services-list'>
+                    {orderData.serviceList.map(service => (
+                      <ServiceItemInOrders
+                        key={service.service}
+                        service={service}
+                        changeQuantity={changeQuantity}
+                        statusList={statusList}
+                        setServiceStatus={setServiceStatus}
+                      />
+                    ))}
+                  </tbody>
+                </Table>
+              </TableContainer> 
+            </Grid>
+            <Grid xs={12}>
+              <div className="mb-2 mt-3">
+                <TextField
+                  // id='categoryName'
+                  // name='categoryName'
+                  value={serviceSearchText}
+                  placeholder='Search for Services'
+                  label='Search Service'
+                  InputProps={{
+                  startAdornment: (
+                      <InputAdornment position='start'>
+                        <SearchIcon />
+                      </InputAdornment>
+                    )
+                  }}
+                  // required={true}
+                  fullWidth={true}
+                  size='medium'
+                  type='search'
+                  autoComplete={false}
                   onChange= { e => {
                     setServiceSearchText( e.target.value );
                     loadQueriedServices(
@@ -362,84 +421,103 @@ const NewOrder = ({ match, history }) => {
                     );
                   }}
                 />
-              </div>
-              {
-                queriedServicesList.length > 0 && queriedServicesList.map(  serviceItem => (
-                    <tr 
-                      key={serviceItem._id}
-                      onClick={ () => {
-                        console.log('service Item Click -> serviceItem -> ', serviceItem);
-                        addToOrder({...serviceItem});
-                        setQueriedServicesList([]);
-                        setServiceSearchText('');
-                      }}
-                    >
-                      <td>{serviceItem.serviceName}</td>
-                      <td>{serviceItem.servicePrice}</td>
-                    </tr>
+                {
+                  queriedServicesList.length > 0 && queriedServicesList.map(  serviceItem => (
+                      <TableRow 
+                        key={serviceItem._id}
+                        onClick={ () => {
+                          console.log('service Item Click -> serviceItem -> ', serviceItem);
+                          addToOrder({...serviceItem});
+                          setQueriedServicesList([]);
+                          setServiceSearchText('');
+                        }}
+                      >
+                        <TableCell>{serviceItem.serviceName}</TableCell>
+                        <TableCell>{serviceItem.servicePrice}</TableCell>
+                      </TableRow>
+                    )
                   )
-                )
-              }
+                }
+              </div>
+            </Grid>
+          </Grid>        
+        </div>
+        <div>
+          {/* ------------------------------------------------ */}
+          <div className='row'>
+              {/* <span className="col s6 m9"></span> */}
+              
             </div>
             <div className='row'>
               {/* <span className="col s6 m9"></span> */}
-              <div className='flexrow justify-content-flex-end'>
-                <ul>
-                  <li className='flexrow justify-content-space-between'>
-                    <span>Total</span>
-                    <span
-                      style={{
-                        fontWeight: "bold",
-                        marginRight: "2rem",
-                        marginLeft: "2rem"
-                      }}
-                    >
-                      ${orderData.orderTotalPrice.toFixed(2)}
-                    </span>
-                  </li>
-                </ul>
-              </div>
             </div>
-            <div className='row'>
-              {/* <span className="col s6 m9"></span> */}
-              <div className='flexrow justify-content-flex-end'>
-                <ul>
-                  <li className='flexrow justify-content-space-between'>
-                    <span>Order Status: </span>
-                    <span
-                      style={{
-                        fontWeight: "bold",
-                        marginRight: "2rem",
-                        marginLeft: "2rem"
-                      }}
-                    >
-                      {orderData.orderStatus}
-                    </span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-            <div className='row flexrow justify-content-flex-end'>
+            {/* <div className='row flexrow justify-content-flex-end'>
               <span className='col s5 m3 l2 '>
-                <button
-                  style={{ marginRight: "2rem" }}
-                  id='order-submit-button'
-                  className='btn waves-effect waves-light align-items-flex-end'
+              <button
+              style={{ marginRight: "2rem" }}
+              id='order-submit-button'
+              className='btn waves-effect waves-light align-items-flex-end'
                   type='button'
                   onClick={e => {
                     handleSubmit();
                   }}
-                >
+                  >
                   Submit
                   <i className='material-icons right'>send</i>
-                </button>
-              </span>
+                  </button>
+                  </span>
+                </div> */}
+            <div className='flexrow justify-content-flex-end'>
+              <ul>
+                <li className='flexrow justify-content-space-between'>
+                  <span>Total</span>
+                  <span
+                    style={{
+                      fontWeight: "bold",
+                      marginRight: "2rem",
+                      marginLeft: "2rem"
+                    }}
+                  >
+                    ${orderData.orderTotalPrice.toFixed(2)}
+                  </span>
+                </li>
+              </ul>
             </div>
-          </div>
+            <div className='flexrow justify-content-flex-end'>
+              <ul>
+                <li className='flexrow justify-content-space-between'>
+                  <span>Order Status: </span>
+                  <span
+                    style={{
+                      fontWeight: "bold",
+                      marginRight: "2rem",
+                      marginLeft: "2rem"
+                    }}
+                  >
+                    {orderData.orderStatus}
+                  </span>
+                </li>
+              </ul>
+            </div>
+            <div className='mb-2'>
+              <Button
+                onClick={e => {
+                  handleSubmit();
+                }}
+                color='secondary'
+                variant='contained'
+              >
+                Submit
+              </Button>
+            </div>
+          {/* ------------------------------------------------ */}
         </div>
-      </div>
 
-    </Fragment>
+      </div>
+          
+
+
+    </Container>
   );
 }
 

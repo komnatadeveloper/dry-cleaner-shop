@@ -1,40 +1,68 @@
 import React, {Fragment, useContext} from 'react'
 import ServiceItemsInRows from './ServiceItemsInRows'
-import admincontext from '../../../context/admin/adminContext'
-import adminContext from '../../../context/admin/adminContext'
+import {
+  Container,
+  CircularProgress,
+  Button,
+  TableContainer,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Paper
+} from '@material-ui/core';
+import {  withStyles, makeStyles } from '@material-ui/core/styles';
 
 const ServicesTable = ({services }) => {
   
-  const adminContext1 = useContext(admincontext)
-  const { deleteService} = adminContext1
+
+
+  const useStyles = makeStyles({
+    table: {
+      minWidth: 700
+    }
+  });
+  const classes = useStyles();
+  const StyledTableCell = withStyles( theme => ({
+    head: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white
+    },
+    body: {
+      fontSize: 14
+    }
+  }))(TableCell);
   
   return (
     <Fragment>
-      <table>
-        <thead>
-          <tr>
-            <th>Service Name</th>
-            <th>Image</th>
-            <th>Category</th>
-            <th className='right-align'>Price</th>
-            <th className="center-align">Featured</th>
-            <th style={{textAlign:'center'}}>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {services ? (
-            services.map(service => (
-              <ServiceItemsInRows 
-                key={service._id} 
-                serviceInfo={service} 
-                deleteService={deleteService}
-              />
-            ))
-          ) : (
-            <Fragment></Fragment>
-          )}
-        </tbody>
-      </table>
+      <TableContainer component={Paper}>
+        <Table className={classes.table}>
+          <TableHead>
+            <TableRow>
+              <StyledTableCell>Service Name</StyledTableCell>
+              <StyledTableCell>Image</StyledTableCell>
+              <StyledTableCell>Category</StyledTableCell>
+              <StyledTableCell align='right'>Price</StyledTableCell>
+              <StyledTableCell align='center'>Featured</StyledTableCell>
+              <StyledTableCell align='center'>Actions</StyledTableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
+
+              {services ? (
+                services.map(service => (
+                  <ServiceItemsInRows 
+                    key={service._id} 
+                    serviceInfo={service} 
+                  />
+                ))
+              ) : (
+                <Fragment></Fragment>
+              )}
+          </TableBody>
+        </Table>
+      </TableContainer>
     </Fragment>
       )
   

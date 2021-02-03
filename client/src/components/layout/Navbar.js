@@ -1,13 +1,27 @@
 import React, { useContext, useEffect} from 'react';
 import {
   Link,
+  NavLink,
   withRouter
 } from 'react-router-dom';
 // import CustomerLoginModal from '../login/CustomerLoginModal';
 import authContext from '../../context/auth/authContext'
 import M from 'materialize-css'
-
-
+// Material UI
+// import AppBar from '@material-ui/core/AppBar';
+// import Toolbar from '@material-ui/core/Toolbar';
+// import IconButton from '@material-ui/core/IconButton';
+import {
+  AppBar, 
+  Drawer,
+  Toolbar, 
+  IconButton,
+  Button,
+  Typography,
+  makeStyles
+} from '@material-ui/core';
+import Menu from '@material-ui/icons/Menu';
+import TuneIcon from '@material-ui/icons/Tune';
 
 
 const Navbar = ({
@@ -16,48 +30,118 @@ const Navbar = ({
 
   const authContext1 = useContext(authContext)
   const { loading, userType, user, isAuthenticated, logout } = authContext1
-
+  
   useEffect( () => {
-    M.AutoInit()
+    M.AutoInit();    
   }, [])  
+  
+  let classes;
+  const useStyles = makeStyles( () => ({
+    mobileDrawer: {
+      width: 180
+    },
+    desktopDrawer: {
+      width: 180,
+      top: 64,
+      // height: 'calc(100% - 64px )'
+    }
+  }));
+  classes=useStyles();
+
+  const _CustomNavButton = ({content, navPath}) => (
+    <Button
+      component={NavLink}
+      color={ location.pathname === navPath ? 'primary' : 'inherit'  }
+      to={navPath}
+      style={{
+        // backgroundColor:'#ff4444'
+      }}
+    >
+      {content}
+    </Button>
+  );
 
 
   const adminMenu = () => (
     <>
-      <li className= {location.pathname === '/about' ? 'active' : ''}>
-        <Link  to='/about'>About</Link>
-      </li>
-      <li className= {location.pathname === '/dashboard' ? 'active' : ''}>
-        <Link to='/dashboard'>Dashboard</Link>
-      </li>
-      <li className= {location.pathname === '/dashboard/customers' ? 'active' : ''}>
-        <Link to='/dashboard/customers'>Customers</Link>
-      </li>
-      <li className= {location.pathname === '/dashboard/orders' ? 'active' : ''}>
-        <Link to='/dashboard/orders'>Orders</Link>
-      </li>
-      <li className= {location.pathname === '/dashboard/categories' ? 'active' : ''}>
-        <Link to='/dashboard/categories'>Categories</Link>
-      </li>
-      <li className= {location.pathname === '/dashboard/services' ? 'active' : ''}>
-        <Link to='/dashboard/services'>Services</Link>
-      </li>
-      <li className= {location.pathname === '/dashboard/products' ? 'active' : ''}>
-        <Link to='/dashboard/products'>Products</Link>
-      </li>
-      <li className= {location.pathname === '/dashboard/settings' ? 'active' : ''}>
-        <Link to='/dashboard/settings'>
+      {/* <li className= {location.pathname === '/about' ? 'active' : ''}>
+      </li> */}
+        {/* <Link className='mr-2'  to='/about'>About</Link> */}
+        
+        <_CustomNavButton
+          navPath= '/about'
+          content='About'
+        />
+
+      {/* <li className= {location.pathname === '/dashboard' ? 'active' : ''}>
+      </li> */}
+        {/* <Link to='/dashboard'>Dashboard</Link> */}
+        <_CustomNavButton
+          navPath= '/dashboard'
+          content='Dashboard'
+        />
+      {/* <li className= {location.pathname === '/dashboard/customers' ? 'active' : ''}>
+      </li> */}
+      
+        {/* <Link to='/dashboard/customers'>Customers</Link> */}
+        <_CustomNavButton
+          navPath= '/dashboard/customers'
+          content='Customers'
+        />
+      {/* <li className= {location.pathname === '/dashboard/orders' ? 'active' : ''}>
+      </li> */}
+        {/* <Link to='/dashboard/orders'>Orders</Link> */}
+        <_CustomNavButton
+          navPath= '/dashboard/orders'
+          content='Orders'
+        />
+      {/* <li className= {location.pathname === '/dashboard/categories' ? 'active' : ''}>
+      </li> */}
+        {/* <Link to='/dashboard/categories'>Categories</Link> */}
+        <_CustomNavButton
+          navPath= '/dashboard/categories'
+          content='Categories'
+        />
+      {/* <li className= {location.pathname === '/dashboard/services' ? 'active' : ''}>
+      </li> */}
+        {/* <Link to='/dashboard/services'>Services</Link> */}
+        <_CustomNavButton
+          navPath= '/dashboard/services'
+          content='Services'
+        />
+      {/* <li className= {location.pathname === '/dashboard/products' ? 'active' : ''}>
+      </li> */}
+        {/* <Link to='/dashboard/products'>Products</Link> */}
+        <_CustomNavButton
+          navPath= '/dashboard/products'
+          content='Products'
+        />
+      {/* <li className= {location.pathname === '/dashboard/settings' ? 'active' : ''}>
+      </li> */}
+        {/* <Link to='/dashboard/settings'>
           <i className='material-icons'>settings_applications</i>
-        </Link>
-      </li>
-      <li>
-        <a style={{ height: 'inherit' }} onClick={e => logout()} className="flexrow justify-elements-flex-begin">
+        </Link> */}
+        <_CustomNavButton
+          navPath= '/dashboard/settings'
+          content={<TuneIcon />}
+        />
+      {/* <li>
+      </li> */}
+        {/* <a style={{ height: 'inherit' }} onClick={e => logout()} className="flexrow justify-elements-flex-begin">
           <span>
             <i className='material-icons'>exit_to_app</i>
           </span>
           <span className="ml-1">{`Logout `}</span>
-        </a>
-      </li>
+        </a> */}
+        <_CustomNavButton
+          navPath= '/dashboard/products'
+          content={
+            <span>
+              <TuneIcon/>
+              Logout
+            </span>
+          }
+        />
     </>
   ); 
   
@@ -126,20 +210,29 @@ const Navbar = ({
 
   return (
     <>
-      <div className='navbar-fixed'>
-        <nav>
-          <div className='nav-wrapper'>
+      {/* <AppBar
+        color='secondary'
+      > */}
+        {/* <Toolbar> */}
+        {/* <Drawer
+          anchor='left'
+          open
+          classes={{paper: classes.desktopDrawer}}
+        >
+            <IconButton>
+              <Menu />
+            </IconButton>
             <Link 
               to='/' 
               className='brand-logo ml-2'
             >
               Home
-            </Link>
-            <a href='#' data-target='mobile-demo' className='sidenav-trigger'>
+            </Link> */}
+            {/* <a href='#' data-target='mobile-demo' className='sidenav-trigger'>
               <i className='material-icons'>menu</i>
-            </a>
-            <ul className='right hide-on-med-and-down'>
-              {!loading &&
+            </a> */}
+            {/* <ul className='right hide-on-med-and-down'> */}
+              {/* {!loading &&
                 userType === "Admin" &&
                 user &&
                 isAuthenticated &&
@@ -153,12 +246,31 @@ const Navbar = ({
                 !userType &&
                 !user &&
                 !isAuthenticated &&
-                publicMenu()}
-            </ul>
+                publicMenu()} */}
+            {/* </ul> */}
+        {/* </Drawer> */}
+        {/* </Toolbar> */}
+        {/* <nav>
+          <div className='nav-wrapper'>
           </div>
-        </nav>
-      </div>
-      <ul className='sidenav' id='mobile-demo'>
+        </nav> */}
+      {/* </AppBar> */}
+      <AppBar
+        color='secondary'
+      >
+        <Toolbar>
+
+          <IconButton>
+                <Menu />
+              </IconButton>
+          {!loading &&
+                  !userType &&
+                  !user &&
+                  !isAuthenticated &&
+                  publicMenu()}
+        </Toolbar>
+      </AppBar>
+      {/* <ul className='sidenav' id='mobile-demo'>
         {!loading &&
           userType === "Admin" &&
           user &&
@@ -170,7 +282,7 @@ const Navbar = ({
           isAuthenticated &&
           userMenu()}
         {!loading && !userType && !user && !isAuthenticated && publicMenu()}
-      </ul>
+      </ul> */}
 
       {/* <CustomerLoginModal /> */}
     </>

@@ -1,5 +1,11 @@
 import React, {useState, Fragment, useContext} from 'react'
 import adminContext from "../../../context/admin/adminContext";
+import {
+  Container,
+  TextField,
+  Button
+} from '@material-ui/core';
+import SendIcon from '@material-ui/icons/Send';
 
 const AddCategory = ({addStatus}) => {
   const adminContext1 = useContext(adminContext);
@@ -36,55 +42,66 @@ const AddCategory = ({addStatus}) => {
   }
 
   return (
-    <div className='row'>
-      <div className='col s12 m3'>
-        <form 
-          className='ml-2'
-          onSubmit={e => addCategoryHandler(e)}
-        >
-          {/* NAME */}
-          <div className='row mp-0'>
-            <div className='input-field'>
-              <input
-                name={`add-category-name`}
-                value={formData.name}
-                id={`add-category-name`}
-                type='text'
-                onChange={e => handleNameChange(e)}
-                className='validate'
-                onBlur= {() => {
-                  console.log('AddCategory -> Category Name -> onBlur FIRED');
-                }}
-              />
-              <label className='active' htmlFor={`add-category-name`}>
-                Category Name
-              </label>
-            </div>
+    <Container
+      maxWidth='lg'
+      style={{
+        backgroundColor:'#ccc',
+        // paddingTop: 64,
+        minHeight:'90vh'
+      }}    
+    >
+      <form 
+        onSubmit={e => addCategoryHandler(e)}
+        style={{
+          minHeight:'90vh',
+          justifyContent:'space-between'
+        }}
+        className=' flexcol'
+      >
+        <span>
+          <h2 className='text-center  mt-1 mb-1'>Add Category</h2>           
+          <div className="mb-2">
+            <TextField
+              placeholder='Enter Category Name'
+              label='Category Name'
+              required={true}
+              fullWidth={true}
+              id='add-category-name'
+              name='add-category-name'
+              value={formData.name}
+              size='medium'
+              type='text'
+              autoComplete={false}
+              onChange={e => handleNameChange(e)}
+            />
           </div>
-          {/* IMAGE */}
-          <div className='file-field input-field'>
-            <div className='btn'>
-              <span>File</span>
-              {/* <span>
-                  FILE<i class='material-icons right'>file_upload</i>
-                </span> */}
-              <input type='file' onChange={e => fileSelectedHandler(e)} />
-            </div>
-            <div className='file-path-wrapper'>
-              <input
-                className='file-path validate'
-                type='text'
-                // onChange={e => fileSelectedHandler()}
-              />
-            </div>
-          </div>
-          <button className='btn waves-effect waves-light' type='submit'>
+          <TextField
+            placeholder='Select Category Image'
+            required={true}
+            fullWidth={true}
+            type='file'
+            autoComplete={false}
+            onChange={e => fileSelectedHandler(e)}
+          />
+        </span>
+        <div className='mb-2'>
+          <Button
+            size='large'
+            variant='contained'
+            color='secondary'
+            endIcon= {<SendIcon />}
+            type='submit'
+            // name='action'
+            style={{
+              // position:'absolute',
+              // bottom: 0,
+            }}
+          >
             Submit
-            <i className='material-icons right'>send</i>
-          </button>
-        </form>
-      </div>
-    </div>
+          </Button>
+        </div>
+      </form>
+    </Container>
   );
 };
 
