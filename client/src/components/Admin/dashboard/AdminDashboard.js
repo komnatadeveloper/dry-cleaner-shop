@@ -4,14 +4,11 @@ import { Redirect } from 'react-router-dom'
 import AdminTabs from './AdminTabs'
 
 import authContext from '../../../context/auth/authContext'
-import M from 'materialize-css'
+
 
 
 const AdminDashboard = ({ match }) => {
 
-  useEffect(() => {
-    M.AutoInit()
-  }, [])
 
   // Redirect if not Authenticated
   const authContext1 = useContext(authContext)

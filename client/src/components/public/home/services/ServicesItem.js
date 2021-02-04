@@ -90,7 +90,7 @@ const ServicesItem = ({
                   <Box bgcolor='info.main' color='info.contrastText' p={2}>
                     <div className='flexrow justify-content-space-between '>
                       <p className="text-bold">{serviceName}</p>
-                      <p className="text-bold">{` $${servicePrice}`}</p>
+                      <p className="text-bold">{` $${parseFloat(servicePrice.toString()).toFixed(2)}`}</p>
                     </div>
                   </Box>
                 </CardContent>

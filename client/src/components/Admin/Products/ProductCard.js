@@ -1,6 +1,6 @@
 import React, {useState, useContext, useEffect} from 'react'
 import adminContext from '../../../context/admin/adminContext'
-import M from "materialize-css";
+
 
 const ProductCard = ({productInfo}) => {
   const { _id, name } = productInfo
@@ -18,8 +18,6 @@ const ProductCard = ({productInfo}) => {
   useEffect(() => {
 // eslint-disable-next-line
     setFormData({...formData, name: productInfo.name })
-    // eslint-disable-next-line
-    M.AutoInit()
     // eslint-disable-next-line
   }, [productInfo])
 
