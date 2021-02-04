@@ -7,7 +7,7 @@ import './App.css';
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
 // Layout
 import ContentBody from './components/layout/ContentBody';
-import Navbar from "./components/layout/Navbar";
+import Navbar from "./components/layout/Navbar/Navbar";
 import GlobalStyles from './components/layout/GlobalStyles';
 import Alert from './components/layout/Alert';
 import {makeStyles} from '@material-ui/core/styles';
