@@ -45,14 +45,6 @@ const OrdersTab = () => {
     }
   });
   const classes = useStyles();
-
-  const StyledTableRow = withStyles( (theme) => ({
-    root: {
-      '&:nth-of-type(odd)':{ 
-        backgroundColor:  theme.palette.action.hover,        
-      },
-    }
-  }))(TableRow);
   
   return (
     <Container

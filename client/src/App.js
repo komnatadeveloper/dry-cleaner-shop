@@ -43,7 +43,6 @@ import NewOrder from './components/Admin/OrderForm/NewOrder';
 import  PaymentsPage  from './components/Admin/payment/PaymentsPage';
 import AddPayment  from './components/Admin/payment/AddPayment'
 import AddService from './components/Admin/Services/AddService'
-import Cart from './components/public/cart/Cart';
 import Footer from './components/layout/Footer'
 
 // User
@@ -207,7 +206,7 @@ const  App =  () => {
                         component={AddClothes}
                       />
                       <Route exact path='/user/:userId' component={UserPage} />
-                      <Route exact path='/cart' component={Cart} />
+
                       <Route exact path='/user/:userId' component={UserPage} />
                     </Switch>
                   {/* </div> */}

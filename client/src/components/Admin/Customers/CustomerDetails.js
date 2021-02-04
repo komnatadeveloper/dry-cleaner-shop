@@ -112,7 +112,7 @@ const CustomerDetails =   ({match}) => {
       <form 
         className='flexcol justify-content-space-between'
         style={{
-          minHeight:'calc(90vh - 64px )'
+          minHeight:'90vh'
         }}
         onSubmit={e => onSubmit(e)}
       >
