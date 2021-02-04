@@ -69,6 +69,11 @@
 .px-2  { padding-right: 1rem !important; padding-left: 1rem !important;}
 .px-3  { padding-right: 1.5rem; padding-left: 1.5rem;}
 .px-4  { padding-right: 2rem; padding-left: 2rem;}
+/* All Directions */
+.p-1  { padding: 1.5rem !important; }
+.p-2  { padding: 1rem; }
+.p-3  { padding: 1.5rem; }
+.p-4  { padding: 2rem; }
 /* END Of MARGIN CLASSES */
 
 .font-weight-bold {
