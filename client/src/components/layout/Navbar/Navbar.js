@@ -80,7 +80,7 @@ const Navbar = ({
         </Button>
       </ThemeProvider>
     );
-  }
+  }  // End of _CustomNavButton
   
 
 
@@ -127,7 +127,7 @@ const Navbar = ({
           }
         />
     </>
-  ); 
+  );  // End of adminMenu 
   
   const userMenu = () => (
     <>
