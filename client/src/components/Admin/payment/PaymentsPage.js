@@ -44,7 +44,6 @@ const PaymentsPage = () => {
       maxWidth='lg'
       style={{
         backgroundColor:'#ccc',
-        paddingTop: 64,
         minHeight:'90vh'
       }}
       
