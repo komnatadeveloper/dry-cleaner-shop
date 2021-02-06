@@ -9,7 +9,7 @@ const authAdmin = require('../../middleware/authAdmin');
 
 // Get All Orders
 router.get('/dashboard-initial', 
-  // authAdmin, 
+  authAdmin, 
   async ( req, res) => { 
 
     try {
