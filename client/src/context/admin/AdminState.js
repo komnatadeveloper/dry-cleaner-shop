@@ -681,7 +681,9 @@ const AdminState = props => {
   }
 
   // Load Orders
-  const loadOrders = async () => {
+  const loadOrders = async (
+    cb // if there is callBack
+  ) => {
     try {
     setAdminLoading(true)
     
@@ -700,12 +702,12 @@ const AdminState = props => {
         type: ORDERS_LOADED,
         payload: res.data
       });
-
+      if ( cb ) { cb(); }
       setAdminLoading(false);
 
     } catch (err) {
       const errors = err.response.data.errors;
-
+      if ( cb ) { cb(); }
       if (errors) {
         errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
@@ -1005,7 +1007,29 @@ const AdminState = props => {
 
       if (res.data) return res.data;
     } catch (err) {
-      
+      errors.forEach(error => setAlert(error.msg, "error", 2500));
+    }
+  }
+
+  
+  //-----------------------REPORTS------------------------------
+
+
+  // Load Single Customer
+  const loadDashboardReports = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }; 
+      const res = await axios.get(`/api/admin/reports/dashboard-initial/`, config);
+
+      // console.log(res.data);
+
+      if (res.data) return res.data;
+    } catch (err) {
+      errors.forEach(error => setAlert(error.msg, "error", 2500));
     }
   }
 
@@ -1066,6 +1090,8 @@ const AdminState = props => {
         addProduct,
         deleteProduct,
         loadQueriedProducts,
+        // Reports
+        loadDashboardReports,
         // State variables
         customers: state.customers,
         orders: state.orders,

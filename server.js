@@ -10,6 +10,7 @@ const adminOrders = require('./routes/api/adminOrders')
 const adminCustomers = require('./routes/api/adminCustomers')
 const adminServiceStatus = require("./routes/api/adminServiceStatus");
 const adminUserActivities = require("./routes/api/adminUserActivities");
+const adminReports = require("./routes/api/adminReports");
 const usersRouter = require('./routes/api/users')
 const authRouter = require('./routes/api/auth')
 
@@ -37,6 +38,7 @@ app.use("/api/admin/customers", adminCustomers);
 app.use("/api/admin/orders", adminOrders);
 app.use("/api/admin/useractivities", adminUserActivities);
 app.use("/api/admin/service-status", adminServiceStatus); 
+app.use("/api/admin/reports", adminReports); 
 app.use("/api/users", usersRouter);
 app.use("/api/auth", authRouter);
 // TEMPORARILY
