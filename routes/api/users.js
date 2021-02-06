@@ -60,7 +60,7 @@ router.post('/register', async (req, res) => {
       (err, token) => {
         if (err) throw err;
 
-        res.status(200).json({ token })
+        res.status(200).json({ token, userType: 'user' })
       }
     )
     
@@ -179,7 +179,7 @@ router.get('/orders', auth, async (req, res) => {
 router.get('/orders/:orderId', auth, async (req, res) => { 
 
   try {
-    const order = await Order.findById(req.params.orderId).populate('serviceList.service', 'productName serviceType');
+    const order = await Order.findById(req.params.orderId).populate('serviceList.service', 'serviceName category');
 
     if( !order || order.user.toString() !== req.user.id ) {
       return res.status(400).send({ errors: [{ msg: "Order not found" }] })

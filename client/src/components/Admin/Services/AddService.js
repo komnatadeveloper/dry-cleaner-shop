@@ -1,13 +1,27 @@
 import React, {useContext, useState, Fragment, useEffect} from 'react'
-import adminContext from '../../../context/admin/adminContext'
-import ProductRowForAddService from "./ProductRowForAddService";
-import Spinner from '../../layout/Spinner'
+import adminContext from '../../../context/admin/adminContext';
+import {
+  Container,
+  CircularProgress,
+  Button,
+  Grid,
+  TextField,
+  InputAdornment,
+  TableContainer,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Checkbox,
+  FormControlLabel
+} from '@material-ui/core';
+import SearchIcon from '@material-ui/icons/Search';
 
 const AddService = ({match, history}) => {
-  const adminContext1 = useContext(adminContext)
+  const adminContext1 = useContext(adminContext);
   const {
-    loadQueriedProducts,
-    productsQuery,
+    loadQueriedCategories,
     addNewService,
     updateService,
     loadSingleService,
@@ -17,12 +31,35 @@ const AddService = ({match, history}) => {
   } = adminContext1;
 
   const [formData, setFormData] = useState({
-    productName: "",
-    product: "",
-    serviceType: "",
+    categoryName: '',
+    category: null, // categoryId
+    image: null,
+    serviceName: '',
     servicePrice: "",
     featured: false
   });
+
+  const [ queriedCategoriesList, setQueriedCategoriesList ] = useState([]);
+  const _setQueriedCategories = (arr) => {
+    setQueriedCategoriesList(arr);
+  }
+
+  const fileSelectedHandler = e => {
+    // If Not a New Service, but Editting
+    if(match.params.serviceId) {
+      // I couldnt create image file with .png etc extension so, unless we update image file, we will not send API an image.
+      setFormData({
+        ...formData,
+        image: e.target.files[0],
+        isImageUpdated: true
+      });
+    } else { // if not an update but ADD NEW SERVICE
+      setFormData({
+        ...formData,
+        image: e.target.files[0]
+      });
+    }
+  };
 
   // If Not a New Service, but Editting. Update this form states, by async function at the adminContext loadSingleService method
   const next = res => {
@@ -32,11 +69,14 @@ const AddService = ({match, history}) => {
     }
     setFormData({
       ...formData,
-      productName: res.productName || "",
-      product: res.product || "",
-      serviceType: res.serviceType || "",
-      servicePrice: res.servicePrice || ""
+      categoryName: res.categoryName || "",
+      category: res.category || null,
+      image: res.image || null, // TO BE UPDATED in FUTURE
+      serviceName: res.serviceName || "",
+      servicePrice: res.servicePrice || "",
+      featured: res.featured || false,
     });
+    console.log(formData);
   }
 
 
@@ -56,18 +96,17 @@ const AddService = ({match, history}) => {
   
 
 
-  const [ productSearch, setProductSearch ] = useState(false)
-  const { productName, serviceType, servicePrice, featured } = formData
+  // const [ productSearch, setProductSearch ] = useState(false)
+  const { 
+    categoryName,
+    category,  // categoryId 
+    servicePrice, 
+    serviceName,
+    featured 
+  } = formData
 
 
-  const selectProduct = ({productInfo}) => {
-    setFormData({
-      ...formData,
-      productName: productInfo.name,
-      product: productInfo._id,
-    })
-    setProductSearch(false)
-  }
+
 
   const onChange = (e) => {
     setFormData( {
@@ -84,13 +123,8 @@ const AddService = ({match, history}) => {
     if(match.params.serviceId) {
       updateService({ formData, serviceId: match.params.serviceId });
     } else {
-
-      addNewService({formData})
+      addNewService({formData});
     }
-  }
-
-  const handleCloseProductSearch = e => {
-    setProductSearch(false)
   }
 
   const handleFeaturedOnChange = e => {
@@ -100,222 +134,204 @@ const AddService = ({match, history}) => {
     });
   }
   
-  if( loading ) return <Spinner></Spinner>
   return (
-    <div id='add-service' className='row'>
-      <div id='border-div' className='col mp-0 s12 m6  z-depth-2'>
-        {productSearch ? (
-          <Fragment>
-            {/* Search Bar for Products */}
-            <div className='flexrow justify-content-space-between'>
-              <form autoComplete='off'>
-                <div className='input-field'>
-                  <i className='material-icons prefix'>search</i>
-                  <input
-                    id='search'
-                    type='search'
-                    onChange={e => loadQueriedProducts(e.target.value)}
-                    name='search'
-                    placeholder='Search for Services'
-                  />
-                  <label className='label-icon' htmlFor='search'></label>
-                  <i className='material-icons'>close</i>
-                </div>
-              </form>
-              <a className='' onClick={e => handleCloseProductSearch(e)}>
-                <i style={{ color: "red" }} className='material-icons'>
-                  close
-                </i>
-              </a>
-            </div>
-            {/* End of Search Bar for Products */}
-            {/* Products Lİst Section */}
-            {/* <div className='col s12 m4'> */}
-            <div>
-              <ul class='collection'>
-                {productsQuery.length > 0 &&
-                  productsQuery.map(product => (
-                    <ProductRowForAddService
-                      key={product._id}
-                      productInfo={product}
-                      selectProduct={selectProduct}
-                    />
-                  ))}
-              </ul>
-            </div>
-
-            {/* End of Products Lİst Section */}
-          </Fragment>
-        ) : (
-          <Fragment></Fragment>
-        )}
-        {productSearch === false ? (
-          <Fragment>
-            {/* Service Info Section */}
-            <div>
-              <div className='row mp-0'>
-                <div className='col s6 mp-0 ml-1'>
-                  <input
-                    value={productName}
-                    name='productName'
-                    id='productName'
-                    type='text'
-                    className='validate'
-                    disabled
-                  />
-                  <label className='active' htmlFor='productName'>
-                    Product Name
-                  </label>
-                </div>
-                <a
-                  onClick={e => setProductSearch(true)}
-                  className='waves-effect waves-light btn-small ml-2 mt-2'
+    <Container 
+      maxWidth='lg'
+      style={{
+        backgroundColor:'#ccc',
+        // paddingTop: 64,
+        minHeight:'90vh'
+      }}
+    >
+        
+      <div
+        className='flexcol justify-content-space-between'
+        style={{
+          minHeight:'90vh'
+        }}
+      >
+        <div>
+          <div className="text-center mt-2 mb-2">
+            <h2> {match.params.serviceId ? 'Update Service' : 'Add Service'}</h2>
+          </div>
+          {
+            loading 
+            ? (
+                <div 
+                  className='flexrow justify-content-center'
+                  style={{
+                    minHeight: 180,
+                    paddingTop: 120
+                  }}
                 >
-                  Edit
-                  <i className='material-icons right '>mode_edit</i>
-                </a>
-              </div>
-              <div className='row mp-0'>
-                <input
-                  value={serviceType}
-                  name='serviceType'
-                  id='serviceType'
-                  type='text'
-                  className='validate'
-                  onChange={e => onChange(e)}
-                />
-                <label className='active' htmlFor='serviceType'>
-                  Service Type
-                </label>
-              </div>
-              <div className='row mp-0'>
-                <input
-                  value={servicePrice}
-                  name='servicePrice'
-                  id='servicePrice'
-                  type='text'
-                  className='validate'
-                  onChange={e => onChange(e)}
-                />
-                <label className='active' htmlFor='servicePrice'>
-                  Service Price
-                </label>
-              </div>
-              <div className='row mp-0'>
-                <span className='flexrow justify-content-space-between mt-1 mb-1'>
-                  <label className="ml-1">
-                    <input 
-                      name="featured"
-                      onChange= { e => handleFeaturedOnChange(e)}
-                      type='checkbox' checked={featured ? true : false} />
-                    <span>Featured</span>
-                  </label>
-                  <button
-                    className='btn waves-effect waves-light  mr-1'
-                    type='button'
-                    onClick={e => submitAddorUpdate()}
-                  >
-                    Submit
-                    <i className='material-icons right'>send</i>
-                  </button>
-                </span>
-              </div>
-            </div>
-            {/* End of Service Info Section */}
-          </Fragment>
-        ) : (
-          <Fragment></Fragment>
-        )}
+                  <CircularProgress />
+                </div>
+              )
+            : (
+
+              <Grid container spacing={3}>
+                <Grid
+                  xs={12}
+                > 
+                  <div className="mb-2">
+                    <TextField
+                      id='serviceName'
+                      name='serviceName'
+                      value={serviceName}
+                      placeholder='Enter Service Name'
+                      label='Service Name'
+                      required={true}
+                      fullWidth={true}
+                      size='medium'
+                      type='text'
+                      autoComplete={false}
+                      onChange={e => onChange(e)}
+                    />
+                  </div>                 
+                </Grid>
+                <Grid
+                  xs={12}
+                >
+                  
+                  <div className="mb-2">
+                    <TextField
+                      id='categoryName'
+                      name='categoryName'
+                      value={categoryName}
+                      placeholder='Enter Service Name'
+                      label='Search Categories'
+                      InputProps={{
+                      startAdornment: (
+                          <InputAdornment position='start'>
+                            <SearchIcon />
+                          </InputAdornment>
+                        )
+                      }}
+                      // required={true}
+                      fullWidth={true}
+                      size='medium'
+                      type='text'
+                      autoComplete={false}
+                      onChange={
+                        (e) => {  
+                          setFormData({
+                            ...formData,
+                            category: null,  // reset id if we type
+                            categoryName: e.target.value,
+                          });      
+                          if ( e.target.value.length >= 2 ) {
+                            loadQueriedCategories(
+                              e.target.value,
+                              _setQueriedCategories
+                            );
+                          }  
+                        }
+                      }
+                    />
+                    {
+                      queriedCategoriesList && queriedCategoriesList.length > 0 && (
+                        <TableContainer>
+                          <Table>
+                            <TableHead>
+                              <TableRow>
+                                <TableCell>Category Name</TableCell>
+                              </TableRow>
+                            </TableHead>
+                            <TableBody>
+                              {
+                                queriedCategoriesList.map(categoryItem => (
+                                  <TableRow
+                                    key={categoryItem._id}
+                                    onClick={() => {
+                                      console.log('selected category Id -> ', categoryItem._id);
+                                      const tempCategory = categoryItem;
+                                      setFormData({
+                                        ...formData,
+                                        category: tempCategory._id,
+                                        categoryName: tempCategory.name,
+                                      });
+                                      setQueriedCategoriesList([]);                    
+                                    }}
+                                  >
+                                    <TableCell>{categoryItem.name}</TableCell>
+                                  </TableRow>
+                                ))
+                              }
+                            </TableBody>
+                          </Table>
+                        </TableContainer>
+                      )
+                    }
+                  </div>                  
+                </Grid>
+                <Grid
+                  xs={12}
+                >
+                  <div className="mb-2">
+                    <TextField
+                      placeholder='Select Category Image'
+                      required={true}
+                      fullWidth={true}
+                      type='file'
+                      autoComplete={false}
+                      onChange={e => fileSelectedHandler(e)}
+                    />
+                  </div>
+                </Grid>
+                <Grid
+                  xs={12}
+                >                  
+                  <TextField
+                    id='servicePrice'
+                    name='servicePrice'
+                    value={servicePrice}
+                    placeholder='Enter Service Price'
+                    label='Service Price'
+                    required={true}
+                    fullWidth={true}
+                    size='medium'
+                    type='text'
+                    autoComplete={false}
+                    onChange={e => onChange(e)}
+                  />
+                </Grid>
+                <Grid
+                  xs={12}
+                >
+                  <div className='ml-2 mt-2'>
+                    <FormControlLabel
+                      control={
+                        <Checkbox
+                          checked={featured}
+                          onChange={ e => handleFeaturedOnChange(e)}
+                          name="featured"
+                          size='medium'
+                        />                  
+                      }
+                      label='Featured'
+                    />
+                  </div>
+                </Grid>
+              </Grid> 
+            )
+          }
+        </div> 
+
+        <div className='mb-2'>
+          <Button
+            onClick={e => submitAddorUpdate()}
+            color='secondary'
+            variant='contained'
+          >
+            {match.params.serviceId ? 'Update Service' : 'Add Service'}
+          </Button>
+        </div>
       </div>
-    </div>
+    </Container>
   );
 }
 
-export default AddService
+export default AddService;
 
 
 
-{/* <div className='row'>
-      {/* Search Bar for Products */}
-    //   <form autoComplete='off'>
-    //     <div className='input-field'>
-    //       <i className='material-icons prefix'>search</i>
-    //       <input
-    //         id='search'
-    //         type='search'
-    //         onChange={e => loadQueriedProducts(e.target.value)}
-    //         name='search'
-    //         placeholder='Search for Services'
-    //       />
-    //       <label className='label-icon' htmlFor='search'></label>
-    //       <i className='material-icons'>close</i>
-    //     </div>
-    //   </form>
-    //   {/* End of Search Bar for Products */}
-    //   {/* Products Lİst Section */}
-    //   <div className='col s12 m4'>
-    //     <ul class='collection'>
-    //       {productsQuery.length > 0 &&
-    //         productsQuery.map(product => (
-    //           <ProductRowForAddService
-    //             key={product._id}
-    //             productInfo={product}
-    //             selectProduct={selectProduct}
-    //           />
-    //         ))}
-    //     </ul>
-    //   </div>
-    //   {/* End of Products Lİst Section */}
-
-    //   {/* Service Info Section */}
-    //   <div className='col s6'>
-    //     <div className='row mp-0'>
-    //       <input
-    //         value={productName}
-    //         name='productName'
-    //         id='productName'
-    //         type='text'
-    //         className='validate'
-    //         disabled
-    //       />
-    //       <label className='active' htmlFor='productName'>
-    //         Product Name
-    //       </label>
-    //     </div>
-    //     <div className='row mp-0'>
-    //       <input
-    //         value={serviceType}
-    //         name='serviceType'
-    //         id='serviceType'
-    //         type='text'
-    //         className='validate'
-    //         onChange={e => onChange(e)}
-    //       />
-    //       <label className='active' htmlFor='serviceType'>
-    //         Service Type
-    //       </label>
-    //     </div>
-    //     <div className='row mp-0'>
-    //       <input
-    //         value={servicePrice}
-    //         name='servicePrice'
-    //         id='servicePrice'
-    //         type='text'
-    //         className='validate'
-    //         onChange={e => onChange(e)}
-    //       />
-    //       <label className='active' htmlFor='servicePrice'>
-    //         Service Price
-    //       </label>
-    //     </div>
-    //     <button
-    //       className='btn waves-effect waves-light mt-2'
-    //       type='button'
-    //       onClick={e => submitAdd()}
-    //     >
-    //       Submit
-    //       <i class='material-icons right'>send</i>
-    //     </button>
-    //   </div>
-    //   {/* End of Service Info Section */}
-    // </div> */}

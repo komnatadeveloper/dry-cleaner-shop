@@ -4,7 +4,7 @@ import publicContext from "./publicContext";
 import publicReducer from "./publicReducer";
 
 import {
-  GET_SERVICES,
+  GET_SERVICES_AND_CATEGORIES,
   PUBLIC_ERROR,
   SET_PUBLIC_LOADING,
   ADD_TO_CART,
@@ -14,6 +14,7 @@ import {
 const PublicState = props => {
   const initialState = {
     publicServices: [],
+    publicCategories: [],
     cart: null,
     loading: true
   }; // End of initialState 
@@ -27,16 +28,14 @@ const PublicState = props => {
     });
   }
 
-  const getServices = async () => {
+  const getServicesAndCategories = async () => {
     setPublicLoading(true)      
     try {
-      const res = await axios.get("/api/public/featured-services");
-
+      const res = await axios.get("/api/public/services-and-categories");
       dispatch({
-        type: GET_SERVICES,
+        type: GET_SERVICES_AND_CATEGORIES,
         payload: res.data
       });
-
     } catch (err) {
       dispatch( {
         type: PUBLIC_ERROR,
@@ -188,10 +187,11 @@ const PublicState = props => {
         loading: state.loading,
         cart: state.cart,
         publicServices: state.publicServices,
+        publicCategories: state.publicCategories,
         addToCart,
         setCart,
         setCartDirectly,
-        getServices,
+        getServicesAndCategories,
         setPublicLoading,
         changeItemQuantity
       }}

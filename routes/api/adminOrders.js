@@ -14,7 +14,7 @@ router.post('/', authAdmin, async ( req, res) => {
     // console.log('REQ.BODY.USER', req.body.user);
 
     const {
-      user,
+      user,  // user ID
       date,
       serviceList,
       orderStatus,
@@ -68,13 +68,16 @@ router.put('/:orderId', authAdmin, async ( req, res) => {
   try {
     // Check if order exists & See its initial status
     const order = await Order.findById(req.params.orderId);
-
+    if ( !order ) {
+      return res.status(400).json({ errors: [{ msg: "Order does not exist!" }] });
+    }
     const {
-      user,
+      user,  // userId
       serviceList,
       orderStatus,
       orderTotalPrice
     } = req.body;
+    console.log('routes/adminOrders -> update order -> req.body -> ',req.body);
 
     // Check if there is that NEW customer exists
     const customer = await User.findById(user);
@@ -85,7 +88,7 @@ router.put('/:orderId', authAdmin, async ( req, res) => {
     const initialTotal = order.orderTotalPrice; // to calculate new balance
 
     // Update Order Fields & Save To DB
-    order.user = user._id;
+    order.user = user;
     order.serviceList = serviceList;
     order.orderStatus = orderStatus;
     order.orderTotalPrice = orderTotalPrice;
@@ -100,7 +103,7 @@ router.put('/:orderId', authAdmin, async ( req, res) => {
       orderId: order._id
     });
 
-    userActivity.customerId = user._id;
+    userActivity.customerId = user;
     userActivity.amount = orderTotalPrice;
     await userActivity.save();
 
@@ -135,14 +138,13 @@ router.get('/', authAdmin, async ( req, res) => {
 router.get('/:orderId', authAdmin, async ( req, res) => { 
 
   try {
-
     // Check if order exists
     const order = await Order.findById(req.params.orderId).populate(
       "user",
       "username"
     ).populate('serviceList.service', 'productName serviceType' );  // productName serviceType
 
-    res.status(200).json(order)
+    res.status(200).json(order);
     
   } catch (err) {
     if (err.kind === 'ObjectId') {

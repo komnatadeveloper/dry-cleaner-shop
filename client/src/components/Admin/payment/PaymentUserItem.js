@@ -1,4 +1,16 @@
 import React from "react";
+import {
+  Container,
+  TextField,
+  Button,
+  TableContainer,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Paper
+} from '@material-ui/core';
 
 const PaymentUserItem = ({ userInfo, selectUser }) => {
   const { _id, username, name, middleName, surName, balance } = userInfo;
@@ -8,19 +20,21 @@ const PaymentUserItem = ({ userInfo, selectUser }) => {
 
 
   return (
-    <tr>
-      <td>{`${username}`}</td>
-      <td>{fullName}</td>
-      <td>{balance}</td>
-      <td>
+    <TableRow
+      onClick={e => selectUser({userInfo})}
+    >
+      <TableCell>{`${username}`}</TableCell>
+      <TableCell>{fullName}</TableCell>
+      <TableCell>{balance}</TableCell>
+      {/* <TableCell>
         <a
           onClick={e => selectUser({userInfo})}
           className='waves-effect waves-light btn-small red'
         >
           <i className='material-icons right'>check</i>Add
         </a>
-      </td>
-    </tr>
+      </TableCell> */}
+    </TableRow>
   );
 };
 

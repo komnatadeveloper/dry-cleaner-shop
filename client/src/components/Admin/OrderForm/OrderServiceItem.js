@@ -1,11 +1,11 @@
 import React from 'react'
 
 const newServiceItem = ({service, addToOrder}) => {
-  const { _id, productName, serviceType, servicePrice } = service;
+  const { _id, serviceName,  servicePrice } = service;
 
   return (
     <tr>
-      <td>{`${productName} ${serviceType}`}</td>
+      <td>{serviceName}</td>
       <td className='right-align'>{`$${servicePrice.toFixed(2)}`}</td>
       <td className='center-align'>
         <a

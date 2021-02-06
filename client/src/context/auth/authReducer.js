@@ -2,6 +2,7 @@
 import {
   USER_LOGIN_FAIL,
   USER_LOGIN_SUCCESS,
+  USER_REGISTER_SUCCESS,
   USER_LOADED,
   AUTH_ERROR,
   ADMIN_LOADED,
@@ -35,6 +36,7 @@ export default (state, action) => {
         loading: false
       };
     case USER_LOGIN_SUCCESS:
+    case USER_REGISTER_SUCCESS:
     case ADMIN_LOGIN_SUCCESS:
       localStorage.setItem(
         "auth",

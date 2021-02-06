@@ -1,28 +1,31 @@
 import {
+  // Customers
   CUSTOMERS_LOADED,
-  ORDERS_LOADED,
+  CUSTOMER_DELETED,
   PAYMENTS_LOADED,
   SERVICES_LOADED,
   SINGLE_SERVICE_LOADED,
-  CUSTOMER_ADDED,
-  CUSTOMER_UPDATED,
-  QUERIED_SERVICES_LOADED,
-  CLEAR_QUERIED_SERVICES,
-  SERVICE_STATUSES_LOADED,
-  QUERIED_USERS_LOADED,
-  ORDER_FORM_SUBMITTED,
+  SERVICE_STATUSES_LOADED,  
+  // Categories
+  CATEGORIES_LOADED,
+  CATEGORY_ADDED,
+  CATEGORY_DELETED,
+  // Products
   PRODUCTS_INFO_LOADED,
   PRODUCT_ADDED,
   PRODUCT_UPDATED,
   QUERIED_PRODUCTS_LOADED,
+  // Services
   SERVICE_ADDED,
   SERVICE_UPDATED,
   PRODUCT_DELETED,
   SERVICE_DELETED,
-  SINGLE_ORDER_LOADED,
-  ORDER_FORM_UPDATED,
+  CLEAR_QUERIED_SERVICES,
+  // Orders
+  ORDERS_LOADED,
+  // Users
+  CLEAR_QUERIED_USERS,
   SET_ADMIN_LOADING,
-  CLEAR_QUERIED_USERS
 } from "../types";
 
 
@@ -56,6 +59,23 @@ export default (state, action) => {
           product._id === payload._id ? payload : product
         )
       };
+    case CATEGORIES_LOADED:
+      return {
+        ...state,
+        categories: payload
+      };
+    case CATEGORY_ADDED:
+      return {
+        ...state,
+        categories: [...state.categories, payload]
+      };
+    case CATEGORY_DELETED:
+      return {
+        ...state,
+        categories: state.categories.filter(
+          category => category._id !== payload._id
+        )
+      };
     case SERVICE_ADDED:
       return {
         ...state,
@@ -71,12 +91,19 @@ export default (state, action) => {
     case SERVICE_DELETED:
       return {
         ...state,
-        services: state.products.filter(service => service._id !== payload._id)
+        services: state.services.filter(service => service._id !== payload._id)
       };
     case CUSTOMERS_LOADED:
       return {
         ...state,
         customers: payload
+      };
+    case CUSTOMER_DELETED:
+      return {
+        ...state,
+        customers: state.customers.filter(
+          customerItem => customerItem._id !== payload._id
+        )
       };
     case ORDERS_LOADED:
       return {
@@ -93,11 +120,6 @@ export default (state, action) => {
         ...state,
         services: payload
       };
-    case QUERIED_SERVICES_LOADED:
-      return {
-        ...state,
-        serviceQuery: payload
-      };
     case CLEAR_QUERIED_SERVICES:
       return {
         ...state,
@@ -112,11 +134,6 @@ export default (state, action) => {
       return {
         ...state,
         serviceToBeEditted: payload
-      };
-    case QUERIED_USERS_LOADED:
-      return {
-        ...state,
-        userQuery: payload
       };
     case CLEAR_QUERIED_USERS:
       return {

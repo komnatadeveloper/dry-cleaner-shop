@@ -1,78 +1,148 @@
-import React, {useEffect} from 'react'
-import {Link} from 'react-router-dom'
-import DeleteConfirmationModel from './DeleteConfirmationModal'
-import M from 'materialize-css'
+import React, { useContext, useState} from 'react'
+import {Link, NavLink} from 'react-router-dom'
+import { uint8ArrayToImageSource } from "../../../utils/helpers";
+import admincontext from '../../../context/admin/adminContext'
 
- const ServiceItemsInRows = ({serviceInfo, deleteService}) => {
-  const { _id, productName, product, serviceType, servicePrice, featured } = serviceInfo
-  useEffect(() => {
-    // M.Modal.init(`service-delete-${_id}`);
-    M.AutoInit()
-  }, [])
+import {
+  TableContainer,
+  Table,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+  Paper,
+  Button,
+  IconButton,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  Avatar
+} from '@material-ui/core';
+import {  withStyles, makeStyles } from '@material-ui/core/styles';
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
+import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
+
+ const ServiceItemsInRows = ({serviceInfo}) => {
+  const adminContext1 = useContext(admincontext)
+  const { deleteService} = adminContext1;
+  const { _id, serviceName, category, categoryName, image, servicePrice, featured } = serviceInfo;
+  const [ isModalOpen, setIsModalOpen ] = useState(false);
+  const _handleClickOpenDeleteModal = () => {
+    setIsModalOpen(true);
+  }
+  const _handleClickCloseDeleteModal = () => {
+    setIsModalOpen(false);
+  }
+  const [ isDeleting, setIsDeleting ] = useState(false);
+  const _cbDeleteService = () => setIsDeleting(false);
+
+
+  const StyledTableRow = withStyles( (theme) => ({
+    root: {
+      '&:nth-of-type(odd)':{ 
+        backgroundColor:  theme.palette.action.hover,        
+      },
+    }
+  }))(TableRow);
+
+  const StyledTableCell = withStyles( theme => ({
+    head: {
+      backgroundColor: theme.palette.common.black,
+      color: theme.palette.common.white
+    },
+    body: {
+      fontSize: 14
+    }
+  }))(TableCell);
+
+  const useStylesAvatar = makeStyles((theme) => ({
+    large: {
+      width: theme.spacing(9),
+      height: theme.spacing(9),
+    }
+  }));
+  const classes = useStylesAvatar();
 
   return (
-    <tr>
-      <td>{productName}</td>
-      <td>{serviceType}</td>
-      {/* <td>{totalOrders}</td> */}
-      <td className='right-align'>{servicePrice.toFixed(2)}</td>
-      <td>
+    <StyledTableRow>
+      <StyledTableCell>{serviceName}</StyledTableCell>
+      <StyledTableCell>
+        <Avatar 
+          src={uint8ArrayToImageSource(image.data)} 
+          alt={serviceName}
+          variant='circular'
+          className={classes.large}
+        />
+      </StyledTableCell>
+      <StyledTableCell>{categoryName}</StyledTableCell>
+      <StyledTableCell align='right'>{servicePrice.toFixed(2)}</StyledTableCell>
+      <StyledTableCell align='center'>
         {featured && (
-          <span className="flexrow mp-0 justify-content-center">
-            <i className='m-auto material-icons small'>done</i>
-          </span>
+          <DoneOutlineIcon />
         )}
-      </td>
-      <td className='center-align'>
-        <a
-          className='waves-effect waves-light modal-trigger mr-1'
-          href={`#sd-${_id}`}
-          // href={`#service-delete`}
-          // onClick={e => deleteService(_id)}
+      </StyledTableCell>
+      <StyledTableCell align='center'>
+        {
+          isDeleting 
+          ? (
+              <p>Deleting...</p>
+            )
+          : (
+              <>
+                <IconButton
+                  component={NavLink}
+                  to={`/dashboard/services/edit/${_id}`}
+                >
+                  <EditIcon />
+                </IconButton>
+                <IconButton
+                  onClick={_handleClickOpenDeleteModal}
+                  color="secondary"        
+                >
+                  <DeleteForeverIcon />
+                </IconButton>
+              </>
+          ) 
+        }        
+        <Dialog
+          open={isModalOpen}
+          onClose= {_handleClickCloseDeleteModal}
+          aria-labelledby={`sd-${_id}-title`}
+          aria-describedby={`sd-${_id}-description`}
         >
-          <i className='material-icons small red-text'>delete_forever</i>
-        </a>
-        <Link
-          to={`/dashboard/services/edit/${_id}`}
-          className='waves-effect waves-light mr-1'
-        >
-          <i className='material-icons small grey-text text-darken-1'>edit</i>
-        </Link>
-        {/* MODAL BEGIN */}
-        <div id={`sd-${_id}`} className='modal'>
-          <div className='modal-content'>
-            <h4>Delete Confirmation</h4>
-            <p>Are you sure you want to delete Service?</p>
-          </div>
-          <div className='modal-footer'>
-            <span
-              style={{
-                display: "flex",
-                flexDirection: "row",
-                justifyContent: "center"
+          <DialogTitle
+            id={`sd-${_id}-title`}
+          >
+            Delete Confirmation
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id={`sd-${_id}-description`}>
+              Are you sure you want to delete Service?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={_handleClickCloseDeleteModal} color='primary'>
+              Cancel
+            </Button>
+            <Button 
+              onClick={() => {
+                _handleClickCloseDeleteModal();
+                setIsDeleting(true);
+                deleteService(
+                  _id,
+                  _cbDeleteService
+                );
               }}
-            >
-              <a
-                href='#!'
-                className='modal-close waves-effect waves-green red btn-small mr-2'
-                style={{ marginRight: "1rem" }}
-              >
-                Cancel <i className='material-icons small  right'>close</i>
-              </a>
-              <a
-                href='#!'
-                onClick={e => deleteService(_id)}
-                className='modal-close waves-effect waves-green btn-small ml-2'
-              >
-                Agree <i className='material-icons small  right'>send</i>
-              </a>
-            </span>
-          </div>
-        </div>
+              color='secondary'
+            >Delete</Button>
+          </DialogActions>          
+        </Dialog>
         {/* MODAL END */}
-        {/* <DeleteConfirmationModel _id={_id} /> */}
-      </td>
-    </tr>
+      </StyledTableCell>
+    </StyledTableRow>
   );
 }
 

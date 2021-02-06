@@ -1,23 +1,18 @@
 import React, { useContext, useEffect, useState } from "react";
 import publicContext from "../../../../context/public/publicContext";
-import FeaturedServicesTab from "./FeaturedServicesTab";
-import IronTab from "./IronTab";
-import DryCleanTab from "./DryCleanTab";
-import M from 'materialize-css'
-
-
+import SingleCategoryTab from "./SingleCategoryTab";
+import CategoriesRow from './CategoriesRow';
 const Services = () => {
   const publicContext1 = useContext(publicContext)
   const {
-    publicServices
+    publicServices,
+    publicCategories
   } = publicContext1
 
   const [publicServicesList, setPublicServicesList] = useState([]);
-  const [servicesChoice, setServicesChoice] = useState('featured')
+  const [servicesChoice, setServicesChoice] = useState(publicCategories[0].name);
 
   useEffect(() => {
-    // eslint-disable-next-line
-    M.AutoInit()
     // eslint-disable-next-line
     setPublicServicesList(publicServices);
     // eslint-disable-next-line
@@ -39,91 +34,27 @@ const Services = () => {
 
   return (
     <div>
-      <div className='center'>
-        <h2>Services</h2>
+      <div className="pt-4"></div>
+      <div className='text-center  mb-2'>
+        <h2>Categories</h2>
       </div>
-      <div className='row'>
-        {/* Services Nav Menu */}
-        <nav id='home-services-nav' className='white  z-depth-0'>
-          <div>
-            <ul className='flexrow justify-content-space-around'>
-              <li>
-                <a
-                  onClick={e => handleFeaturedClick(e)}
-                  href='#!'
-                  className={
-                    servicesChoice === "featured"
-                      ? "red-text  border-bottom"
-                      : "red-text text-lighten-3"
-                  }
-                >
-                  <span>FEATURED</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={e => handleDryCleanClick(e)}
-                  href='#!'
-                  className={
-                    servicesChoice === "Dry Clean"
-                      ? "red-text  border-bottom"
-                      : "red-text text-lighten-3"
-                  }
-                >
-                  DRY CLEAN
-                </a>
-              </li>
-              <li>
-                <a
-                  onClick={e => handleIronClick(e)}
-                  href='#!'
-                  className={
-                    servicesChoice === "Iron"
-                      ? "red-text  border-bottom"
-                      : "red-text text-lighten-3"
-                  }
-                >
-                  IRON
-                </a>
-              </li>
-            </ul>
-          </div>
-        </nav>
-        {/*  END OF SERVICES MENU */}
-        <div style={{ margin: "auto" }} className='col s12'>
-          {servicesChoice === "featured" && <FeaturedServicesTab />}
-          {servicesChoice === "Dry Clean" && <DryCleanTab />}
-          {servicesChoice === "Iron" && <IronTab />}
-        </div>
+
+        
+      <CategoriesRow 
+        publicCategories={publicCategories}  
+        onClick={setServicesChoice}
+        selectedCategoryName= {servicesChoice}
+      />
+      <div style={{height:'1rem'}}></div>
+      <div style={{ margin: "auto" }} >
+        { <SingleCategoryTab
+            serviceList={publicServices.filter(
+              serviceItem => serviceItem.categoryName === servicesChoice
+            )}
+          /> 
+        }
       </div>
-      {/* This Section Will Be DISABLED Due to Jquery Overlap Problem */}
-      {/* This Section Will Be DISABLED Due to Jquery Overlap Problem */}
-      {/* <div className='row'>
-        <div className='col s12'>
-          <ul className='tabs'>
-            <li className='tab col s2'>
-              <a href='#featuredServices'>Featured</a>
-            </li>
-            {/* <li class="tab col s3"><a class="active" href="#clothesTab">Clothes</a></li> */}
-      {/* <li className='tab col s2'>
-              <a href='#ordersTab'>Dry Clean</a>
-            </li>
-            <li className='tab col s2'>
-              <a href='#servicesTab'>Iron</a>
-            </li>
-          </ul>
-        </div>
-        <div id='customersTab' className='col s12'>
-          <FeaturedServicesTab />
-        </div>
-        <div id='ordersTab' className='col s12'>
-          <DryCleanTab />
-        </div>
-        <div id='servicesTab' className='col s12'>
-          <IronTab />
-        </div>
-      </div> */}
-      {/* END OF This Section Will Be DISABLED Due to Jquery Overlap Problem */}
+      
     </div>
   );
 }

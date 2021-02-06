@@ -1,12 +1,17 @@
 import React, {useEffect } from 'react';
-import 'materialize-css/dist/css/materialize.min.css';
-import M from 'materialize-css/dist/js/materialize.min.js';
+// import 'materialize-css/dist/css/materialize.min.css';
+// import M from 'materialize-css/dist/js/materialize.min.js';
 
 import './Utilities.css';
 import './App.css';
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
-import Navbar from "./components/layout/Navbar";
+// Layout
+import ContentBody from './components/layout/ContentBody';
+import Navbar from "./components/layout/Navbar/Navbar";
+import GlobalStyles from './components/layout/GlobalStyles';
 import Alert from './components/layout/Alert';
+import {makeStyles} from '@material-ui/core/styles';
+
 import About from './components/public/About';
 import Home from "./components/public/home/Home";
 import UserPage from "./components/public/UserPage";
@@ -31,18 +36,20 @@ import UserRoute from './components/routing/UserRoute'
 import CustomersTab from './components/Admin/Customers/CustomersTab'
 import OrdersTab from "./components/Admin/Orders/OrdersTab";
 import ServicesTab from './components/Admin/Services/ServicesTab'
-import ProductsTab from './components/Admin/Products/ProductsTab'
+import CategoriesPage from './components/Admin/Categories/CategoriesPage';
+import AddCategory from './components/Admin/Categories/AddCategory';
 import CustomerDetails from './components/Admin/Customers/CustomerDetails'
 import NewOrder from './components/Admin/OrderForm/NewOrder';
+import  PaymentsPage  from './components/Admin/payment/PaymentsPage';
 import AddPayment  from './components/Admin/payment/AddPayment'
 import AddService from './components/Admin/Services/AddService'
-import Cart from './components/public/cart/Cart';
 import Footer from './components/layout/Footer'
 
 // User
 import UserMain from './components/user/main/UserMain'
 import SingleOrder from './components/user/singleOrder/SingleOrder'
-  
+ 
+
 
 // if (localStorage.auth) {
 //   setAuthToken(localStorage.auth);
@@ -53,12 +60,12 @@ import SingleOrder from './components/user/singleOrder/SingleOrder'
 
 
 
-const  App =  () => {
+const  App =  () => { 
 
 
   useEffect(  () => {
     // Initialize Materialize
-    M.AutoInit();
+    // M.AutoInit();
 
     if (localStorage.auth) {
       setAuthToken(localStorage.auth);
@@ -70,18 +77,35 @@ const  App =  () => {
     
   }, []);
 
+  const useStyles = makeStyles((theme) => ({
+    root: {
+      display: 'flex'
+    },
+    content: {
+      flexGrow: 1,
+      backgroundColor: theme.palette.background.default,
+      padding: theme.spacing(3)
+    }
+  }));
+  const classes = useStyles();
+
   return (
-    <div className='App'>
+    <div 
+      className='App' 
+      // style={{display: 'flex'}}
+    >
       <AlertState>
         <AuthState>
           <PublicState>
             <UserState>
               <AdminState>
                 <BrowserRouter>
+                  <ContentBody>
                   <Navbar />
                   <Alert />
                   <AuthLoader />
-                  <div style={{ minHeight: "90vh" }} className='mp-0'>
+                  {/* <div style={{ minHeight: "90vh" }} className='mp-0'> */}
+                    <GlobalStyles />
                     <Switch>
                       <Route exact path='/' component={Home} />
                       <Route exact path='/about' component={About} />
@@ -108,18 +132,28 @@ const  App =  () => {
                       />
                       <AdminRoute
                         exact
+                        path='/dashboard/categories'
+                        component={CategoriesPage}
+                      />
+                      <AdminRoute
+                        exact
+                        path='/dashboard/categories/add'
+                        component={AddCategory}
+                      />
+                      <AdminRoute
+                        exact
                         path='/dashboard/services'
                         component={ServicesTab}
                       />
                       <AdminRoute
                         exact
-                        path='/dashboard/products'
-                        component={ProductsTab}
+                        path={`/dashboard/orders/add`}
+                        component={NewOrder}
                       />
                       <AdminRoute
                         exact
-                        path={`/dashboard/orders/add`}
-                        component={NewOrder}
+                        path='/dashboard/payments'
+                        component={PaymentsPage}
                       />
                       <AdminRoute
                         exact
@@ -172,11 +206,12 @@ const  App =  () => {
                         component={AddClothes}
                       />
                       <Route exact path='/user/:userId' component={UserPage} />
-                      <Route exact path='/cart' component={Cart} />
+
                       <Route exact path='/user/:userId' component={UserPage} />
                     </Switch>
-                  </div>
+                  {/* </div> */}
                   <Footer />
+                  </ContentBody>
                 </BrowserRouter>
               </AdminState>
             </UserState>

@@ -50,8 +50,7 @@ router.post('/add', authAdmin,  async (req, res) => {
     res.status(200).json({
       msg: "User is added successfully",
       customer: userForClient
-    });
-    
+    });    
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
@@ -116,16 +115,16 @@ router.delete('/info/:customerId', authAdmin,  async (req, res) => {
     const orderList = await Order.find({ customerId: req.params.customerId })
     if( orderList.length > 0) {
       return res.status(400).json(
-        { errors: [{ msg: "Customer has orders, and can not be deleted!" }] } )
+        { errors: [{ msg: "Customer has orders, and can not be deleted!" }] } );
     }
-
-    await user.remove()
-
+    await user.remove();
+    // Mutate for sending  to Client without password
+    const userForClient = new Object( {...user._doc})
+    delete userForClient.password; // to send client
     res.status(200).json({
       msg: "Customer has been deleted successfully",
-      user
+      customer: userForClient
     });
-
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

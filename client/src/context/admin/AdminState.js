@@ -6,6 +6,10 @@ import alertContext from "../alert/alertContext";
 import authContext from "../auth/authContext";
 
 import {
+  // Customers
+  CUSTOMER_ADDED,
+  CUSTOMER_UPDATED,
+  CUSTOMER_DELETED,
   CUSTOMERS_LOADED,
   ORDERS_LOADED,
   PAYMENTS_LOADED,
@@ -13,17 +17,17 @@ import {
   SERVICE_ADDED,
   SERVICE_UPDATED,
   SINGLE_SERVICE_LOADED,
-  CUSTOMER_ADDED,
-  CUSTOMER_UPDATED,
-  QUERIED_SERVICES_LOADED,
   CLEAR_QUERIED_SERVICES,
   SERVICE_STATUSES_LOADED,
-  QUERIED_USERS_LOADED,
   ORDER_FORM_SUBMITTED,
   PRODUCTS_INFO_LOADED,
   PRODUCT_ADDED,
   PRODUCT_UPDATED,
   QUERIED_PRODUCTS_LOADED,
+  // Categories
+  CATEGORIES_LOADED,
+  CATEGORY_ADDED,
+  CATEGORY_DELETED,
   PRODUCT_DELETED,
   SERVICE_DELETED,
   SINGLE_ORDER_LOADED,
@@ -36,6 +40,8 @@ const AdminState = props => {
   const initialState = {
     customers: [],
     orders: [],
+    categories: [],
+    categoryQuery: [],
     services: [],
     serviceToBeEditted: null,
     serviceQuery: [],
@@ -96,7 +102,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -122,7 +128,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -152,7 +158,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -187,7 +193,7 @@ const AdminState = props => {
 
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -225,23 +231,159 @@ const AdminState = props => {
   
 
 
-  //-----------------------SERVICES------------------------------
+  //-----------------------CATEGORIES------------------------------
 
-  // Add a Service
-  const addNewService = async ({ formData }) => {
+  
+  const addCategory = async ({ formData }) => {
+    if (!formData.image || !formData.name) {
+      return;
+    }
+    const formData1 = new FormData();
+    formData1.append("image", formData.image);
+    formData1.append("name", formData.name);
+    console.log(formData);
+
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+      const res = await axios.post(
+        `/api/admin/categories`, 
+        formData1, 
+        config
+      );
+      dispatch({
+        type: CATEGORY_ADDED,
+        payload: res.data.category
+      });
+      setAlert(res.data.msg, 'success', 3000)
+
+    } catch (err) {
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+  };  // End of addCategory
+
+  // Delete a Category
+  const deleteCategory = async (_id, cb) => {
     try {
       const config = {
         headers: {
           "Content-Type": "application/json"
         }
       };
+      const res = await axios.delete(`/api/admin/categories/${_id}`, config);
+      dispatch({
+        type: CATEGORY_DELETED,
+        payload: res.data.category
+      });
+      setAlert(res.data.msg, "success", 3000);
+      if ( cb ){
+        cb();
+      }
+    } catch (err) {
+      const errors = err.response.data.errors;
+      if ( cb ){
+        cb();
+      }
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+  };  // End of Delete a Category
 
-      const res = await axios.post(`/api/admin/services`, formData, config);
+  // Load All Categories
+  const loadCategories = async () => {
+    try {
+      setAdminLoading(true);
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };      
+      const res = await axios.get("/api/admin/categories", config);
+      // console.log(res.data);
+
+      dispatch({
+        type: CATEGORIES_LOADED,
+        payload: res.data
+      });
+      setAdminLoading(false);
+    } catch (err) {
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+  }  // End of loadCategories
+
+  // Query Categories
+  const loadQueriedCategories = async (
+    searched,
+    cb
+  ) => {
+    try {    
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };
+      if(searched){
+        const res = await axios.get(`/api/admin/categories/query?searched=${searched}`, config);
+        // console.log(res.data);
+        return cb( res.data );  // queried categories list   
+      } else {  
+        return cb( [] );   
+      } 
+    } catch (err) {
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+      return cb ( [] );
+    }
+  }  // End of loadQueriedCategories
+
+
+
+
+  //-----------------------SERVICES------------------------------
+
+  
+  // Add a Service
+  const addNewService = async ({ formData }) => {
+    if (
+      !formData.image 
+      || !formData.category
+      || !formData.serviceName
+    ) {
+      return;
+    }    
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+      const formData1 = new FormData();
+      formData1.append("image", formData.image);
+      formData1.append("serviceName", formData.serviceName);
+      formData1.append("servicePrice", formData.servicePrice);
+      formData1.append("category", formData.category);
+      formData1.append("featured", formData.featured);
+
+      const res = await axios.post(`/api/admin/services`, formData1, config);
 
       if (res.data) {
         dispatch({
           type: SERVICE_ADDED,
-          payload: res.data
+          payload: res.data.service
         });
       }
       setAlert(res.data.msg, "success", 3000);
@@ -249,7 +391,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -259,29 +401,51 @@ const AdminState = props => {
     try {
       const config = {
         headers: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+      const config2 = {
+        headers: {
           "Content-Type": "application/json"
         }
       };
-
-      const res = await axios.put(`/api/admin/services/${serviceId}`, formData, config);
-
+      const formData1 = new FormData();
+      if ( formData.isImageUpdated ) {
+        formData1.append("image", formData.image);
+        formData1.append("isImageUpdated", formData.isImageUpdated);
+        formData1.append("serviceName", formData.serviceName);
+        formData1.append("servicePrice", formData.servicePrice);
+        formData1.append("category", formData.category);
+        formData1.append("featured", formData.featured);
+      }
+      let res; 
+      if ( formData.isImageUpdated ) {
+        res = await axios.put(`/api/admin/services/image-updated/${serviceId}`, formData1, config);
+      } else {
+        let formData2 = {...formData};
+        formData2.image = undefined;
+        res = await axios.put(`/api/admin/services/no-image-update/${serviceId}`, formData2, config2);
+      }      
       dispatch({
         type: SERVICE_UPDATED,
         payload: res.data.service
       });
       setAlert(res.data.msg, "success", 3000);
-
     } catch (err) {
       const errors = err.response.data.errors;
-
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
-  };
+  };  // End of Update a Service
+  
+  
 
   // Delete a Service
-  const deleteService = async (_id) => {
+  const deleteService = async (
+    _id,
+    cb  // callback
+  ) => {
     try {
       const config = {
         headers: {
@@ -289,19 +453,18 @@ const AdminState = props => {
         }
       };
       const res = await axios.delete(`/api/admin/services/${_id}`, config);
-
+      if(cb) { cb(); }
       dispatch({
         type: SERVICE_DELETED,
         payload: res.data.service
       });
-      setAlert(res.data.msg, "success", 3000);
-
+      setAlert(res.data.msg, "success", 3000);      
     } catch (err) {
       const errors = err.response.data.errors;
-
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
+      if(cb) { cb(); }
     }
   };
 
@@ -326,7 +489,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -351,7 +514,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -380,7 +543,7 @@ const AdminState = props => {
       next(null)
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
     setAdminLoading(false)
@@ -389,36 +552,37 @@ const AdminState = props => {
   
 
   // Query Services
-  const loadQueriedServices = async (searched) => {
-    try {
-    
+  const loadQueriedServices = async (
+    searched,
+    cb  // callBack Function
+  ) => {
+    try {    
       const config = {
         headers: {
           "Content-Type": "application/json"
-      }
-    };
-    if(searched){
-      const res = await axios.get(`/api/admin/services/query?searched=${searched}`, config);
-      // console.log(res.data);
-
-      dispatch({
-        type: QUERIED_SERVICES_LOADED,
-        payload: res.data
-      });
-    } else {
-      dispatch({
-        type: CLEAR_QUERIED_SERVICES        
-      });     
-    }  
-
+        }
+      };
+      if(searched){
+        const res = await axios.get(`/api/admin/services/query?searched=${searched}`, config);
+        // console.log(res.data);
+        // dispatch({
+        //   type: QUERIED_SERVICES_LOADED,
+        //   payload: res.data
+        // });
+        cb(res.data);
+      } else {
+        // dispatch({
+        //   type: CLEAR_QUERIED_SERVICES        
+        // }); 
+        cb( [] );    
+      } 
     } catch (err) {
       const errors = err.response.data.errors;
-
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
-  }
+  }  // End of loadQueriedServices
 
 
 
@@ -427,7 +591,10 @@ const AdminState = props => {
   //-----------------------ORDERS---------------------------------
  
   // Submit New Order
-  const submitNewOrder = async ({ formData }) => {
+  const submitNewOrder = async ({ 
+    formData,
+    cb
+  }) => {
     // console.log(formData);
     try {
       const config = {
@@ -436,19 +603,18 @@ const AdminState = props => {
         }
       };
       const res = await axios.post(`/api/admin/orders`, formData, config);
-
+      if ( cb ) {
+        cb( res.data.order._id );
+      }
       dispatch({
         type: ORDER_FORM_SUBMITTED,
         payload: res.data.order
       });
-
       setAlert(res.data.msg, "success", 3000);
-
     } catch (err) {
       const errors = err.response.data.errors;
-
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -474,7 +640,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -484,18 +650,14 @@ const AdminState = props => {
   const loadSingleOrder = async ({orderId, next}) => {
     setAdminLoading(true)
     try {
-
       const config = {
         headers: {
           "Content-Type": "application/json"
         }
       };       
-      await loadServiceStatuses()
-
+      await loadServiceStatuses();
       const res = await axios.get(`/api/admin/orders/${orderId}`, config);
-
-      next(res.data)
-
+      next(res.data);
       dispatch({
         type: SINGLE_ORDER_LOADED,
         payload: res.data
@@ -512,14 +674,16 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
     setAdminLoading(false)
   }
 
   // Load Orders
-  const loadOrders = async () => {
+  const loadOrders = async (
+    cb // if there is callBack
+  ) => {
     try {
     setAdminLoading(true)
     
@@ -538,14 +702,14 @@ const AdminState = props => {
         type: ORDERS_LOADED,
         payload: res.data
       });
-
+      if ( cb ) { cb(); }
       setAdminLoading(false);
 
     } catch (err) {
       const errors = err.response.data.errors;
-
+      if ( cb ) { cb(); }
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -574,7 +738,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
     setAdminLoading(false);
@@ -607,7 +771,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
     setAdminLoading(false);
@@ -641,7 +805,7 @@ const AdminState = props => {
       next(null)
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -653,36 +817,34 @@ const AdminState = props => {
   //-----------------------CUSTOMERS------------------------------
 
   // Add a Customer
-  const addNewCustomer = async ({ formData }) => {
+  const addNewCustomer = async ({ 
+    formData,
+    cb  // callBack 
+  }) => {
     try {
       const config = {
         headers: {
           "Content-Type": "application/json"
         }
       };
-
       const res = await axios.post(
         `/api/admin/customers/add`,
         formData,
         config
       );
-
       dispatch({
         type: CUSTOMER_ADDED,
         payload: res.data.customer
       });
-
-
-
+      if ( cb ) {
+        cb(res.data.customer);
+      }
       setAlert(res.data.msg, "success", 3000);
-
       return res.data;
-
     } catch (err) {
       const errors = err.response.data.errors;
-
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   };
@@ -695,28 +857,53 @@ const AdminState = props => {
           "Content-Type": "application/json"
         }
       };      
-      const res = await axios.put(`/api/admin/customers/info/${id}`, formData, config);
-
-
-      
+      const res = await axios.put(`/api/admin/customers/info/${id}`, formData, config);      
       dispatch({
         type: CUSTOMER_UPDATED,
         payload: res.data.customer
       });
-      
-
       setAlert(res.data.msg, "success", 3000);
-
       return res.data      
 
     } catch (err ) {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
+
+  // Delete Customer
+  const deleteCustomer = async ({
+    id, 
+    cb  // callBack
+  }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };      
+      const res = await axios.delete(`/api/admin/customers/info/${id}`,  config);      
+      dispatch({
+        type: CUSTOMER_DELETED,
+        payload: res.data.customer
+      });
+      if ( !cb ) {
+        cb(res.data.customer);
+      }
+      setAlert(res.data.msg, "success", 3000);
+      return res.data
+    } catch (err ) {
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+  }  // End of Delete Customer
+
+
 
   // Load Customers
   const loadCustomers = async () => {
@@ -743,7 +930,10 @@ const AdminState = props => {
   }  
 
   // Load Queried Users
-  const loadQueriedUsers = async searched => {
+  const loadQueriedUsers = async (
+    searched,
+    cb  // callBack
+  ) => {
     try {
       const config = {
         headers: {
@@ -755,19 +945,16 @@ const AdminState = props => {
           `/api/admin/customers/query?searched=${searched}`,
           config
         );
-
-        // console.log(res.data);
-
-        dispatch({
-          type: QUERIED_USERS_LOADED,
-          payload: res.data
-        });
+        cb(res.data);
       } else {
-        dispatch({
-          type: CLEAR_QUERIED_SERVICES
-        });
+        cb( [] );
       }
-    } catch (err) {}
+    } catch (err) {
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
   };
 
   const clearUserQuery = () => {
@@ -797,7 +984,7 @@ const AdminState = props => {
       const errors = err.response.data.errors;
 
       if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
   }
@@ -819,11 +1006,30 @@ const AdminState = props => {
       // console.log(res.data);
 
       if (res.data) return res.data;
-
-
-
     } catch (err) {
-      
+      errors.forEach(error => setAlert(error.msg, "error", 2500));
+    }
+  }
+
+  
+  //-----------------------REPORTS------------------------------
+
+
+  // Load Single Customer
+  const loadDashboardReports = async () => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }; 
+      const res = await axios.get(`/api/admin/reports/dashboard-initial/`, config);
+
+      // console.log(res.data);
+
+      if (res.data) return res.data;
+    } catch (err) {
+      errors.forEach(error => setAlert(error.msg, "error", 2500));
     }
   }
 
@@ -849,8 +1055,9 @@ const AdminState = props => {
         setAdminLoading,       
         // Customers
         loadCustomers,
-        updateCustomer,
         addNewCustomer,
+        updateCustomer,
+        deleteCustomer,
         loadQueriedUsers,
         clearUserQuery,
         loadSingleCustomer,
@@ -864,6 +1071,11 @@ const AdminState = props => {
         loadSingleOrder,
         submitNewOrder,
         updateOrder,
+        // Categories
+        addCategory,
+        deleteCategory,
+        loadCategories,
+        loadQueriedCategories,
         // Services
         loadServices,
         addNewService,
@@ -878,9 +1090,12 @@ const AdminState = props => {
         addProduct,
         deleteProduct,
         loadQueriedProducts,
+        // Reports
+        loadDashboardReports,
         // State variables
         customers: state.customers,
         orders: state.orders,
+        categories: state.categories,
         services: state.services,
         serviceToBeEditted: state.serviceToBeEditted,
         serviceQuery: state.serviceQuery,
