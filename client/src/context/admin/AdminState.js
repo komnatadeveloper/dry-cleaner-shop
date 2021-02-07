@@ -1007,7 +1007,11 @@ const AdminState = props => {
 
       if (res.data) return res.data;
     } catch (err) {
-      errors.forEach(error => setAlert(error.msg, "error", 2500));
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
     }
   }
 
@@ -1029,7 +1033,11 @@ const AdminState = props => {
 
       if (res.data) return res.data;
     } catch (err) {
-      errors.forEach(error => setAlert(error.msg, "error", 2500));
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
     }
   }
 
