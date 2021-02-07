@@ -10,6 +10,7 @@ const Services = () => {
   } = publicContext1
 
   const [publicServicesList, setPublicServicesList] = useState([]);
+  debugger;
   const [servicesChoice, setServicesChoice] = useState(publicCategories[0].name);
 
   useEffect(() => {
