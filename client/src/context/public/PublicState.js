@@ -32,7 +32,6 @@ const PublicState = props => {
     setPublicLoading(true)      
     try {
       const res = await axios.get("/api/public/services-and-categories");
-      debugger;
       dispatch({
         type: GET_SERVICES_AND_CATEGORIES,
         payload: res.data

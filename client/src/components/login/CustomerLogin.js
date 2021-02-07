@@ -2,6 +2,11 @@ import React, { useState, useContext } from "react";
 import {Redirect} from 'react-router-dom'
 import authContext from '../../context/auth/authContext'
 import alertContext from '../../context/alert/alertContext'
+import {
+  Container,
+  TextField,
+  Button,
+} from '@material-ui/core';
 
 const CustomerLogin = () => {
   const authContext1 =  useContext(authContext);
@@ -44,6 +49,8 @@ const CustomerLogin = () => {
     lastName
   } = formData
 
+  const _textFieldMinWidth = 350;
+
     const onChange = e => {
       setFormData({ ...formData, [e.target.name]: e.target.value })
     };
@@ -72,150 +79,157 @@ const CustomerLogin = () => {
   }
 
   return (
-    <div id='user-login-component-div'>
-      <div className='row'>
-        <form className='col s12' onSubmit={e => onSubmit(e)}>
-          <div className='row'>
-            <div className='input-field col s12'>
-              <h1 className='center'>User Login</h1>
-            </div>
-          </div>
-          <div className='row'>
-            <div className='input-field col s6'>
-              <input
+    
+    <Container
+      maxWidth='lg'
+      style={{
+        // backgroundColor:'#ccc',
+        // paddingTop: 64,
+        minHeight:'90vh'
+      }}    
+    >
+      <div 
+        className='flexrow justify-content-center' 
+        style={{minHeight:'90vh'}}
+      >
+        <div 
+          className='flexcol h-100 justify-content-center'
+          style={{minHeight:'90vh'}}
+        >
+          <form className='col s12' onSubmit={e => onSubmit(e)}>
+            <h1 className='text-center mb-2'>User Login</h1>
+            <div className="mb-2" style={{minWidth: _textFieldMinWidth}}>
+              <TextField
                 placeholder='Username'
+                label='Username'
                 required
                 id='userName'
-                type='text'
-                className='validate'
                 name='username'
                 value={username}
                 onChange={e => onChange(e)}
+                variant='outlined'
+                fullWidth={true}
               />
-              <label htmlFor='username'>Username</label>
             </div>
-            <div className='input-field col s6'>
-              <input
+            <div className="mb-2" style={{minWidth: _textFieldMinWidth}}>
+              <TextField
                 placeholder='Email'
+                label='Email'
                 required
                 id='email'
-                type='email'
-                className='validate'
                 name='email'
                 value={email}
+                type='email'
                 onChange={e => onChange(e)}
+                variant='outlined'
+                fullWidth={true}
               />
-              <label htmlFor='Email'>Email</label>
             </div>
-          </div>
-          { loginMode === 'signup' && (
-            <>
-              <div className='row'>
-                <div className='input-field col s6'>
-                  <input
+          
+            { loginMode === 'signup' && (
+              <>
+                <div className="mb-2" style={{minWidth: _textFieldMinWidth}}>
+                  <TextField
                     placeholder='Name'
+                    label='Name'
                     required
                     id='personName'
-                    type='text'
-                    className='validate'
                     name='personName'
                     value={personName}
+                    type='email'
                     onChange={e => onChange(e)}
+                    variant='outlined'
+                    fullWidth={true}
                   />
-                  <label htmlFor='personName'>Name</label>
                 </div>
-                <div className='input-field col s6'>
-                  <input
-                    placeholder='Middle Name'                  
+                <div className="mb-2" style={{minWidth: _textFieldMinWidth}}>
+                  <TextField
+                    placeholder='Middle Name'
+                    label='Middle Name'
+                    required
                     id='middleName'
-                    type='text'
-                    className='validate'
                     name='middleName'
                     value={middleName}
-                    onChange={e => onChange(e)}
-                  />
-                  <label htmlFor='Email'>Middle Name</label>
-                </div>
-              </div>
-              <div className='row'>
-                <div className='input-field col s6'>
-                  <input
-                    placeholder='Last Name'
-                    id='lastName'
                     type='text'
-                    className='validate'
+                    onChange={e => onChange(e)}
+                    variant='outlined'
+                    fullWidth={true}
+                  />
+                </div>
+                <div className="mb-2" style={{minWidth: _textFieldMinWidth}}>
+                  <TextField
+                    placeholder='Last Name'
+                    label='Last Name'
+                    required
+                    id='lastName'
                     name='lastName'
                     value={lastName}
-                    onChange={e => onChange(e)}
-                  />
-                  <label htmlFor='lastName'>Last Name</label>
-                </div>
-                <div className='input-field col s6'>
-                  <input
-                    placeholder='Telephone'                  
-                    id='tel1'
                     type='text'
-                    className='validate'
+                    onChange={e => onChange(e)}
+                    variant='outlined'
+                    fullWidth={true}
+                  />
+                </div>
+                <div className="mb-2" style={{minWidth: _textFieldMinWidth}}>
+                  <TextField
+                    placeholder='Telephone'
+                    label='Telephone'
+                    required
+                    id='tel1'
                     name='tel1'
                     value={tel1}
+                    type='text'
                     onChange={e => onChange(e)}
+                    variant='outlined'
+                    fullWidth={true}
                   />
-                  <label htmlFor='tel1'>Telephone</label>
-                </div>
-              </div>
-            </>
-          )}
-          <div className='row'>
-            <div className='input-field col s12'>
-              <input
-                id='password'
+                </div>                  
+              </>
+            )}
+            <div className="mb-2" style={{minWidth: _textFieldMinWidth}}>
+              <TextField
+                placeholder='Telephone'
+                label='Password'
                 required
-                type='password'
-                className='validate'
+                id='password'
                 name='password'
                 value={password}
+                type='password'
                 onChange={e => onChange(e)}
+                variant='outlined'
+                fullWidth={true}
               />
-              <label htmlFor='password'>Password</label>
-            </div>
-          </div>
-          {
-            loginMode === 'signup' && (
-
-              <div className='row'>
-                <div className='input-field col s12'>
-                  <input
-                    id='confirmPassword'
+            </div>         
+            {
+              loginMode === 'signup' && (              
+                <div className="mb-2" style={{minWidth: _textFieldMinWidth}}>
+                  <TextField
+                    placeholder='Confirm Password'
+                    label='Confirm Password'
                     required
-                    type='password'
-                    className='validate'
+                    id='confirmPassword'
                     name='confirmPassword'
                     value={confirmPassword}
+                    type='password'
                     onChange={e => onChange(e)}
+                    variant='outlined'
+                    fullWidth={true}
                   />
-                  <label htmlFor='password'>Confirm Password</label>
                 </div>
-              </div>
-            )
-          }
-          <div className='row'>
-            <div className='col s6 '>
+              )
+            }
+            <div className='mb-1 mt-1'>
               <a href='#'>Forgot Password?</a>
-            </div>
-            <div className='col s6 right'>
-              <button
-                type='submit'
-                className='btn full waves-effect waves-light green-darken-2  right'
-              >
-                { loginMode === 'login' ? 'Login' : 'Register' }                
-              </button>
-            </div>
-          </div>
-          <div 
-            className='row center'
-          >
-            <div className="flexrow justify-content-center">
-              
+            </div>              
+            <Button
+              variant='contained'
+              color='secondary'
+              fullWidth
+              type='submit'
+            >
+              { loginMode === 'login' ? 'Login' : 'Register' }                
+            </Button>
+            <div className="flexrow justify-content-space-between pt-4">         
               <p 
                 className='mr-4'
                 style={{
@@ -234,35 +248,35 @@ const CustomerLogin = () => {
               {
                 loginMode === 'login'
                 ? (                  
-                  <a  
+                  <Button  
                     href='#'
                     style={{
-                      lineHeight:'3.2rem'
+                      // lineHeight:'3.2rem'
                     }}
                     onClick={(e) => {
                       e.preventDefault();
                       setLoginMode('signup');
                     }}
-                  >Register</a>
+                    color='secondary'
+                  >Register</Button>
                   )
                 : (
-                  <a  
-                    href='#'
-                    style={{
-                      lineHeight:'3.2rem'
-                    }}
+                  <Button
                     onClick={(e) => {
                       e.preventDefault();
                       setLoginMode('login');
                     }}
-                  >Login</a>
+                    color='secondary'
+                  >
+                    Login
+                  </Button>                      
                 )
               }
             </div>
-          </div>
-        </form>
+          </form> 
+        </div>
       </div>
-    </div>
+    </Container>
   );
 };
 
