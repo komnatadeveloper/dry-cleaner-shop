@@ -188,7 +188,7 @@ const CustomerLogin = () => {
             )}
             <div className="mb-2" style={{minWidth: _textFieldMinWidth}}>
               <TextField
-                placeholder='Telephone'
+                placeholder='Enter Password'
                 label='Password'
                 required
                 id='password'
