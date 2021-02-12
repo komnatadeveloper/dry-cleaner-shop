@@ -9,7 +9,8 @@ import {
   ADMIN_LOGIN_SUCCESS,
   ADMIN_LOGIN_FAIL,
   LOGOUT,
-  SET_AUTH_LOADING
+  SET_AUTH_LOADING,
+  USER_UPDATED_SELF
 } from "../types";
 
 
@@ -26,6 +27,12 @@ export default (state, action) => {
         loading: false,
         user: payload.user,
         userType: payload.userType
+      };
+    case USER_UPDATED_SELF:      
+      return {
+        ...state,
+        loading: false,
+        user: payload,
       };
     case ADMIN_LOADED:
       return {

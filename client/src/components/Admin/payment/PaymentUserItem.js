@@ -1,15 +1,7 @@
 import React from "react";
 import {
-  Container,
-  TextField,
-  Button,
-  TableContainer,
-  Table,
-  TableBody,
-  TableHead,
   TableRow,
-  TableCell,
-  Paper
+  TableCell,  
 } from '@material-ui/core';
 
 const PaymentUserItem = ({ userInfo, selectUser }) => {

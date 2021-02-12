@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, Fragment } from 'react'
-import { Link, NavLink} from 'react-router-dom'
-import AddCustomerModal from './AddCustomerModal';
+import {  NavLink} from 'react-router-dom';
 import adminContext from '../../../context/admin/adminContext'
 import CustomersItem from './CustomersItem'
 import Spinner from '../../layout/Spinner'

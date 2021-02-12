@@ -74,21 +74,21 @@ router.get('/dashboard-initial',
         ]
       );
       let paymentTotalInLast30Days;
-      console.log('_paymentTotalInLast30Days -> ', _paymentTotalInLast30Days);
+      // console.log('_paymentTotalInLast30Days -> ', _paymentTotalInLast30Days);
       if ( _paymentTotalInLast30Days.length === 0 ) {
         paymentTotalInLast30Days = 0;
       } else {
         paymentTotalInLast30Days = _paymentTotalInLast30Days[0].totalPayment * (-1);
       }
-      console.log('paymentTotalInLast30Days -> ', paymentTotalInLast30Days);
+      // console.log('paymentTotalInLast30Days -> ', paymentTotalInLast30Days);
       let paymentTotalPrevious30Days;
-      console.log('_paymentTotalPrevious30Days -> ', _paymentTotalPrevious30Days);
+      // console.log('_paymentTotalPrevious30Days -> ', _paymentTotalPrevious30Days);
       if ( _paymentTotalPrevious30Days.length === 0 ) {
         paymentTotalPrevious30Days = 0;
       } else {
         paymentTotalPrevious30Days = _paymentTotalPrevious30Days[0].totalPayment * (-1);
       }
-      console.log('paymentTotalPrevious30Days -> ', paymentTotalPrevious30Days);
+      // console.log('paymentTotalPrevious30Days -> ', paymentTotalPrevious30Days);
       let paymentChangePercentage;
       if ( paymentTotalPrevious30Days !== 0 && paymentTotalInLast30Days !== 0 ) {
         paymentChangePercentage = (( paymentTotalInLast30Days / paymentTotalPrevious30Days ) - 1) * 100;

@@ -136,7 +136,7 @@ const CustomerLogin = () => {
                     id='personName'
                     name='personName'
                     value={personName}
-                    type='email'
+                    type='text'
                     onChange={e => onChange(e)}
                     variant='outlined'
                     fullWidth={true}
@@ -146,7 +146,7 @@ const CustomerLogin = () => {
                   <TextField
                     placeholder='Middle Name'
                     label='Middle Name'
-                    required
+                    // required
                     id='middleName'
                     name='middleName'
                     value={middleName}
@@ -174,7 +174,7 @@ const CustomerLogin = () => {
                   <TextField
                     placeholder='Telephone'
                     label='Telephone'
-                    required
+                    // required
                     id='tel1'
                     name='tel1'
                     value={tel1}

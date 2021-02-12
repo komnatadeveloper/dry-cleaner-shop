@@ -1,19 +1,13 @@
 import React, { useEffect, useState, useContext} from 'react'
-import {Link, NavLink} from 'react-router-dom'
+import { NavLink} from 'react-router-dom'
 import adminContext from '../../../context/admin/adminContext';
 import {
-  Container,
-  Button,
   IconButton,
-  TableContainer,
-  Table,
-  TableBody,
-  TableHead,
   TableRow,
   TableCell,
-  Paper
+  Chip,
 } from '@material-ui/core';
-import {  withStyles, makeStyles } from '@material-ui/core/styles';
+import {  withStyles, createMuiTheme, ThemeProvider,  } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 import DetailsIcon from '@material-ui/icons/Details';
@@ -68,6 +62,17 @@ const CustomersItem = (
   const fullName = ([name, surName].join(' ')).trim()
 
 
+  const _balanceCustomTheme = createMuiTheme({
+    palette: {
+      primary: {
+        // Yellow -> '#ffeb3b'  deeporange -> '#e64a19'  amber -> '#ef6c00' green -> '#43a047'
+        main: '#43a047',  // you can not write any hex color here. there is a list of colors supported. For further info, look at material ui colors
+        contrastText: '#fafafa'  // white -> '#fafafa'
+      },      
+    }
+  });
+
+
   return (
     <StyledTableRow 
       key={_id}      
@@ -75,7 +80,17 @@ const CustomersItem = (
       <StyledTableCell size='small' component='th' scope='row'>{fullName}</StyledTableCell>
       <StyledTableCell size='small' component='th' scope='row'>{username}</StyledTableCell>
       <StyledTableCell size='small' component='th' align='right' scope='row'>
-        {balance.toFixed(2)}
+        <ThemeProvider theme={_balanceCustomTheme}>
+          <Chip 
+            color={ 
+              balance >= 0 
+                ? 'primary'
+                : 'secondary'            
+            }
+            label={balance.toFixed(2)}
+            size='small'
+          />
+        </ThemeProvider>
       </StyledTableCell>
       <StyledTableCell size='small' component='th' align='center' scope='row'>
         {

@@ -142,7 +142,7 @@ router.get('/:orderId', authAdmin, async ( req, res) => {
     const order = await Order.findById(req.params.orderId).populate(
       "user",
       "username"
-    ).populate('serviceList.service', 'productName serviceType' );  // productName serviceType
+    ).populate('serviceList.service', 'productName serviceName ' );  // productName serviceType
 
     res.status(200).json(order);
     

@@ -6,13 +6,8 @@ import { uint8ArrayToImageSource } from "../../../utils/helpers";
 import Spinner from '../../layout/Spinner';
 // import { StyledTableCell, StyledTableRow } from "../../layout/CustomTable";
 import {
-  TableContainer,
-  Table,
-  TableBody,
-  TableHead,
   TableRow,
   TableCell,
-  Paper,
   Button,
   IconButton,
   Dialog,

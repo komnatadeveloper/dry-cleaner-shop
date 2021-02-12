@@ -223,7 +223,87 @@ router.put('/orders/:orderId', auth, async (req, res) => {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
-} )
+} );
+
+
+// Update Account Info
+router.put('/account', auth,  async (req, res) => { 
+  try {
+    // Check if customer exists
+    const user = await User.findById(req.user.id);
+    if( !user) {
+      return res.status(400).json({ errors: [{ msg: "User does not exist!" }] })
+    }
+    const variablesArray = [
+      // "username",  DISABLED
+      // "email",     DISABLED
+      "name",
+      "middleName",
+      "surName",
+      "tel1",
+      "tel2",
+      "address"
+    ];
+    variablesArray.forEach(variable => {    
+      user[variable] = req.body[variable];      
+    });
+    await user.save();
+    // Mutate for sending  to Client without password
+    const userForClient = new Object({ ...user._doc });
+    delete userForClient.password; // to send client
+    res.status(200).json({
+      msg: "Account Updated Successfully",
+      user: userForClient
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});  // End of Update Account Info
+
+
+// Update Password
+router.post('/update-pwd', auth,  async (req, res) => { 
+  try {
+    const { 
+      currentPassword,
+      newPassword,
+      confirmNewPassword 
+    } = req.body;
+    console.log('API/user.js/update-password -> req.body ->  ',  req.body);
+    if ( !currentPassword || !newPassword || currentPassword === '' || newPassword === '' ) {
+      return res.status(400).json({ errors: [{ msg: "Please check your passwords!" }] })
+    }
+    // Check if customer exists
+    const user = await User.findById(req.user.id);
+    if( !user) {
+      return res.status(400).json({ errors: [{ msg: "User does not exist!" }] })
+    }
+
+    // Confirm password
+    const isMatch = await bcrypt.compare(currentPassword, user.password);
+
+    if( !isMatch) {
+      return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] })
+    }
+
+    // Encrypt password
+    const salt = await bcrypt.genSalt(10);
+
+    user.password = await bcrypt.hash(newPassword, salt)
+
+    await user.save();
+    res.status(200).json({
+      user,
+      msg: "Password Updated Successfully",
+    });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Server Error");
+  }
+});  // End of Update Password
+
+
 
 
 

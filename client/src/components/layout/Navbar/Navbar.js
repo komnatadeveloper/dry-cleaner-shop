@@ -136,6 +136,10 @@ const Navbar = ({
         content='Orders'
       />  
       <_CustomNavButton
+        navPath= '/user-main/account'
+        content='Account'
+      />  
+      <_CustomNavButton
           onClick= { () => {
             logout();
           }}

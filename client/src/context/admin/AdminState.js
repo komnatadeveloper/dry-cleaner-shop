@@ -890,13 +890,16 @@ const AdminState = props => {
         type: CUSTOMER_DELETED,
         payload: res.data.customer
       });
-      if ( !cb ) {
+      if ( cb ) {
         cb(res.data.customer);
       }
       setAlert(res.data.msg, "success", 3000);
       return res.data
     } catch (err ) {
       const errors = err.response.data.errors;
+      if ( cb ) {
+        cb();
+      }
       if (errors) {
         errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
@@ -1015,6 +1018,32 @@ const AdminState = props => {
     }
   }
 
+  // Get Single Customer Activities
+  const loadSingleCustomerActivities = async ({
+    customerId,
+    cb  // callBack
+  }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }; 
+      const res = await axios.get(`/api/admin/customers/all-activities/${customerId}`, config); 
+      if( cb ) {
+        cb( res.data );
+      }
+
+      if (res.data) return res.data;
+    } catch (err) {
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+  }
+
   
   //-----------------------REPORTS------------------------------
 
@@ -1070,6 +1099,7 @@ const AdminState = props => {
         clearUserQuery,
         loadSingleCustomer,
         addPayment,
+        loadSingleCustomerActivities,
         // User Activities
         loadPayments,
         getSingleUserActivity,

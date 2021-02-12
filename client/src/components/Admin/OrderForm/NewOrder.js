@@ -1,13 +1,9 @@
 import React, { useContext, useState, useEffect, Fragment } from 'react';
 import adminContext from '../../../context/admin/adminContext'
-import OrderServiceItem from './OrderServiceItem'
-import OrderUserItem from './OrderUserItem'
 import ServiceItemInOrders from './ServiceItemInOrders';
-import Spinner from '../../layout/Spinner'
 import alertContext from '../../../context/alert/alertContext';
 import {
   Container,
-  CircularProgress,
   Button,
   Grid,
   TextField,
@@ -15,12 +11,9 @@ import {
   TableContainer,
   Paper,
   Table,
-  TableBody,
   TableHead,
   TableRow,
   TableCell,
-  Checkbox,
-  FormControlLabel
 } from '@material-ui/core';
 import {  withStyles, makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
@@ -86,6 +79,7 @@ const NewOrder = ({ match, history }) => {
         const mapped = {
           service: item.service._id,      // service id OR productId
           productName: item.service.productName,
+          serviceName: item.service.serviceName,
           serviceType: item.service.serviceType,
           unitPrice: item.unitPrice,
           quantity: item.quantity,

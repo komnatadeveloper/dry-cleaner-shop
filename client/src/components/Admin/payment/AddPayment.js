@@ -12,7 +12,6 @@ import {
   TableHead,
   TableRow,
   TableCell,
-  Paper,
   Grid
 } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';

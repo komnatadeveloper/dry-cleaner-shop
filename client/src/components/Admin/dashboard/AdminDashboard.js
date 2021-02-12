@@ -84,7 +84,7 @@ const AdminDashboard = ({ match }) => {
                 <TotalCustomers
                   increaseCount = {_dashboardInitialReport.lastOneMonthCustomerCount}
                   totalCount={_dashboardInitialReport.totalCustomerCount}
-                  descriptionText={'Since last month11'}
+                  descriptionText={'Since last month'}
                 />
               </Grid>
               <Grid item lg={4} md={6} sm={12} xs={12}>

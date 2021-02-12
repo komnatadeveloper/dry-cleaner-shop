@@ -16,7 +16,8 @@ import {
   ADMIN_LOGIN_SUCCESS,
   ADMIN_LOGIN_FAIL,  
   LOGOUT,
-  SET_AUTH_LOADING
+  SET_AUTH_LOADING,
+  USER_UPDATED_SELF
 } from "../types";
 
 
@@ -106,7 +107,7 @@ const AuthState = props => {
 
 
       if( errors ) {
-        errors.forEach(error => setAlert(error.msg, "danger"));
+        errors.forEach(error => setAlert(error.msg, "error"));
       }
       dispatch({
         type: ADMIN_LOGIN_FAIL,
@@ -162,7 +163,7 @@ const AuthState = props => {
 
 
       if( errors ) {
-        errors.forEach(error => setAlert(error.msg, "danger"));
+        errors.forEach(error => setAlert(error.msg, "error"));
       }
       dispatch({
         type: USER_LOGIN_FAIL,
@@ -191,7 +192,7 @@ const AuthState = props => {
           updatedFormData
         ), 
         config
-        );
+      );
         
         // if( errors ) {
         //   errors.forEach(error => setAlert(error.msg, "danger"));
@@ -207,7 +208,7 @@ const AuthState = props => {
 
 
       if( errors ) {
-        errors.forEach(error => setAlert(error.msg, "danger"));
+        errors.forEach(error => setAlert(error.msg, "error"));
       }
       dispatch({
         type: USER_LOGIN_FAIL,
@@ -215,6 +216,72 @@ const AuthState = props => {
       });
     }
   };
+
+  const userUpdateSelfAccount = async ({
+    formData,
+    cb  // callBack
+  }) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+    try {
+      setAuthLoading(true);
+      const res = await axios.put(
+        "/api/users/account", // BE CAREFUL NOT <<auth>> BUT <<users>> ROUTER
+        JSON.stringify(
+          formData
+        ), 
+        config
+      );
+      dispatch({
+        type: USER_UPDATED_SELF,
+        payload: res.data.user
+      });
+      setAuthLoading(false);
+      setAlert(res.data.msg, 'success', 3000);      
+    } catch (err) {
+      setAuthLoading(false);
+      const errors = err.response.data.errors;
+      if( errors ) {
+        errors.forEach(error => setAlert(error.msg, "error"));
+      }
+    }
+  }
+
+  const userUpdateSelfPassword = async ({
+    formData,
+    cb  // callBack
+  }) => {
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };
+    try {
+      const res = await axios.post(
+         "/api/users/update-pwd", // BE CAREFUL NOT <<auth>> BUT <<users>> ROUTER
+        JSON.stringify(
+          formData
+        ), 
+        config
+      );
+      if(cb) {
+        cb();
+      }
+      setAlert(res.data.msg, 'success', 3000);      
+    } catch (err) {
+      if(cb) {
+        cb();
+      }
+      const errors = err.response.data.errors;
+      if( errors ) {
+        errors.forEach(error => setAlert(error.msg, "error"));
+      }
+    }
+  }
+  
 
   const setAuthLoading =  (newStatus) => {
     dispatch({ 
@@ -244,6 +311,8 @@ const AuthState = props => {
         // register,
         userLogin,
         userRegister,
+        userUpdateSelfAccount,  // for customers to update their accounts
+        userUpdateSelfPassword, // for customers to update password
         adminLogin,
         loadUser,
         loadAdmin,

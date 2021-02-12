@@ -79,7 +79,7 @@ router.put('/info/:customerId', authAdmin,  async (req, res) => {
       "address"
     ];
 
-    variablesArray.forEach(variable => {      
+    variablesArray.forEach(variable => {    
       user[variable] = req.body[variable];      
     });
 
@@ -110,9 +110,16 @@ router.delete('/info/:customerId', authAdmin,  async (req, res) => {
         .status(400)
         .json({ errors: [{ msg: "User does not exist!" }] });
     }
-
+    // Check if customer has activities
+    const activityList = await UserActivity.find({
+      customerId: req.params.customerId
+    })
+    if( activityList.length > 0) {
+      return res.status(400).json(
+        { errors: [{ msg: "Customer has activities, and can not be deleted!" }] } );
+    }
     // Check if customer has orders
-    const orderList = await Order.find({ customerId: req.params.customerId })
+    const orderList = await Order.find({ user: req.params.customerId })
     if( orderList.length > 0) {
       return res.status(400).json(
         { errors: [{ msg: "Customer has orders, and can not be deleted!" }] } );
@@ -263,12 +270,12 @@ router.get('/payment', authAdmin,  async (req, res) => {
 
 
 // Get All Activities of a Single User
-router.get('/payment/:customerId', authAdmin,  async (req, res) => {
+router.get('/all-activities/:customerId', authAdmin,  async (req, res) => {
 
   try {
     const activitiyList = await UserActivity.find({
       customerId: req.params.customerId
-    });
+    }).populate('orderId', 'orderStatus');
     res.status(200).json(activitiyList)
   } catch (err) {
     console.error(err.message);
@@ -329,7 +336,7 @@ router.put('/payment/:customerId/:activityId', authAdmin,  async (req, res) => {
 
 })
 
-// Update A Payment
+// Delete A Payment
 router.delete('/payment/:customerId/:activityId', authAdmin, async (req, res) => { 
   try {
     const userActivity = await UserActivity.findById(req.params.activityId);

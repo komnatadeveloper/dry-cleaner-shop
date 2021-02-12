@@ -38,7 +38,7 @@ import OrdersTab from "./components/Admin/Orders/OrdersTab";
 import ServicesTab from './components/Admin/Services/ServicesTab'
 import CategoriesPage from './components/Admin/Categories/CategoriesPage';
 import AddCategory from './components/Admin/Categories/AddCategory';
-import CustomerDetails from './components/Admin/Customers/CustomerDetails'
+import CustomerDetails from './components/Admin/Customers/CustomerDetails/CustomerDetails'
 import NewOrder from './components/Admin/OrderForm/NewOrder';
 import  PaymentsPage  from './components/Admin/payment/PaymentsPage';
 import AddPayment  from './components/Admin/payment/AddPayment'
@@ -48,6 +48,8 @@ import Footer from './components/layout/Footer'
 // User
 import UserMain from './components/user/main/UserMain'
 import SingleOrder from './components/user/singleOrder/SingleOrder'
+import { AccountUserPage } from './components/user/Account/AccountUserPage';
+import { ChangePassword } from './components/user/ChangePassword';
  
 
 
@@ -199,6 +201,16 @@ const  App =  () => {
                         exact
                         path={`/user-main/orders/:_id`}
                         component={SingleOrder}
+                      />
+                      <UserRoute
+                        exact
+                        path={`/user-main/account`}
+                        component={AccountUserPage}
+                      />
+                      <UserRoute
+                        exact
+                        path={`/user-main/change-password`}
+                        component={ChangePassword}
                       />
                       <Route
                         exact
