@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   NavLink,
   withRouter
@@ -10,7 +10,14 @@ import {
   Drawer,
   Toolbar, 
   Button,
-  makeStyles
+  makeStyles,
+  // FOR MODAL
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+  DialogActions,
+  // End of FOR MODAL
 } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
@@ -81,6 +88,47 @@ const Navbar = ({
       </ThemeProvider>
     );
   }  // End of _CustomNavButton
+
+  const [_isLogoutModalOpen, _setIsLogoutModalOpen] = useState(false);
+  const _handleClickOpenLogoutModal = () => {
+    _setIsLogoutModalOpen(true);
+  }
+  const _handleClickCloseLogoutModal = () => {
+    _setIsLogoutModalOpen(false);
+  }
+  const _LogoutModalDialog = () => {    
+    return (
+      <Dialog
+          open={_isLogoutModalOpen}
+          onClose= {_handleClickCloseLogoutModal}
+          aria-labelledby={`logout-modal-title`}
+          aria-describedby={`logout-modal-description`}
+        >
+          <DialogTitle
+            id={`logout-modal-title`}
+          >
+            Logout Confirmation
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id={`logout-modal-description`}>
+              Are you sure you want to Logout?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={_handleClickCloseLogoutModal} color='inherit'>
+              Cancel
+            </Button>
+            <Button 
+              onClick={() => {
+                _handleClickCloseLogoutModal();
+                logout();
+              }}
+              color='secondary'
+            >Logout</Button>
+          </DialogActions>          
+        </Dialog>
+    );
+  }
   
 
 
@@ -113,12 +161,11 @@ const Navbar = ({
         />
         <_CustomNavButton
           navPath= '/dashboard/settings'
-          content={<TuneIcon />}
+          // content={<TuneIcon />}
+          content={'Settings'}
         />     
         <_CustomNavButton
-          onClick= { () => {
-            logout();
-          }}
+          onClick= { _handleClickOpenLogoutModal }
           content={
             <>
               <p style={{color:'#fafafa', marginLeft:'.75rem'}}>Logout</p>
@@ -126,6 +173,7 @@ const Navbar = ({
             </>
           }
         />
+        <_LogoutModalDialog/>
     </>
   );  // End of adminMenu 
   
@@ -140,16 +188,15 @@ const Navbar = ({
         content='Account'
       />  
       <_CustomNavButton
-          onClick= { () => {
-            logout();
-          }}
-          content={
-            <>
-              <p style={{color:'#fafafa', marginLeft:'.75rem'}}>Logout</p>
-              <ExitToAppIcon color='primary'/>
-            </>
-          }
-        />
+        onClick= { _handleClickOpenLogoutModal }
+        content={
+          <>
+            <p style={{color:'#fafafa', marginLeft:'.75rem'}}>Logout</p>
+            <ExitToAppIcon color='primary'/>
+          </>
+        }
+      />
+      <_LogoutModalDialog/>
     </>
   )
 

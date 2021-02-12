@@ -10,10 +10,14 @@ const authAdmin = require("../../middleware/authAdmin");
 // Get All Activities
 router.get("/activities", authAdmin, async (req, res) => {
   try {
-    const userActivityList = await UserActivity.find({})
-    const orderList = await Order.find({}).populate("user", "username");
+    const userActivityList = await UserActivity
+      .find({})
+      .populate("customerId", "username", User)
+      .populate('orderId', 'orderStatus');
 
-    res.status(200).json(orderList);
+    // const orderList = await Order.find({}).populate("user", "username");
+
+    res.status(200).json( userActivityList.reverse() );
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");

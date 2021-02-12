@@ -258,7 +258,7 @@ router.get('/query', authAdmin, async (req, res) => {
           }
         }
       ]
-    });
+    }).select('-image');  // for faster query
     res.status(200).json(serviceList);
   } catch (err) {
     console.error(err.message);

@@ -685,26 +685,19 @@ const AdminState = props => {
     cb // if there is callBack
   ) => {
     try {
-    setAdminLoading(true)
-    
+    setAdminLoading(true);    
     const config = {
       headers: {
         "Content-Type": "application/json"
       }
     };      
-      const res = await axios.get("/api/admin/orders", config);
-
-      console.log('HELLO FROM LOAD ORDERS');
-
-      // console.log(res.data);
-
-      dispatch({
-        type: ORDERS_LOADED,
-        payload: res.data
-      });
-      if ( cb ) { cb(); }
-      setAdminLoading(false);
-
+    const res = await axios.get("/api/admin/orders", config);
+    dispatch({
+      type: ORDERS_LOADED,
+      payload: res.data
+    });
+    if ( cb ) { cb(); }
+    setAdminLoading(false);
     } catch (err) {
       const errors = err.response.data.errors;
       if ( cb ) { cb(); }
@@ -744,6 +737,33 @@ const AdminState = props => {
     setAdminLoading(false);
   }
 
+  const getAllUserActivities= async ({cb}) => {
+    // setAdminLoading(true);
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };
+      const res = await axios.get(
+        `/api/admin/useractivities/activities`,
+        config
+      );
+      if( cb ) {   cb(res.data);  }
+      // setAdminLoading(false);
+      // return res.data
+    } catch (err) {
+      if ( cb ) { cb(null); }
+      console.log(err.request.status === 401);
+      if (err.request.status === 401) handleAuthError();
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+    // setAdminLoading(false);
+  }
+
   const getSingleUserActivity= async ({activityId, next}) => {
     setAdminLoading(true);
     try {
@@ -779,36 +799,27 @@ const AdminState = props => {
 
 
   // Update Payment
-  const updatePayment = async ({formData, next}) => {
-    console.log(formData);
-
+  const updatePayment = async ({formData, next}) => { 
     try {
       const config = {
         headers: {
           "Content-Type": "application/json"
         }
-      };      
-      
+      }; 
       const res = await axios.put(
         `/api/admin/useractivities/payments/${formData._id}`, formData,
         config
-      );
-      
+      );      
       next(res.data)
-
       setAlert(res.data.msg, "success", 3000);
-           
-
     } catch (err ) {
       const errors = err.response.data.errors;
-
       next(null)
-
       if (errors) {
         errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
-  }
+  }  // End of Update Payment
   
 
   
@@ -1102,6 +1113,7 @@ const AdminState = props => {
         loadSingleCustomerActivities,
         // User Activities
         loadPayments,
+        getAllUserActivities, // for AdminDashboard
         getSingleUserActivity,
         updatePayment,
         // Orders

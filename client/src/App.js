@@ -43,6 +43,8 @@ import NewOrder from './components/Admin/OrderForm/NewOrder';
 import  PaymentsPage  from './components/Admin/payment/PaymentsPage';
 import AddPayment  from './components/Admin/payment/AddPayment'
 import AddService from './components/Admin/Services/AddService'
+import { SetttingsPage } from './components/Admin/Settings/SetttingsPage';
+
 import Footer from './components/layout/Footer'
 
 // User
@@ -50,21 +52,21 @@ import UserMain from './components/user/main/UserMain'
 import SingleOrder from './components/user/singleOrder/SingleOrder'
 import { AccountUserPage } from './components/user/Account/AccountUserPage';
 import { ChangePassword } from './components/user/ChangePassword';
- 
+
 
 
 // if (localStorage.auth) {
-//   setAuthToken(localStorage.auth);
+  //   setAuthToken(localStorage.auth);
   
-// }
-
-
-
-
-
-const  App =  () => { 
-
-
+  // }
+  
+  
+  
+  
+  
+  const  App =  () => { 
+    
+    
   useEffect(  () => {
     // Initialize Materialize
     // M.AutoInit();
@@ -191,6 +193,11 @@ const  App =  () => {
                         exact
                         path={`/dashboard/customers/add`}
                         component={CustomerDetails}
+                      />
+                      <AdminRoute
+                        exact
+                        path={`/dashboard/settings`}
+                        component={SetttingsPage}
                       />
                       <UserRoute
                         exact

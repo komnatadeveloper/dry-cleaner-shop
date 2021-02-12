@@ -282,7 +282,7 @@ const NewOrder = ({ match, history }) => {
       >
         <div>
           <div className="text-center mb-2 mt-2"> 
-            <h2>Add Order</h2>
+            <h2>{orderId ? 'Edit Order' : 'Add Order'}</h2>
           </div>  
           <Grid container spacing={3}>
             <Grid
