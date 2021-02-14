@@ -14,7 +14,7 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
  
  ** **
  
- **What is Achieved Up to Now?**
+ **What has been Achieved Up to Now?**
  - **Admin User Type(with full Authority)**
  - Admin has full authority, he can create/delete Category, Create/Update/Delete Service, Create/Update/Delete Customer, Create/Update Orders & Payments, Add Employee.
  - I am not sharing my Admin Credentials to protect my Category and Services, but you can do lots of things using Employee Credentials below.
@@ -49,7 +49,7 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
   [**It has been deployed to Heroku, so you can see!**](https://komnata-dry-cleaner-shop.herokuapp.com/)
   
   **[Client Login Page Link](https://komnata-dry-cleaner-shop.herokuapp.com/user-login)**  
-  **[Admin Login Page](https://komnata-dry-cleaner-shop.herokuapp.com/admin)**  
+  **[Admin & Employee Login Page](https://komnata-dry-cleaner-shop.herokuapp.com/admin)**  
     
     
 ** **
@@ -70,120 +70,72 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
 
 - **Public Client Login Page & Register Page**
 
-<img src="images-for-readmemd/rev01/public/UserLoginPage.png" height=400 style="margin-bottom:32;">
+<img src="images-for-readmemd/rev01/public/UserLoginPage.png" height=400 style="margin-bottom:64;">
 
 <img src="images-for-readmemd/rev01/public/UserRegisterPage.png" height=400>
 ** **
 
+
 ### -----Admin User-----
 
-- A Dashboard URL with 3 Tabs ( Customers, Orders, Services )
-
-** **
-
-- **Customers Tab**
-<img src="images-for-readmemd/admin/dashboard-tabs/customers-tab.png" height=400>
-
-<img src="images-for-readmemd/admin/dashboard-tabs/add customer.png" height=400>
-
-** **
-
-- **Orders Tab with Orders & Payments Select Options**
-
-  - **Orders Option**
-
-  <img src="images-for-readmemd/admin/dashboard-tabs/orders-tab.png" height=400>  
-  
-
-  
-  - **Payments Option**
-  
-  <img src="images-for-readmemd/admin/dashboard-tabs/orders-tab2.png" height=400>
-  
-  <div style="display: flex; flex-direction: column;">
-  </div>
-  
-** **
+- **Dashboard Page**
+<img src="images-for-readmemd/rev01/admin/dashboard.png" height=400>
 
 
+- **Customers Page**
+<img src="images-for-readmemd/rev01/admin/CustomersPage.png" height=400 style="margin-bottom:64;">
+
+- **Add Customer Page**                                                                               
+<img src="images-for-readmemd/rev01/admin/AddCustomerPage.png" height=400>
 
 
-- **Services Tab**
+- **Orders Page**
+<img src="images-for-readmemd/rev01/admin/OrdersPage.png" height=400 style="margin-bottom:64;">
 
-<img src="images-for-readmemd/admin/dashboard-tabs/services-tab.png" height=400>
-
-<img src="images-for-readmemd/admin/dashboard-tabs/services-tab2.png" height=400>
-
-
-** **
+- **Add / Edit Order Page**                                                                               
+<img src="images-for-readmemd/rev01/admin/AddEditOrderPage.png" height=400>
 
 
-- **Add Payments**
+- **Payments Page**
+<img src="images-for-readmemd/rev01/admin/PaymentsPage.png" height=400 style="margin-bottom:64;">
 
-<img src="images-for-readmemd/admin/add-payment/add-payment1.png" height=400>
 
-<img src="images-for-readmemd/admin/add-payment/add-payment2.png" height=400>
+- **Categories Page**
+<img src="images-for-readmemd/rev01/admin/CategoriesPage.png" height=400 style="margin-bottom:64;">
 
-<img src="images-for-readmemd/admin/add-payment/add-payment3.png" height=400>
+- **Categories Page Delete Confirmation**                                                                               
+<img src="images-for-readmemd/rev01/admin/CategoriesPageDeleteConfirmation.png" height=400 style="margin-bottom:64;">
+
+- **Add Category Page**                                                                               
+<img src="images-for-readmemd/rev01/admin/AddCategoryPage.png" height=400>
+
+
+- **Services Page**
+<img src="images-for-readmemd/rev01/admin/ServicesPage.png" height=400 style="margin-bottom:64;">
+
+- **Update Service Page**                                                                               
+<img src="images-for-readmemd/rev01/admin/UpdateServicePage.png" height=400>
+
+
+
+- **Employee List Page**
+<img src="images-for-readmemd/rev01/admin/EmployeeListPage.png" height=400 style="margin-bottom:64;">
+
+- **Add Employee Page**                                                                               
+<img src="images-for-readmemd/rev01/admin/AddEmployeePage.png" height=400>
 
 
 ** **
 
+## TO USE THIS REPO
+- **Create /config/default.json for Development Purpose with Following Code** 
+- **Create /config/production.json for Production Purpose with Following Code** 
+```
 
-- **Add Service**
+{
+  "mongoURI": "mongodb+srv://_YOUR_MONGO_URI",  
+  "jwtSecret":      "YOUR JWT SECRET FOR CUSTOMERS",
+  "jwtSecretAdmin": "wYOUR JWT SECRET FOR ADMINS AND EMPLOYEE"
+}
 
-<img src="images-for-readmemd/admin/add-services/add-service.png" height=400>
-
-
-** **
-
-
-- **Customer Details**
-
-<img src="images-for-readmemd/admin/customer-details.png" height=400>
-
-** **
-
-- **Products Page**
-
-<img src="images-for-readmemd/admin/products-page.png" height=400>
-
-<img src="images-for-readmemd/admin/products-page2.png" height=400>
-
-<img src="images-for-readmemd/admin/products-page3.png" height=400>
-
-** **
-
-
-### -----User (Customer)-----
-
-** **
-
-- **Cart**
-
-Although you can add items to Cart in also Public Mode, I  will demonstrate Cart in User Mode.
-
-Below are Images of Cart with Items and Empty Cart
-
-<img src="images-for-readmemd/user-pages/cart.png" height=400>
-<img src="images-for-readmemd/user-pages/cart-empty.png" height=400>
-
-** **
-
-- **Orders**
-
-<img src="images-for-readmemd/user-pages/user-orders-page.png" height=400>
-
-<img src="images-for-readmemd/user-pages/user-orders-page2.png" height=400>
-
-<img src="images-for-readmemd/user-pages/order-details-page.png" height=400>
-
-** **
-
-## ---------------Backend---------------
-
-- Node.js with Mongoose,
-- A Backend with 2 different bcrypt.js Secrets - 1 for Users, 1 for Admins,
-- Multer & Sharp Libraries for Files
-- jwt authentication
-- password hash by bcryptjs.js
+```
