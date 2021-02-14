@@ -685,26 +685,19 @@ const AdminState = props => {
     cb // if there is callBack
   ) => {
     try {
-    setAdminLoading(true)
-    
+    setAdminLoading(true);    
     const config = {
       headers: {
         "Content-Type": "application/json"
       }
     };      
-      const res = await axios.get("/api/admin/orders", config);
-
-      console.log('HELLO FROM LOAD ORDERS');
-
-      // console.log(res.data);
-
-      dispatch({
-        type: ORDERS_LOADED,
-        payload: res.data
-      });
-      if ( cb ) { cb(); }
-      setAdminLoading(false);
-
+    const res = await axios.get("/api/admin/orders", config);
+    dispatch({
+      type: ORDERS_LOADED,
+      payload: res.data
+    });
+    if ( cb ) { cb(); }
+    setAdminLoading(false);
     } catch (err) {
       const errors = err.response.data.errors;
       if ( cb ) { cb(); }
@@ -724,11 +717,6 @@ const AdminState = props => {
         }
       };      
       const res = await axios.get("/api/admin/useractivities/payments", config);
-
-      console.log('HELLO FROM LOAD PAYMENTS');
-
-      // console.log(res.data);
-
       dispatch({
         type: PAYMENTS_LOADED,
         payload: res.data
@@ -742,6 +730,33 @@ const AdminState = props => {
       }
     }
     setAdminLoading(false);
+  }
+
+  const getAllUserActivities= async ({cb}) => {
+    // setAdminLoading(true);
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };
+      const res = await axios.get(
+        `/api/admin/useractivities/activities`,
+        config
+      );
+      if( cb ) {   cb(res.data);  }
+      // setAdminLoading(false);
+      // return res.data
+    } catch (err) {
+      if ( cb ) { cb(null); }
+      console.log(err.request.status === 401);
+      if (err.request.status === 401) handleAuthError();
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+    // setAdminLoading(false);
   }
 
   const getSingleUserActivity= async ({activityId, next}) => {
@@ -779,36 +794,27 @@ const AdminState = props => {
 
 
   // Update Payment
-  const updatePayment = async ({formData, next}) => {
-    console.log(formData);
-
+  const updatePayment = async ({formData, next}) => { 
     try {
       const config = {
         headers: {
           "Content-Type": "application/json"
         }
-      };      
-      
+      }; 
       const res = await axios.put(
         `/api/admin/useractivities/payments/${formData._id}`, formData,
         config
-      );
-      
+      );      
       next(res.data)
-
       setAlert(res.data.msg, "success", 3000);
-           
-
     } catch (err ) {
       const errors = err.response.data.errors;
-
       next(null)
-
       if (errors) {
         errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
     }
-  }
+  }  // End of Update Payment
   
 
   
@@ -890,13 +896,16 @@ const AdminState = props => {
         type: CUSTOMER_DELETED,
         payload: res.data.customer
       });
-      if ( !cb ) {
+      if ( cb ) {
         cb(res.data.customer);
       }
       setAlert(res.data.msg, "success", 3000);
       return res.data
     } catch (err ) {
       const errors = err.response.data.errors;
+      if ( cb ) {
+        cb();
+      }
       if (errors) {
         errors.forEach(error => setAlert(error.msg, "error", 2500));
       }
@@ -971,7 +980,7 @@ const AdminState = props => {
         }
       };
       
-      const { customerId, payment} = formData
+      const { customerId, payment} = formData;
 
       const res = await axios.post(
         `/api/admin/customers/payment/${customerId}`, formData,
@@ -1015,6 +1024,32 @@ const AdminState = props => {
     }
   }
 
+  // Get Single Customer Activities
+  const loadSingleCustomerActivities = async ({
+    customerId,
+    cb  // callBack
+  }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }; 
+      const res = await axios.get(`/api/admin/customers/all-activities/${customerId}`, config); 
+      if( cb ) {
+        cb( res.data );
+      }
+
+      if (res.data) return res.data;
+    } catch (err) {
+      const errors = err.response.data.errors;
+
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+  }
+
   
   //-----------------------REPORTS------------------------------
 
@@ -1042,9 +1077,64 @@ const AdminState = props => {
   }
 
 
+    //-----------------------EMPLOYEE------------------------------
+
+
+  // Add a Customer
+  const addNewEmployee = async ({ 
+    formData,
+    cb  // callBack 
+  }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };
+      const res = await axios.post(
+        `/api/admin/employee/add`,
+        formData,
+        config
+      );
+      // dispatch({
+      //   type: CUSTOMER_ADDED,
+      //   payload: res.data.customer
+      // });
+      if ( cb ) {
+        cb(res.data.employee);
+      }
+      setAlert(res.data.msg, "success", 3000);
+      return res.data;
+    } catch (err) {
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+  };
   
 
-  
+  // Load All Employee
+  const loadEmployeeList = async ({
+    cb  // callBack
+  }) => {
+    try {
+    setAdminLoading(true)
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };      
+    const res = await axios.get("/api/admin/employee", config);
+    cb(res.data);
+    setAdminLoading(false);
+    } catch (err) {
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+  }  
 
   
 
@@ -1070,8 +1160,10 @@ const AdminState = props => {
         clearUserQuery,
         loadSingleCustomer,
         addPayment,
+        loadSingleCustomerActivities,
         // User Activities
         loadPayments,
+        getAllUserActivities, // for AdminDashboard
         getSingleUserActivity,
         updatePayment,
         // Orders
@@ -1100,6 +1192,9 @@ const AdminState = props => {
         loadQueriedProducts,
         // Reports
         loadDashboardReports,
+        // Employee
+        addNewEmployee,
+        loadEmployeeList,
         // State variables
         customers: state.customers,
         orders: state.orders,

@@ -1,6 +1,5 @@
 import React, {useContext, useEffect, Fragment } from 'react'
-import { Link, NavLink} from 'react-router-dom'
-import AddCustomerModal from './AddCustomerModal';
+import {  NavLink} from 'react-router-dom';
 import adminContext from '../../../context/admin/adminContext'
 import CustomersItem from './CustomersItem'
 import Spinner from '../../layout/Spinner'
@@ -25,7 +24,6 @@ const CustomersTab = () => {
   useEffect(() => {
     if (customers.length === 0) {
       loadCustomers();
-      console.log('HELLO FROM LOAD CUSTOMERS');
     }
   }, [])
   
@@ -128,7 +126,7 @@ const CustomersTab = () => {
             </div>
           )
         }
-        <div className='mb-2'>
+        <div className='mb-2 mt-2'>
           <Button
             component={NavLink}
             color={  'secondary'  }

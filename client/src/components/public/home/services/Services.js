@@ -7,7 +7,7 @@ const Services = () => {
   const {
     publicServices,
     publicCategories
-  } = publicContext1
+  } = publicContext1;
 
   const [publicServicesList, setPublicServicesList] = useState([]);
   const [servicesChoice, setServicesChoice] = useState(publicCategories[0].name);

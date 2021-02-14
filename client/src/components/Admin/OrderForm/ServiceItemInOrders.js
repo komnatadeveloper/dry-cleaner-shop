@@ -1,23 +1,10 @@
 import React, {useEffect, useState} from 'react';
 import {
-  TableContainer,
-  Table,
-  TableBody,
-  TableHead,
   TableRow,
   TableCell,
   Select,
   MenuItem,
   TextField,
-  Paper,
-  Button,
-  IconButton,
-  Dialog,
-  DialogTitle,
-  DialogContent,
-  DialogContentText,
-  DialogActions,
-  Avatar
 } from '@material-ui/core';
 import {  withStyles, makeStyles } from '@material-ui/core/styles';
 
@@ -39,7 +26,6 @@ const ServiceItemInOrders = ({
     unitTotalPrice
   } = service;
   const serviceId = service.service;
-
 
   const StyledTableRow = withStyles( (theme) => ({
     root: {

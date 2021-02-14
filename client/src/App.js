@@ -38,31 +38,39 @@ import OrdersTab from "./components/Admin/Orders/OrdersTab";
 import ServicesTab from './components/Admin/Services/ServicesTab'
 import CategoriesPage from './components/Admin/Categories/CategoriesPage';
 import AddCategory from './components/Admin/Categories/AddCategory';
-import CustomerDetails from './components/Admin/Customers/CustomerDetails'
+import CustomerDetails from './components/Admin/Customers/CustomerDetails/CustomerDetails'
 import NewOrder from './components/Admin/OrderForm/NewOrder';
 import  PaymentsPage  from './components/Admin/payment/PaymentsPage';
 import AddPayment  from './components/Admin/payment/AddPayment'
 import AddService from './components/Admin/Services/AddService'
+import { SettingsPage } from './components/Admin/Settings/SettingsPage';
+import { EmployeeListPage } from './components/Admin/EmployeeList/EmployeeListPage';
+import AddEmployeePage from './components/Admin/Employee/AddEmployeePage';
+import EditEmployeePage from './components/Admin/Employee/EditEmployeePage';
+
+
 import Footer from './components/layout/Footer'
 
 // User
 import UserMain from './components/user/main/UserMain'
 import SingleOrder from './components/user/singleOrder/SingleOrder'
- 
+import { AccountUserPage } from './components/user/Account/AccountUserPage';
+import { ChangePassword } from './components/user/ChangePassword';
+
 
 
 // if (localStorage.auth) {
-//   setAuthToken(localStorage.auth);
+  //   setAuthToken(localStorage.auth);
   
-// }
-
-
-
-
-
-const  App =  () => { 
-
-
+  // }
+  
+  
+  
+  
+  
+  const  App =  () => { 
+    
+    
   useEffect(  () => {
     // Initialize Materialize
     // M.AutoInit();
@@ -190,6 +198,26 @@ const  App =  () => {
                         path={`/dashboard/customers/add`}
                         component={CustomerDetails}
                       />
+                      <AdminRoute
+                        exact
+                        path={`/dashboard/settings`}
+                        component={SettingsPage}
+                      />
+                      <AdminRoute
+                        exact
+                        path={`/dashboard/employee-list`}
+                        component={EmployeeListPage}
+                      />
+                      <AdminRoute
+                        exact
+                        path={`/dashboard/employee/add`}
+                        component={AddEmployeePage}
+                      />
+                      <AdminRoute
+                        exact
+                        path={`/dashboard/employee/edit/:employeeId`}
+                        component={EditEmployeePage}
+                      />
                       <UserRoute
                         exact
                         path={`/user-main`}
@@ -199,6 +227,16 @@ const  App =  () => {
                         exact
                         path={`/user-main/orders/:_id`}
                         component={SingleOrder}
+                      />
+                      <UserRoute
+                        exact
+                        path={`/user-main/account`}
+                        component={AccountUserPage}
+                      />
+                      <UserRoute
+                        exact
+                        path={`/user-main/change-password`}
+                        component={ChangePassword}
                       />
                       <Route
                         exact

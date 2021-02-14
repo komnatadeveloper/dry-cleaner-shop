@@ -3,7 +3,7 @@ import {
   TableRow,
   TableCell,
 } from '@material-ui/core';
-import {  withStyles, makeStyles } from '@material-ui/core/styles';
+import {  withStyles } from '@material-ui/core/styles';
 
 const ServiceRowInOrderForm = ({service}) => {
   const { quantity, unitPrice, unitServiceStatus, unitTotalPrice } = service;

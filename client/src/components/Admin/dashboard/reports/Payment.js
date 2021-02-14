@@ -71,7 +71,7 @@ const Payment = ({
               color="textPrimary"
               variant="h3"
             >
-              ${paymentQuantity}
+              ${paymentQuantity.toFixed(1)}
             </Typography>
           </Grid>
           <Grid item>

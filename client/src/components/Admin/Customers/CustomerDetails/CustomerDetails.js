@@ -1,51 +1,65 @@
 import React, {useContext, useEffect, useState} from 'react';
-import adminContext from '../../../context/admin/adminContext'
+import adminContext from '../../../../context/admin/adminContext'
 import {
   Container,
   CircularProgress,
   Button,
-  FormControl,
   Grid,
   TextField
 } from '@material-ui/core';
 import SendIcon from '@material-ui/icons/Send';
+import { ActivitiesTable } from './ActivitiesTable';
+
+
 
 const CustomerDetails =   ({match}) => {
   const adminContext1 = useContext(adminContext)
-  const {  updateCustomer, addNewCustomer, loadSingleCustomer } = adminContext1;
+  const {  updateCustomer, addNewCustomer, loadSingleCustomer, loadSingleCustomerActivities } = adminContext1;
   const [ _loading,  _setLoading] = useState(false);
 
+  const [ _willShowActivities, _setWillShowActivities ] = useState(false);
+  const [ _customerActivities, _setCustomerActivities ] = useState( [] );
+  const _cbLoadSingleCustomerActivities = ( res ) => {
+    console.log('admin/customers/customerDetails -> _cbLoadSingleCustomerActivities -> res -> ', res);
+    _setCustomerActivities(res);
+  }
 
-    const [formData, setFormData] = useState({
-    name:"",
-    middleName:"",
-    surName:"",
-    username: "",
-    email:"", 
-    tel1:"",
-    tel2:"", 
-    address:"",
-    balance:""
-    });
 
-    const updateFormFromBackend = (res) => {
-      let balance;
-      if (res.balance === 0 ) {
-        balance = res.balance.toFixed(2)
-      } 
-        setFormData({
-          ...formData,
-          name: res.name || "",
-          middleName: res.middleName || "",
-          surName: res.surName || "",
-          username: res.username || "",
-          email: res.email || "",
-          tel1: res.tel1 || "",
-          tel2: res.tel2 || "",
-          // balance: res.balance || "",
-          balance: balance || ""
-        });
+  const [formData, setFormData] = useState({
+  name:"",
+  middleName:"",
+  surName:"",
+  username: "",
+  email:"", 
+  tel1:"",
+  tel2:"", 
+  address:"",
+  balance:""
+  });
+
+  const updateFormFromBackend = (res) => {
+    let balance;
+    if ( res.balance === 0 ) {
+      balance= res.balance.toFixed(2);
+    } else if (res.balance ) {
+      balance = res.balance.toFixed(2);
+    } else if ( !res.balance ) {
+      balance = res.user.balance.toFixed(2);
     }
+    setFormData({
+      ...formData,
+      name: res.name || (res.user && res.user.name ) || "",
+      middleName: res.middleName ||(res.user && res.user.middleName ) || "",
+      surName: res.surName || (res.user && res.user.surName ) || "",
+      username: res.username || (res.user && res.user.username ) || "",
+      email: res.email || (res.user && res.user.email ) || "",
+      tel1: res.tel1 || (res.user && res.user.tel1) || "",
+      tel2: res.tel2 ||  (res.user && res.user.tel2 )|| "",
+      address: res.address ||  (res.user && res.user.address )|| "",
+      // balance: res.balance || "",
+      balance: balance || "",
+    });
+  }
 
 
 
@@ -54,12 +68,12 @@ const CustomerDetails =   ({match}) => {
     if(match.params.id) {
       _setLoading(true);
       loadSingleCustomer(match.params.id)
-        .then(res => {  
+        .then(res => {            
           updateFormFromBackend(res);
           _setLoading(false);
         })
     }
-  }, [updateCustomer])
+  }, []);
 
   const {    
     name,
@@ -116,7 +130,7 @@ const CustomerDetails =   ({match}) => {
         }}
         onSubmit={e => onSubmit(e)}
       >
-        <div>
+        <div>          
           {
             _loading 
               ? (
@@ -288,8 +302,21 @@ const CustomerDetails =   ({match}) => {
                 </div>
             )
           }
+          {
+            _willShowActivities && (
+              <>
+                <div className='text-center mb-1 mt-4'>
+                  <h3>Customer Activities</h3>
+                </div>
+                <ActivitiesTable
+                  activitiesList={_customerActivities}
+                />
+
+              </>
+            )
+          }
         </div>
-        <div className='mb-2'>
+        <div className='mb-2 mt-2 flexrow'>
           <Button
             size='large'
             disabled={_loading}
@@ -300,6 +327,23 @@ const CustomerDetails =   ({match}) => {
           >
             {match.params.id ? 'Update User' : 'Create User'}
           </Button>
+          <div className="ml-1">
+            <Button
+              size='large'
+              variant='contained'
+              color='secondary'
+              onClick={() => {
+                _setWillShowActivities(true);
+                loadSingleCustomerActivities({
+                  customerId: match.params.id,
+                  cb: _cbLoadSingleCustomerActivities
+
+                });
+              }}
+            >
+              View Activities
+            </Button>
+          </div>
         </div>
       </form>
     </Container>

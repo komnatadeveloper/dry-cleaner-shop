@@ -1,8 +1,9 @@
-import React, {useContext, useEffect, Fragment, useState } from 'react';
-import { Link, NavLink } from 'react-router-dom';
+import React, {useContext, useEffect } from 'react';
+import {  NavLink } from 'react-router-dom';
 import adminContext from '../../../context/admin/adminContext'
 import {
   Container,
+  CircularProgress,
   Button,
   TableContainer,
   Table,
@@ -56,30 +57,49 @@ const PaymentsPage = () => {
       >
         <div>
           <h2 className='text-center mt-1 mb-1'>Payments</h2>
-          <TableContainer component={Paper}>
-            <Table className={classes.table}>
-              <TableHead>
-                  <TableRow>
-                  <StyledTableCell>Payment Date</StyledTableCell>
-                  <StyledTableCell>Username</StyledTableCell>
-                  <StyledTableCell align='right'>Quantity</StyledTableCell>
-                  <StyledTableCell align='center'>Actions</StyledTableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {payments ? (
-                  payments.length > 0 &&
-                  payments.map(payment => (
-                    <PaymentItem key={payment._id} payment={payment} />
-                  ))
-                ) : (
-                  <></>
-                )}
-              </TableBody>
-            </Table>
-          </TableContainer>
+          {
+            loading 
+            ? (
+                <div 
+                  className='flexrow justify-content-center'
+                  style={{
+                    minHeight: 180,
+                    paddingTop: 120
+                  }}
+                >
+                  <CircularProgress />
+                </div>
+              )
+            : (
+                <>
+
+                  <TableContainer component={Paper}>
+                    <Table className={classes.table}>
+                      <TableHead>
+                          <TableRow>
+                          <StyledTableCell>Payment Date</StyledTableCell>
+                          <StyledTableCell>Username</StyledTableCell>
+                          <StyledTableCell align='right'>Quantity</StyledTableCell>
+                          <StyledTableCell align='center'>Actions</StyledTableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {payments ? (
+                          payments.length > 0 &&
+                          payments.map(payment => (
+                            <PaymentItem key={payment._id} payment={payment} />
+                          ))
+                        ) : (
+                          <></>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </>
+              )
+          }
         </div>
-        <div className='mb-2'>
+        <div className='mb-2 mt-2'>
           <Button
             component={NavLink}
             to='/dashboard/payments/add-payment'

@@ -14,7 +14,7 @@ const UserActivitySchema = new Schema({
   },
   orderId: {
     type: Schema.Types.ObjectId,
-    ref: "Order"
+    ref: "order"
   },
   activityType: {
     type: String, // "payment" or "order"

@@ -1,12 +1,6 @@
-import React, {useContext, useEffect, } from 'react'
-import {  NavLink } from 'react-router-dom'
-import OrdersItem from './OrdersItem'
-import adminContext from '../../../context/admin/adminContext'
+import React from 'react'
+import ActivityItem from './ActivityItem'
 import {
-  CircularProgress,
-  Container,
-  TextField,
-  Button,
   TableContainer,
   Table,
   TableBody,
@@ -17,9 +11,7 @@ import {
 } from '@material-ui/core';
 import {  withStyles, makeStyles } from '@material-ui/core/styles';
 
-const OrdersTabInAdminDashBoard = ({orders}) => {
-
-
+const ActivitiesTavInAdminDashBoard = ({activitiesList}) => {
   const StyledTableCell = withStyles( theme => ({
     head: {
       backgroundColor: theme.palette.common.black,
@@ -41,26 +33,29 @@ const OrdersTabInAdminDashBoard = ({orders}) => {
     
         
             <div>
-              <h2 className='text-center mt-2 mb-1'>Orders</h2>
+              <h2 className='text-center mt-2 mb-1'>Latest Activities</h2>
               <TableContainer component={Paper}>
                 <Table className={classes.table}>
                     <TableHead>
                     <TableRow>
                       <StyledTableCell>
-                        Order Date
+                        Date
+                      </StyledTableCell>
+                      <StyledTableCell align='center'>
+                        Type
                       </StyledTableCell>
                       <StyledTableCell>Username</StyledTableCell>
-                      <StyledTableCell align='right'>Price</StyledTableCell>
+                      <StyledTableCell align='right'>Amount</StyledTableCell>
                       <StyledTableCell align='center'>Status</StyledTableCell>
                       <StyledTableCell>Actions</StyledTableCell>
                     </TableRow>
                   </TableHead>
 
                 <TableBody>
-                  {orders ? (
-                    orders.length > 0 &&
-                    orders.map(order => (
-                      <OrdersItem key={order._id} order={order} />
+                  {activitiesList ? (
+                    activitiesList.length > 0 &&
+                    activitiesList.map(activityItem => (
+                      <ActivityItem key={activityItem._id} activity={activityItem} />
                     ))
                   ) : (
                     <></>
@@ -74,4 +69,4 @@ const OrdersTabInAdminDashBoard = ({orders}) => {
   );
 }
 
-export default OrdersTabInAdminDashBoard
+export default ActivitiesTavInAdminDashBoard;

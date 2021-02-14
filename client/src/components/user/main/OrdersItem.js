@@ -2,19 +2,12 @@ import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import Moment from 'react-moment';
 import {
-  Container,
-  TextField,
-  Button,
-  TableContainer,
-  Table,
-  TableBody,
-  TableHead,
   TableRow,
   TableCell,
-  Paper,
   IconButton,
+  Chip
 } from '@material-ui/core';
-import {  withStyles, makeStyles } from '@material-ui/core/styles';
+import {  withStyles,  createMuiTheme, ThemeProvider, } from '@material-ui/core/styles';
 import EditIcon from '@material-ui/icons/Edit';
 
 const OrdersItem = ({ order }) => {
@@ -56,6 +49,16 @@ const OrdersItem = ({ order }) => {
     }
   }))(TableCell);
 
+  const _orderStatusCustomTheme = createMuiTheme({
+    palette: {
+      primary: {
+        // Yellow -> '#ffeb3b'  deeporange -> '#e64a19'  amber -> '#ef6c00'
+        main: '#ffeb3b',  // you can not write any hex color here. there is a list of colors supported. For further info, look at material ui colors
+        contrastText: '#673ab7'  // white -> '#fafafa'
+      },      
+    }
+  });
+
   return (
     <StyledTableRow>
       <StyledTableCell size='small'>
@@ -69,7 +72,17 @@ const OrdersItem = ({ order }) => {
         }
       </StyledTableCell>
       <StyledTableCell size='small' align='center'>
-        <span className='badge red'>{orderStatus}</span>
+        <ThemeProvider theme={_orderStatusCustomTheme}>
+          <Chip 
+            color={ 
+              orderStatus === 'In Progress' 
+                ? 'secondary'
+                : 'primary'            
+            }
+            label={orderStatus}
+            size='small'
+          />
+        </ThemeProvider>
       </StyledTableCell>
       <StyledTableCell size='small'>
         <IconButton

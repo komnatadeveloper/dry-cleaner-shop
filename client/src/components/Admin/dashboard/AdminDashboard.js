@@ -1,7 +1,6 @@
 import React, {useContext, useState, useEffect} from 'react'
 import { Redirect } from 'react-router-dom'
 // import AdminTabs from './TOBEDELETED/AdminTabs'
-import AdminTabs from './AdminTabs'
 import authContext from '../../../context/auth/authContext';
 import adminContext from '../../../context/admin/adminContext';
 // Reports
@@ -9,19 +8,12 @@ import TotalCustomers from './reports/TotalCustomers';
 import Payment from './reports/Payment';
 import OrdersProgress from './reports/OrdersProgress';
 // Orders Component
-import OrdersTabInAdminDashBoard from './OrdersTabInAdminDashBoard';
+import ActivitiesTabInAdminDashBoard from './ActivitiesTabInAdminDashBoard';
 
 import {
-  Avatar,
-  Box,
   Container,
   CircularProgress,
-  Card,
-  CardContent,
   Grid,
-  Typography,
-  colors,
-  makeStyles
 } from '@material-ui/core';
 
 
@@ -33,11 +25,20 @@ const AdminDashboard = ({ match }) => {
   const authContext1 = useContext(authContext)
   const adminContext1 = useContext(adminContext)
   const {user, isAuthenticated, userType, loading ,  } = authContext1;
-  const {loadDashboardReports, loadOrders, orders  } = adminContext1;
+  const {loadDashboardReports, loadOrders, orders, getAllUserActivities  } = adminContext1;
   const [ _loading, _setLoading ] = useState(true);
-  const [ _loadingOrders, _setLoadingOrders ] = useState(true);
-  const _cbsetLoadingOrders = () => _setLoadingOrders(false);
+  const [ _loadingUserActivites, _setLoadingUserActivites ] = useState(true);
+  // const _cbsetLoadingOrders = () => _setLoadingOrders(false);
+  const _cbSetLoadingUserActivites = ( resFromApi ) => {
+    if( resFromApi !== null ) {
+      _setUserActivites( resFromApi );
+    } else {
+      _setUserActivites( [] );
+    }
+    _setLoadingUserActivites(false);
+  };
   const [_dashboardInitialReport, _setDashboardInitialReport ] = useState({});
+  const [ _userActivities, _setUserActivites ] = useState([]);
 
   useEffect( () => {
     loadDashboardReports()
@@ -46,7 +47,11 @@ const AdminDashboard = ({ match }) => {
         _setDashboardInitialReport(res);
         _setLoading(false);
       } );
-    loadOrders(_cbsetLoadingOrders);
+    
+    getAllUserActivities({
+      cb: _cbSetLoadingUserActivites
+    })
+    // loadOrders(_cbsetLoadingOrders);
   }, []);
   // console.log(user, isAuthenticated, userType);
   if( ! loading && (!user || !isAuthenticated || userType !== 'Admin')) {
@@ -64,7 +69,7 @@ const AdminDashboard = ({ match }) => {
       }}    
     > 
       {
-        (_loading || _loadingOrders )
+        (_loading || _loadingUserActivites )
         ? (
           <div 
             className='flexrow justify-content-center'
@@ -84,7 +89,7 @@ const AdminDashboard = ({ match }) => {
                 <TotalCustomers
                   increaseCount = {_dashboardInitialReport.lastOneMonthCustomerCount}
                   totalCount={_dashboardInitialReport.totalCustomerCount}
-                  descriptionText={'Since last month11'}
+                  descriptionText={'Since last month'}
                 />
               </Grid>
               <Grid item lg={4} md={6} sm={12} xs={12}>
@@ -102,8 +107,8 @@ const AdminDashboard = ({ match }) => {
                 />
               </Grid>
             </Grid>
-              <OrdersTabInAdminDashBoard 
-                orders={orders}
+              <ActivitiesTabInAdminDashBoard 
+                activitiesList={_userActivities}
               />
           </>
         )

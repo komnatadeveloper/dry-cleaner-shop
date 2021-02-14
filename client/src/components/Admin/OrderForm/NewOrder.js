@@ -1,13 +1,9 @@
 import React, { useContext, useState, useEffect, Fragment } from 'react';
 import adminContext from '../../../context/admin/adminContext'
-import OrderServiceItem from './OrderServiceItem'
-import OrderUserItem from './OrderUserItem'
 import ServiceItemInOrders from './ServiceItemInOrders';
-import Spinner from '../../layout/Spinner'
 import alertContext from '../../../context/alert/alertContext';
 import {
   Container,
-  CircularProgress,
   Button,
   Grid,
   TextField,
@@ -15,12 +11,9 @@ import {
   TableContainer,
   Paper,
   Table,
-  TableBody,
   TableHead,
   TableRow,
   TableCell,
-  Checkbox,
-  FormControlLabel
 } from '@material-ui/core';
 import {  withStyles, makeStyles } from '@material-ui/core/styles';
 import SearchIcon from '@material-ui/icons/Search';
@@ -86,6 +79,7 @@ const NewOrder = ({ match, history }) => {
         const mapped = {
           service: item.service._id,      // service id OR productId
           productName: item.service.productName,
+          serviceName: item.service.serviceName,
           serviceType: item.service.serviceType,
           unitPrice: item.unitPrice,
           quantity: item.quantity,
@@ -288,7 +282,7 @@ const NewOrder = ({ match, history }) => {
       >
         <div>
           <div className="text-center mb-2 mt-2"> 
-            <h2>Add Order</h2>
+            <h2>{orderId ? 'Edit Order' : 'Add Order'}</h2>
           </div>  
           <Grid container spacing={3}>
             <Grid
@@ -499,7 +493,7 @@ const NewOrder = ({ match, history }) => {
                 </li>
               </ul>
             </div>
-            <div className='mb-2'>
+            <div className='mb-2 mt-2'>
               <Button
                 onClick={e => {
                   handleSubmit();
