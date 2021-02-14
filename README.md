@@ -73,10 +73,11 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
 <img src="images-for-readmemd/rev01/public/UserLoginPage.png" height=400 style="margin-bottom:64;">
 
 <img src="images-for-readmemd/rev01/public/UserRegisterPage.png" height=400>
+
 ** **
 
 
-### -----Admin User-----
+### ---------Admin And Employee User---------
 
 - **Dashboard Page**
 <img src="images-for-readmemd/rev01/admin/dashboard.png" height=400>
@@ -127,6 +128,26 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
 
 ** **
 
+
+
+### ---------Customer User---------
+
+- **Main Page (To See Activities)**
+<img src="images-for-readmemd/rev01/customer/MainPage.png" height=400 style="margin-bottom:64;">
+
+- **Order Details Page (To See Single Order Details)**
+<img src="images-for-readmemd/rev01/customer/OrderDetailsPage.png" height=400 style="margin-bottom:64;">
+
+- **Account Information Page**
+<img src="images-for-readmemd/rev01/customer/AccountInformationPage.png" height=400 style="margin-bottom:64;">
+
+
+- **Change Password Page**
+<img src="images-for-readmemd/rev01/customer/ChangePasswordPage.png" height=400 style="margin-bottom:64;">
+
+** **
+
+
 ## TO USE THIS REPO
 - **Create /config/default.json for Development Purpose with Following Code** 
 - **Create /config/production.json for Production Purpose with Following Code** 
@@ -139,3 +160,22 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
 }
 
 ```
+
+- **NOTE**
+ - At the moment, if there is no category added, HomePage will face with an error, since when loading, by default Category[0] Items will be shown. Thus, if there is no category, it causes  an error. 
+ 
+ 
+ ** **
+ 
+ 
+ ## TODO LIST
+ 
+ -  Add Stripe Payment
+ - Update Order Structure to handle Options for Refunds, 
+ - Return Dresses if customer satisfaction is not enough, 
+ - cookie authentication, 
+ - Email Option
+ - Add SCSS
+ - Add SSR using Next.js
+ 
+ 
