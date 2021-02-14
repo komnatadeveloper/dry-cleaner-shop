@@ -29,6 +29,9 @@ node_modules/
 config/default.json
 config/production.json
 
+# 2021.02.11 I needed to add
+.eslintcache
+
 # TOBEDELETED
 TOBEDELETED/
 
