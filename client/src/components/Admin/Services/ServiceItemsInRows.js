@@ -124,7 +124,10 @@ import DoneOutlineIcon from '@material-ui/icons/DoneOutline';
             </DialogContentText>
           </DialogContent>
           <DialogActions>
-            <Button onClick={_handleClickCloseDeleteModal} color='primary'>
+            <Button 
+              onClick={_handleClickCloseDeleteModal} 
+              color='default'
+            >
               Cancel
             </Button>
             <Button 

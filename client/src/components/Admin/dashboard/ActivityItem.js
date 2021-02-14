@@ -84,7 +84,7 @@ const ActivityItem = ({ activity }) => {
           component={NavLink}
           to={
             activityType === 'order' 
-              ? `/dashboard/orders/edit/${_id}`
+              ? `/dashboard/orders/edit/${orderId._id}`
               : `/dashboard/payments/edit/${_id}`
           }
         >

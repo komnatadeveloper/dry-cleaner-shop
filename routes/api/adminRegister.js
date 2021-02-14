@@ -30,10 +30,14 @@ router.post(
         errors: errors.array()
       });
     }
-
     const { username, email, password } = req.body;
-
     try {
+      let adminList = await Admin.find({});
+      if (adminList.length > 0 ) {        
+        return res.status(400).json(
+          { errors: [{ msg: "There is one super admin. You can not register via this endpoint" }] }
+        );
+      }      
       // See if user email exists
       let admin = await Admin.findOne({ email: email });
       if (admin) {

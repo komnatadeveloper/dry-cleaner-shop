@@ -8,6 +8,7 @@ const Service = require("../../models/Service");
 const Product = require("../../models/Product");
 const Order = require("../../models/Order");
 const Category = require("../../models/Category");
+const Admin = require("../../models/Admin");
 
 
 // Add A Service Connected with a Category
@@ -17,7 +18,12 @@ router.post(
   fileCheck.single('image'),
   async (req, res) => {
     try {
-      console.log(req.body)
+      const _clientAdmin = await Admin.findById(req.user.id);
+      if ( !_clientAdmin || _clientAdmin.isEmployee === true ) {
+        return res.status(400).json(
+          { errors: [{ msg: "You are not allowed to perform this action!" }] }
+        );
+      }
       const {
         category,  // => categoryId
         serviceName,
@@ -71,6 +77,12 @@ router.put(
   fileCheck.single('image'),
   async (req, res) => {  
   try {
+    const _clientAdmin = await Admin.findById(req.user.id);
+    if ( !_clientAdmin || _clientAdmin.isEmployee === true ) {
+      return res.status(400).json(
+        { errors: [{ msg: "You are not allowed to perform this action!" }] }
+      );
+    }
     const {
       category,  // => categoryId
       serviceName,
@@ -132,6 +144,12 @@ router.put(
   authAdmin, 
   async (req, res) => {  
   try {
+    const _clientAdmin = await Admin.findById(req.user.id);
+    if ( !_clientAdmin || _clientAdmin.isEmployee === true ) {
+      return res.status(400).json(
+        { errors: [{ msg: "You are not allowed to perform this action!" }] }
+      );
+    }
     const {
       category,  // => categoryId
       serviceName,
@@ -187,6 +205,12 @@ router.put(
 // Delete a Service
 router.delete('/:serviceId', authAdmin, async (req, res) => {  
   try {
+    const _clientAdmin = await Admin.findById(req.user.id);
+    if ( !_clientAdmin || _clientAdmin.isEmployee === true ) {
+      return res.status(400).json(
+        { errors: [{ msg: "You are not allowed to perform this action!" }] }
+      );
+    }
     const service = await Service.findById(req.params.serviceId);
     if (!service) {
       return res.json({ errors: [{ msg: "Service not found!" }] })

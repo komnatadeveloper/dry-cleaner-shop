@@ -316,7 +316,7 @@ const CustomerDetails =   ({match}) => {
             )
           }
         </div>
-        <div className='mb-2 flexrow'>
+        <div className='mb-2 mt-2 flexrow'>
           <Button
             size='large'
             disabled={_loading}

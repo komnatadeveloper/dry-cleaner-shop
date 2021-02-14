@@ -493,7 +493,7 @@ const NewOrder = ({ match, history }) => {
                 </li>
               </ul>
             </div>
-            <div className='mb-2'>
+            <div className='mb-2 mt-2'>
               <Button
                 onClick={e => {
                   handleSubmit();

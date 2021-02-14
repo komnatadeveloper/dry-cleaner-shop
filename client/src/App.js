@@ -43,7 +43,11 @@ import NewOrder from './components/Admin/OrderForm/NewOrder';
 import  PaymentsPage  from './components/Admin/payment/PaymentsPage';
 import AddPayment  from './components/Admin/payment/AddPayment'
 import AddService from './components/Admin/Services/AddService'
-import { SetttingsPage } from './components/Admin/Settings/SetttingsPage';
+import { SettingsPage } from './components/Admin/Settings/SettingsPage';
+import { EmployeeListPage } from './components/Admin/EmployeeList/EmployeeListPage';
+import AddEmployeePage from './components/Admin/Employee/AddEmployeePage';
+import EditEmployeePage from './components/Admin/Employee/EditEmployeePage';
+
 
 import Footer from './components/layout/Footer'
 
@@ -197,7 +201,22 @@ import { ChangePassword } from './components/user/ChangePassword';
                       <AdminRoute
                         exact
                         path={`/dashboard/settings`}
-                        component={SetttingsPage}
+                        component={SettingsPage}
+                      />
+                      <AdminRoute
+                        exact
+                        path={`/dashboard/employee-list`}
+                        component={EmployeeListPage}
+                      />
+                      <AdminRoute
+                        exact
+                        path={`/dashboard/employee/add`}
+                        component={AddEmployeePage}
+                      />
+                      <AdminRoute
+                        exact
+                        path={`/dashboard/employee/edit/:employeeId`}
+                        component={EditEmployeePage}
                       />
                       <UserRoute
                         exact

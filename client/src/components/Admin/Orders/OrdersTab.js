@@ -105,7 +105,7 @@ const OrdersTab = () => {
             </div>
           )
         }
-        <div className='mb-2'>
+        <div className='mb-2 mt-2'>
           <Button
             component={NavLink}
             to='/dashboard/orders/add'

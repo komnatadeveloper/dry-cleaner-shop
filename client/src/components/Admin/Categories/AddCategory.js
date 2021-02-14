@@ -84,7 +84,7 @@ const AddCategory = ({addStatus}) => {
             onChange={e => fileSelectedHandler(e)}
           />
         </span>
-        <div className='mb-2'>
+        <div className='mb-2 mt-2'>
           <Button
             size='large'
             variant='contained'

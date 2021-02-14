@@ -11,16 +11,9 @@ import OrdersProgress from './reports/OrdersProgress';
 import ActivitiesTabInAdminDashBoard from './ActivitiesTabInAdminDashBoard';
 
 import {
-  Avatar,
-  Box,
   Container,
   CircularProgress,
-  Card,
-  CardContent,
   Grid,
-  Typography,
-  colors,
-  makeStyles
 } from '@material-ui/core';
 
 

@@ -1,5 +1,7 @@
 const express = require("express");
+const { check, validationResult } = require("express-validator");
 const router = express.Router();
+const Admin = require("../../models/Admin");
 const User = require("../../models/User");
 const Order = require("../../models/Order");
 const UserActivity = require("../../models/UserActivity");
@@ -7,102 +9,130 @@ const authAdmin = require('../../middleware/authAdmin')
 const bcrypt = require('bcryptjs')
 
 // Add a new Customer
-router.post('/add', authAdmin,  async (req, res) => {
-  try {
-    const {
-      username,
-      email,
-      // password,  A SOLUTION BELOW
-      name,
-      middleName,
-      surName,
-      tel1,
-      tel2,
-      address
-    } = req.body;
+router.post('/add', 
+  authAdmin,
+  [  // Express Validator
+      check("username", "Please Enter Username").isString(),
+      check("email", "Please Enter Email!").notEmpty(),   
+      check("email", "Please Enter a Valid Email!").isEmail(),   
+      check("name", "Please Enter User's Name").notEmpty(),   
+  ], // End of Express Validator  
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
+    }
+    try {
+      const {
+        username,
+        email,
+        // password,  A SOLUTION BELOW
+        name,
+        middleName,
+        surName,
+        tel1,
+        tel2,
+        address
+      } = req.body;
 
-    // This is because, password is a necessary field
-    // Encrypt password
-    const salt = await bcrypt.genSalt(10);
-    const password = await bcrypt.hash((req.body.password || "aPassword"), salt);
+      // This is because, password is a necessary field
+      // Encrypt password
+      const salt = await bcrypt.genSalt(10);
+      const password = await bcrypt.hash((req.body.password || "aPassword"), salt);
 
-    const userObject = {}
-    const variablesArray = ['username', 'email', 'name', 'middleName', 'surName', 'tel1', 'tel2', 'address']
+      const userObject = {}
+      const variablesArray = ['username', 'email', 'name', 'middleName', 'surName', 'tel1', 'tel2', 'address']
 
-    variablesArray.forEach( variable => {
-      if(req.body[variable]){
-        userObject[variable] = req.body[variable];
-      }
-    })    
+      variablesArray.forEach( variable => {
+        if(req.body[variable]){
+          userObject[variable] = req.body[variable];
+        }
+      })    
 
-    const newUser = new User({
-      ...userObject,
-      password,
-      balance: 0.00
-    });
-  
-    await newUser.save();
+      const newUser = new User({
+        ...userObject,
+        password,
+        balance: 0.00
+      });
+    
+      await newUser.save();
 
-    // Mutate for sending  to Client without password
-    const userForClient = new Object( {...newUser._doc})
-    delete userForClient.password; // to send client
-  
-    res.status(200).json({
-      msg: "User is added successfully",
-      customer: userForClient
-    });    
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
+      // Mutate for sending  to Client without password
+      const userForClient = new Object( {...newUser._doc})
+      delete userForClient.password; // to send client
+    
+      res.status(200).json({
+        msg: "User is added successfully",
+        customer: userForClient
+      });    
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    }
   }
-})
+);
 
 
 // Update Customer Info
-router.put('/info/:customerId', authAdmin,  async (req, res) => { 
-  try {
+router.put(
+  '/info/:customerId', 
+  authAdmin, 
+  [  // Express Validator
+    check("name", "Please Enter a Valid Name!").isString(),
+    check("middleName", "Please Enter a Valid Middlename!").isString(),
+    check("surName", "Please Enter a valid Surname!").isString(),    
+  ], // End of Express Validator   
+  async (req, res) => {
+    try {
+      // Check if customer exists
+      const user = await User.findById(req.params.customerId)
+      if( !user) {
+        return res.status(400).json({ errors: [{ msg: "User does not exist!" }] })
+      }
 
-    // Check if customer exists
-    const user = await User.findById(req.params.customerId)
-    if( !user) {
-      return res.status(400).json({ errors: [{ msg: "User does not exist!" }] })
+      const variablesArray = [
+        // "username",  DISABLED
+        // "email",     DISABLED
+        "name",
+        "middleName",
+        "surName",
+        "tel1",
+        "tel2",
+        "address"
+      ];
+
+      variablesArray.forEach(variable => {    
+        user[variable] = req.body[variable];      
+      });
+
+      await user.save()
+
+      // Mutate for sending  to Client without password
+      const userForClient = new Object({ ...user._doc });
+      delete userForClient.password; // to send client
+
+      res.status(200).json({
+        msg: "User Updated Successfully",
+        user: userForClient
+      });
+
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
     }
-
-    const variablesArray = [
-      // "username",  DISABLED
-      // "email",     DISABLED
-      "name",
-      "middleName",
-      "surName",
-      "tel1",
-      "tel2",
-      "address"
-    ];
-
-    variablesArray.forEach(variable => {    
-      user[variable] = req.body[variable];      
-    });
-
-    await user.save()
-
-    // Mutate for sending  to Client without password
-    const userForClient = new Object({ ...user._doc });
-    delete userForClient.password; // to send client
-
-    res.status(200).json({
-      msg: "User Updated Successfully",
-      user: userForClient
-    });
-
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
-  }
 })
 
 // Delete Customer
 router.delete('/info/:customerId', authAdmin,  async (req, res) => {
   try {
+    const _clientAdmin = await Admin.findById(req.user.id);
+    if ( !_clientAdmin || _clientAdmin.isEmployee === true ) {
+      return res.status(400).json(
+        { errors: [{ msg: "You are not allowed to perform this action!" }] }
+      );
+    }
     // Check if customer exists
     const user = await User.findById(req.params.customerId);
     if (!user) {
@@ -140,11 +170,8 @@ router.delete('/info/:customerId', authAdmin,  async (req, res) => {
 
 // Get All Customers Info
 router.get('/', authAdmin, async (req, res ) => {
-
-  try {
-    
+  try {    
     const userList = await User.find({}).select('-password');
-
     res.status(200).json(userList)
   } catch (err) {
     console.error(err.message);
@@ -155,14 +182,12 @@ router.get('/', authAdmin, async (req, res ) => {
 
 
 // Query Users
-router.get('/query', authAdmin, async (req, res) => {
-  
+router.get('/query', authAdmin, async (req, res) => {  
   try {
     const searched = req.query.searched
     if(!searched) {
       // Do SMT
     }
-
     // const serviceList = await Service.find(
     //   {serviceType: {
     //     $regex: new RegExp(searched)
@@ -190,9 +215,7 @@ router.get('/query', authAdmin, async (req, res) => {
         }
       ]
     }).select('-password');
-
     res.status(200).json(userList);
-
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
@@ -202,14 +225,12 @@ router.get('/query', authAdmin, async (req, res) => {
 
 // Get a Single Customer Info
 router.get('/info/:customerId', authAdmin,  async (req, res) => {
-
   try {
     // Check if customer exists
     const user = await User.findById(req.params.customerId).select('-password');
     if(!user ) {
       return res.status(400).json('Customer Not Found')
     }
-
     res.status(200).json(user)
   } catch (err) {
       console.error(err.message);
@@ -223,19 +244,28 @@ router.get('/info/:customerId', authAdmin,  async (req, res) => {
 
 
 // Add a Payment
-router.post('/payment/:customerId', authAdmin, async (req, res) => {
-  try {
-    
+router.post(
+  '/payment/:customerId', 
+  authAdmin, 
+  [  // Express Validator
+    check("customerId", "Please Enter Customer ID").isString(),
+    check("payment", "Please Enter a Valid Payment Amount!").isFloat({
+      min:1
+    }),   
+  ], // End of Express Validator
+  async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({
+      errors: errors.array(),
+    });
+  }
+  try {    
     const user = await User.findById(req.params.customerId);
-
-    const payment = parseFloat(parseFloat(req.body.payment).toFixed(2))
-
+    const payment = parseFloat(parseFloat(req.body.payment).toFixed(2));
     user.balance = parseFloat(user.balance).toFixed(2);
-
     user.balance += payment;
-
     await user.save();
-
     const paymentActivity = new UserActivity({
       customerId: user._id,
       activityType: "payment",
@@ -257,21 +287,18 @@ router.post('/payment/:customerId', authAdmin, async (req, res) => {
 
 // Get All Activities of All Users
 router.get('/payment', authAdmin,  async (req, res) => {
-
   try {
     const activitiyList =  await UserActivity.find( {} );
     res.status(200).json(activitiyList)
   } catch (err) {
     console.error(err.message);
     res.status(500).send("Server Error");
-  }
-  
- })
+  }  
+ });
 
 
 // Get All Activities of a Single User
 router.get('/all-activities/:customerId', authAdmin,  async (req, res) => {
-
   try {
     const activitiyList = await UserActivity.find({
       customerId: req.params.customerId
@@ -281,60 +308,72 @@ router.get('/all-activities/:customerId', authAdmin,  async (req, res) => {
     console.error(err.message);
     res.status(500).send("Server Error");
   }
-
- })
+ });
 
  
 // Update A Payment
-router.put('/payment/:customerId/:activityId', authAdmin,  async (req, res) => {
-
-  try {
-    const userActivity = await UserActivity.findById(req.params.activityId);
-    if (! userActivity ) {
-      return res.status(400).json('Activity Not Found')
+router.put('/payment/:customerId/:activityId', 
+  authAdmin,  
+  [  // Express Validator
+    check("customerId", "Please Enter Customer ID").isString(),
+    check("payment", "Please Enter a Valid Payment Amount!").isFloat({
+      max:-1
+    }),   
+  ], // End of Express Validator
+  async (req, res) => {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+      return res.status(400).json({
+        errors: errors.array(),
+      });
     }
+    try {
+      const userActivity = await UserActivity.findById(req.params.activityId);
+      if (! userActivity ) {
+        return res.status(400).json('Activity Not Found')
+      }
 
-    // If CustomerId will also be Updated
-    if (userActivity.customerId.toString() !== req.body.customerId.toString()) {
-      console.log(userActivity.customerId);
-      console.log(req.body.customerId);
-      // Initial Customer
-      const user1 = await User.findById(userActivity.customerId);
-      user1.balance += userActivity.amount;
-      await user1.save();
+      // If CustomerId will also be Updated
+      if (userActivity.customerId.toString() !== req.body.customerId.toString()) {
+        console.log(userActivity.customerId);
+        console.log(req.body.customerId);
+        // Initial Customer
+        const user1 = await User.findById(userActivity.customerId);
+        user1.balance += userActivity.amount;
+        await user1.save();
 
-      // Update Activity Model & Save
-      userActivity.amount = req.body.amount;
-      userActivity.customerId = req.body.customerId;
-      await userActivity.save();
+        // Update Activity Model & Save
+        userActivity.amount = req.body.amount;
+        userActivity.customerId = req.body.customerId;
+        await userActivity.save();
 
-      // Save User2 Model
-      const user2 = await User.findById(req.body.customerId);
-      user2.balance -= req.body.amount;
-      await user2.save();
+        // Save User2 Model
+        const user2 = await User.findById(req.body.customerId);
+        user2.balance -= req.body.amount;
+        await user2.save();
 
-      return res.json("Payment is updated successfully");
-    } else {
-      const initialAmount = userActivity.amount;
+        return res.json("Payment is updated successfully");
+      } else {
+        const initialAmount = userActivity.amount;
 
-      // Update Activity Object & Save
-      userActivity.amount = req.body.amount;
-      await userActivity.save();
+        // Update Activity Object & Save
+        userActivity.amount = req.body.amount;
+        await userActivity.save();
 
-      // Update & Save User Model
-      const user = await User.findById(req.body.customerId);
-      user.balance += initialAmount - req.body.amount;
-      await user.save();
+        // Update & Save User Model
+        const user = await User.findById(req.body.customerId);
+        user.balance += initialAmount - req.body.amount;
+        await user.save();
 
-      res.status(200).json("Payment is updates successfully");
+        res.status(200).json("Payment is updates successfully");
+      }
+
+    } catch (err) {
+      console.error(err.message);
+      res.status(500).send("Server Error");
     }
-
-  } catch (err) {
-    console.error(err.message);
-    res.status(500).send("Server Error");
   }
-
-})
+);
 
 // Delete A Payment
 router.delete('/payment/:customerId/:activityId', authAdmin, async (req, res) => { 

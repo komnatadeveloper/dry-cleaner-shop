@@ -40,7 +40,7 @@ const CustomersItem = (
   }))(TableCell);
 
   useEffect(() => {
-      console.log(customer);
+      // console.log(customer);
     }, [customer]
   );
 

@@ -160,6 +160,10 @@ const Navbar = ({
           content='Services'
         />
         <_CustomNavButton
+          navPath= '/dashboard/employee-list'
+          content='Employee'
+        />
+        <_CustomNavButton
           navPath= '/dashboard/settings'
           // content={<TuneIcon />}
           content={'Settings'}

@@ -717,11 +717,6 @@ const AdminState = props => {
         }
       };      
       const res = await axios.get("/api/admin/useractivities/payments", config);
-
-      console.log('HELLO FROM LOAD PAYMENTS');
-
-      // console.log(res.data);
-
       dispatch({
         type: PAYMENTS_LOADED,
         payload: res.data
@@ -985,7 +980,7 @@ const AdminState = props => {
         }
       };
       
-      const { customerId, payment} = formData
+      const { customerId, payment} = formData;
 
       const res = await axios.post(
         `/api/admin/customers/payment/${customerId}`, formData,
@@ -1082,9 +1077,64 @@ const AdminState = props => {
   }
 
 
+    //-----------------------EMPLOYEE------------------------------
+
+
+  // Add a Customer
+  const addNewEmployee = async ({ 
+    formData,
+    cb  // callBack 
+  }) => {
+    try {
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };
+      const res = await axios.post(
+        `/api/admin/employee/add`,
+        formData,
+        config
+      );
+      // dispatch({
+      //   type: CUSTOMER_ADDED,
+      //   payload: res.data.customer
+      // });
+      if ( cb ) {
+        cb(res.data.employee);
+      }
+      setAlert(res.data.msg, "success", 3000);
+      return res.data;
+    } catch (err) {
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+  };
   
 
-  
+  // Load All Employee
+  const loadEmployeeList = async ({
+    cb  // callBack
+  }) => {
+    try {
+    setAdminLoading(true)
+    const config = {
+      headers: {
+        "Content-Type": "application/json"
+      }
+    };      
+    const res = await axios.get("/api/admin/employee", config);
+    cb(res.data);
+    setAdminLoading(false);
+    } catch (err) {
+      const errors = err.response.data.errors;
+      if (errors) {
+        errors.forEach(error => setAlert(error.msg, "error", 2500));
+      }
+    }
+  }  
 
   
 
@@ -1142,6 +1192,9 @@ const AdminState = props => {
         loadQueriedProducts,
         // Reports
         loadDashboardReports,
+        // Employee
+        addNewEmployee,
+        loadEmployeeList,
         // State variables
         customers: state.customers,
         orders: state.orders,

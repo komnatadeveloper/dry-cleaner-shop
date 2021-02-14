@@ -13,6 +13,7 @@ const adminUserActivities = require("./routes/api/adminUserActivities");
 const adminReports = require("./routes/api/adminReports");
 const usersRouter = require('./routes/api/users')
 const authRouter = require('./routes/api/auth')
+const adminEmployeeRouter = require('./routes/api/adminEmployee');
 
 
 const app = express();
@@ -31,6 +32,7 @@ app.use(express.json({ extended: false }));
 // Define routes
 app.use("/api/public", publicRouter);
 app.use("/api/admin/register", adminRegister);
+app.use("/api/admin/employee", adminEmployeeRouter);
 app.use("/api/admin/products", adminProducts);
 app.use("/api/admin/services", adminServices);
 app.use("/api/admin/categories", adminCategories);

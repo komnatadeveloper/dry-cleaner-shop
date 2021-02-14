@@ -16,7 +16,15 @@ router.post('/',
   authAdmin,  
   fileCheck.single('image'),  
   async (req, res) => {
+
     try {
+      const _clientAdmin = await Admin.findById(req.user.id);
+      if ( !_clientAdmin || _clientAdmin.isEmployee === true ) {
+        return res.status(400).json(
+          { errors: [{ msg: "You are not allowed to perform this action!" }] }
+        );
+      }
+      console.log('_clientAdmin -> ', _clientAdmin);
       console.log('routes/api/adminCategories -> add category -> req.body.name -> ', req.body.name);
       const ifCategoryExist = await Category.find({
         name: req.body.name
@@ -42,7 +50,10 @@ router.post('/',
       });
     } catch (err) {
       console.error(err.message);
-      res.status(500).send("Server Error");
+      // res.status(500).send("Server Error");
+      res.status(500).json(
+          { errors: [{ msg: "Server Error" }] }
+        );;
     }
   }
 ); // End of  Add a Category
@@ -68,6 +79,12 @@ router.delete('/:categoryId',
   authAdmin,   
   async (req, res) => {
     try {
+      const _clientAdmin = await Admin.findById(req.user.id);
+      if ( !_clientAdmin || _clientAdmin.isEmployee === true ) {
+        return res.status(400).json(
+          { errors: [{ msg: "You are not allowed to perform this action!" }] }
+        );
+      }
       const category = await Category.findById(req.params.categoryId);
       if (!category) {
         return res.status(400).json({ errors: [{ msg: "Category not found" }] });

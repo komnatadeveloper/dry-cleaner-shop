@@ -3,7 +3,7 @@ import {
   Container, 
 } from '@material-ui/core';
 
-export const SetttingsPage = () => {
+export const SettingsPage = () => {
   return (
     <Container
       maxWidth='lg'

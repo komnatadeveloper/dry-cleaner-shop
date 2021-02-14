@@ -62,7 +62,7 @@ const CustomerLogin = () => {
       } 
       else {  // loginMode === 'signup'
         if ( password !== confirmPassword ) {
-          return setAlert('Passwords do not match!', "danger");          
+          return setAlert('Passwords do not match!', "error");          
         }
         userRegister(formData);
       }
