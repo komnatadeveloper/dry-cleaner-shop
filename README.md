@@ -26,7 +26,8 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
  - All UI of Employee is same (at the moment) with Admin User. So when you try to Manipulate Category, Services you will face with an Alert with No Permission. Employee can see only his/her account on EmployeeList Page, however Admin Accounts will see all Accounts. 
  
  - **Employee Login Credentials for you to see this Demo Live**
-    - **Link: [https://komnata-dry-cleaner-shop.herokuapp.com/user-login](https://komnata-dry-cleaner-shop.herokuapp.com/user-login)**
+
+    - **Link: [https://komnata-dry-cleaner-shop.herokuapp.com/admin](https://komnata-dry-cleaner-shop.herokuapp.com/admin)**  
     - **Username: testadmin**
     - **Email: testemployee@test.com**
     - **Password: 12345678**
@@ -37,7 +38,7 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
     
 - **Customer Login Credentials for you to see this Demo Live (You can also register if you wish)**
 
-    - **Link: [https://komnata-dry-cleaner-shop.herokuapp.com/admin](https://komnata-dry-cleaner-shop.herokuapp.com/admin)**
+    - **Link: [https://komnata-dry-cleaner-shop.herokuapp.com/user-login](https://komnata-dry-cleaner-shop.herokuapp.com/user-login)**
     - **Username: jdoe**
     - **Email: jdoe@gmail.com**
     - **Password: 123456**
