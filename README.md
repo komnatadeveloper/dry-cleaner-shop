@@ -26,7 +26,7 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
  - All UI of Employee is same (at the moment) with Admin User. So when you try to Manipulate Category, Services you will face with an Alert with No Permission. Employee can see only his/her account on EmployeeList Page, however Admin Accounts will see all Accounts. 
  
  - **Employee Login Credentials for you to see this Demo Live**
-  
+    - **Link: [https://komnata-dry-cleaner-shop.herokuapp.com/user-login](https://komnata-dry-cleaner-shop.herokuapp.com/user-login)**
     - **Username: testadmin**
     - **Email: testemployee@test.com**
     - **Password: 12345678**
@@ -37,6 +37,7 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
     
 - **Customer Login Credentials for you to see this Demo Live (You can also register if you wish)**
 
+    - **Link: [https://komnata-dry-cleaner-shop.herokuapp.com/admin](https://komnata-dry-cleaner-shop.herokuapp.com/admin)**
     - **Username: jdoe**
     - **Email: jdoe@gmail.com**
     - **Password: 123456**
@@ -54,10 +55,14 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
     
 ** **
 
-## Some Screenshots
+
+<h2 align="center">SOME SCREENSHOTS</h2>
 
 
-### ---------Public---------
+
+ <h3 align="center">PUBLIC USER (Without Login)</h3>
+ 
+
 
 - **Public Home Page**
 
@@ -76,8 +81,8 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
 
 ** **
 
+<h3 align="center">ADMIN AND/OR EMPLOYEE USER</h3>
 
-### ---------Admin And Employee User---------
 
 - **Dashboard Page**
 <img src="images-for-readmemd/rev01/admin/dashboard.png" height=400>
@@ -129,8 +134,8 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
 ** **
 
 
+<h3 align="center">CUSTOMER USER</h3>
 
-### ---------Customer User---------
 
 - **Main Page (To See Activities)**
 <img src="images-for-readmemd/rev01/customer/MainPage.png" height=400 style="margin-bottom:64;">
@@ -147,12 +152,12 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
 
 ** **
 
+<h2 align="center">HOW TO USE THIS REPO?</h2>
 
-## TO USE THIS REPO
 - **Create /config/default.json for Development Purpose with Following Code** 
 - **Create /config/production.json for Production Purpose with Following Code** 
 ```
-
+/config/default.json AND /config/production.json CONTENT
 {
   "mongoURI": "mongodb+srv://_YOUR_MONGO_URI",  
   "jwtSecret":      "YOUR JWT SECRET FOR CUSTOMERS",
@@ -165,10 +170,12 @@ A Full-Stack Web App with a React.js Frontend (Materialize CSS), and Node.js Bac
  - At the moment, if there is no category added, HomePage will face with an error, since when loading, by default Category[0] Items will be shown. Thus, if there is no category, it causes  an error. 
  
  
+ 
  ** **
  
  
- ## TODO LIST
+ <h2 align="center">TODO LIST</h2>
+ 
  
  -  Add Stripe Payment
  - Update Order Structure to handle Options for Refunds, 
