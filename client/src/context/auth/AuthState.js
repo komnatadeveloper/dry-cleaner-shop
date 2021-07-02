@@ -20,6 +20,10 @@ import {
   USER_UPDATED_SELF
 } from "../types";
 
+// Helpers
+import {deleteAllCookiesHelper} from "../../helpers/auth/deleteAllCookiesHelper";
+
+
 
 const AuthState = props => {
   const initialState = {
@@ -47,6 +51,7 @@ const AuthState = props => {
   // ------------------------------------------GENERAL PURPOSE-----------------------------
   const handleAuthError = () => {
     console.log('HELLO FROM HANDLEAUTHERROR');
+    deleteAllCookiesHelper();
     dispatch({
       type: AUTH_ERROR
     });
@@ -292,6 +297,7 @@ const AuthState = props => {
 
   // BOTH For User and Admin
   const logout = () => {
+    deleteAllCookiesHelper();
     dispatch({ type: LOGOUT });
   }
 

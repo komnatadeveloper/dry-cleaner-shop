@@ -53,7 +53,6 @@ const AdminDashboard = ({ match }) => {
     })
     // loadOrders(_cbsetLoadingOrders);
   }, []);
-  // console.log(user, isAuthenticated, userType);
   if( ! loading && (!user || !isAuthenticated || userType !== 'Admin')) {
     return (
       <Redirect to={'/'} />

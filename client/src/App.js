@@ -2,6 +2,10 @@ import React, {useEffect } from 'react';
 // import 'materialize-css/dist/css/materialize.min.css';
 // import M from 'materialize-css/dist/js/materialize.min.js';
 
+// Helpers
+import { setAuthCredentialsTrue } from './helpers/auth/setAuthCredentialsTrue';
+
+
 import './Utilities.css';
 import './App.css';
 import {Switch, Route, BrowserRouter} from 'react-router-dom';
@@ -72,6 +76,7 @@ import { ChangePassword } from './components/user/ChangePassword';
     
     
   useEffect(  () => {
+    setAuthCredentialsTrue();
     // Initialize Materialize
     // M.AutoInit();
 
