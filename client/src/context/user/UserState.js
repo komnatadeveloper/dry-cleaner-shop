@@ -2,7 +2,10 @@ import React, { useReducer, useContext } from "react";
 import axios from "axios";
 import userContext from "./userContext";
 import userReducer from "./userReducer";
+
+// Other Contexts
 import alertContext from "../alert/alertContext";
+import authContext from "../auth/authContext";
 import publicContext from '../../context/public/publicContext'
 
 import {
@@ -25,7 +28,19 @@ const UserState = props => {
   const publicContext1 = useContext(publicContext);
   const { setCartDirectly } = publicContext1;
 
+  const _authContext = useContext(authContext);
+  const { handleAuthError } = _authContext;
+
   const [state, dispatch] = useReducer(userReducer, initialState);
+
+
+  const _handleResponseError = err => {
+    if (err.request.status === 401)  handleAuthError();
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach(error => setAlert(error.msg, "error", 2500));
+    }
+  }
 
 
   //-----------------------LOADING------------------------------
@@ -65,14 +80,7 @@ const UserState = props => {
       localStorage.removeItem('cart')
 
     } catch (err) {
-      // console.log('UserState -> addToOrderFromCart -> errors OCCURED ->');
-      console.log(err.response)
-      console.log(err)
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
-      }
+      return _handleResponseError(err);
     }
   }
 
@@ -95,11 +103,7 @@ const UserState = props => {
       setUserLoading(false);
 
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
-      }
+      return _handleResponseError(err);
     }
   }
 
@@ -121,11 +125,7 @@ const UserState = props => {
     } catch (err) {
       // console.log(err.response);
       next(null)
-      const errors = err.response.data.errors;
-      
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "danger", 2500));
-      }
+      _handleResponseError(err);
     }
     setUserLoading(false);
   }

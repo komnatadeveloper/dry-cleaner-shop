@@ -35,5 +35,7 @@ config/production.json
 # TOBEDELETED
 TOBEDELETED/
 
+# package-lock.json
+package-lock.json
 
 

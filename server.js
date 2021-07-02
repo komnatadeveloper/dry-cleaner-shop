@@ -1,6 +1,10 @@
 const express = require("express");
 const connectDB = require("./config/db");
 const path = require("path");
+// cookies
+const cookieParser = require('cookie-parser');
+
+// Import Routers
 const publicRouter = require('./routes/api/public')
 const adminRegister = require('./routes/api/adminRegister')
 const adminProducts = require('./routes/api/adminProducts')
@@ -23,6 +27,9 @@ connectDB();
 
 // Init Middleware
 app.use(express.json({ extended: false }));
+
+// Cookie Middleware Use
+app.use(cookieParser());
 
 // WE ARE COMMENTING TO BE ABLE TO UPLOAD TO HEROKU
 // app.get('/', (req, res) => {

@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react';
+import { useCookies } from "react-cookie";
 import {
   NavLink,
   withRouter
@@ -21,14 +22,18 @@ import {
 } from '@material-ui/core';
 import { createMuiTheme, ThemeProvider } from '@material-ui/core/styles';
 
-import TuneIcon from '@material-ui/icons/Tune';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
+// Helpers
+import { deleteAllCookiesHelper } from '../../../helpers/auth/deleteAllCookiesHelper';
+
 const Navbar = ({
-  location
+  location,
 }) => {
   const authContext1 = useContext(authContext)
   const { loading, userType, user, isAuthenticated, logout } = authContext1 
+  // eslint-disable-next-line
+  const [cookies, setCookie, removeCookie] = useCookies(["xAuthToken"]);
   
   let classes;
   const useStyles = makeStyles( () => ({
@@ -121,6 +126,16 @@ const Navbar = ({
             <Button 
               onClick={() => {
                 _handleClickCloseLogoutModal();
+                for(let i=0; i < 8; i++ ) {
+                  deleteAllCookiesHelper();
+                  removeCookie("xAuthToken");
+                  removeCookie("userType");
+                  setTimeout(() => {
+                    deleteAllCookiesHelper();
+                    removeCookie("xAuthToken");
+                    removeCookie("userType");
+                  }, i * 20 );
+                }
                 logout();
               }}
               color='secondary'

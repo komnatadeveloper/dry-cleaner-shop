@@ -63,6 +63,14 @@ const AdminState = props => {
 
   const [state, dispatch] = useReducer(adminReducer, initialState);
 
+  const _handleResponseError = err => {
+    if (err.request.status === 401)  handleAuthError();
+    const errors = err.response.data.errors;
+    if (errors) {
+      errors.forEach(error => setAlert(error.msg, "error", 2500));
+    }
+  }
+
 
  //-----------------------LOADING------------------------------
     const setAdminLoading = status => {
@@ -99,11 +107,7 @@ const AdminState = props => {
       setAlert(res.data.msg, 'success', 3000)
 
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   };
 
@@ -125,11 +129,7 @@ const AdminState = props => {
 
       setAlert(res.data.msg, "success", 3000);
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   };
 
@@ -155,11 +155,7 @@ const AdminState = props => {
       }
       setAdminLoading(false);
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   }
 
@@ -189,12 +185,7 @@ const AdminState = props => {
       });
       setAlert(res.data.msg, "success", 3000);
     } catch (err) {
-      const errors = err.response.data.errors;
-
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   }
 
@@ -223,7 +214,9 @@ const AdminState = props => {
           type: CLEAR_QUERIED_SERVICES
         });
       }
-    } catch (err) {}
+    } catch (err) {
+      return _handleResponseError(err);
+    }
   };
 
   
@@ -261,11 +254,7 @@ const AdminState = props => {
       setAlert(res.data.msg, 'success', 3000)
 
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   };  // End of addCategory
 
@@ -287,15 +276,11 @@ const AdminState = props => {
         cb();
       }
     } catch (err) {
-      const errors = err.response.data.errors;
-      if ( cb ){
-        cb();
-      }
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      if ( cb ) cb();      
+      return _handleResponseError(err);
     }
   };  // End of Delete a Category
+
 
   // Load All Categories
   const loadCategories = async () => {
@@ -313,15 +298,12 @@ const AdminState = props => {
         type: CATEGORIES_LOADED,
         payload: res.data
       });
-      setAdminLoading(false);
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      _handleResponseError(err);
     }
+    setAdminLoading(false);
   }  // End of loadCategories
+
 
   // Query Categories
   const loadQueriedCategories = async (
@@ -341,12 +323,9 @@ const AdminState = props => {
       } else {  
         return cb( [] );   
       } 
-    } catch (err) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
-      return cb ( [] );
+    } catch (err) {      
+      cb ( [] );
+      return _handleResponseError(err);
     }
   }  // End of loadQueriedCategories
 
@@ -388,13 +367,10 @@ const AdminState = props => {
       }
       setAlert(res.data.msg, "success", 3000);
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   };
+
 
   // Update a Service
   const updateService = async ({ formData, serviceId }) => {
@@ -432,10 +408,7 @@ const AdminState = props => {
       });
       setAlert(res.data.msg, "success", 3000);
     } catch (err) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   };  // End of Update a Service
   
@@ -460,11 +433,8 @@ const AdminState = props => {
       });
       setAlert(res.data.msg, "success", 3000);      
     } catch (err) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
-      if(cb) { cb(); }
+      if(cb) cb(); 
+      return _handleResponseError(err);
     }
   };
 
@@ -486,11 +456,7 @@ const AdminState = props => {
       });
       setAdminLoading(false);
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   }
 
@@ -511,11 +477,7 @@ const AdminState = props => {
         });
       }
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   };
 
@@ -538,13 +500,8 @@ const AdminState = props => {
       });
       
     } catch (err) {
-      const errors = err.response.data.errors;
-
       next(null)
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      _handleResponseError(err);
     }
     setAdminLoading(false)
   }
@@ -577,10 +534,7 @@ const AdminState = props => {
         cb( [] );    
       } 
     } catch (err) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   }  // End of loadQueriedServices
 
@@ -612,10 +566,7 @@ const AdminState = props => {
       });
       setAlert(res.data.msg, "success", 3000);
     } catch (err) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   };
 
@@ -637,11 +588,7 @@ const AdminState = props => {
       setAlert(res.data.msg, "success", 3000);
 
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   };
 
@@ -665,19 +612,10 @@ const AdminState = props => {
       // return res.data
 
     } catch (err) {
-      console.log('LOAD SINGLE ORDER ERROR')
-      
       next(null)
-
-      console.log(err.request.status === 401);
-      if (err.request.status === 401) handleAuthError();
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      _handleResponseError(err);
     }
-    setAdminLoading(false)
+    setAdminLoading(false);
   }
 
   // Load Orders
@@ -685,27 +623,25 @@ const AdminState = props => {
     cb // if there is callBack
   ) => {
     try {
-    setAdminLoading(true);    
-    const config = {
-      headers: {
-        "Content-Type": "application/json"
-      }
-    };      
-    const res = await axios.get("/api/admin/orders", config);
-    dispatch({
-      type: ORDERS_LOADED,
-      payload: res.data
-    });
-    if ( cb ) { cb(); }
-    setAdminLoading(false);
-    } catch (err) {
-      const errors = err.response.data.errors;
+      setAdminLoading(true);    
+      const config = {
+        headers: {
+          "Content-Type": "application/json"
+        }
+      };      
+      const res = await axios.get("/api/admin/orders", config);
+      dispatch({
+        type: ORDERS_LOADED,
+        payload: res.data
+      });
       if ( cb ) { cb(); }
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      setAdminLoading(false);
+    } catch (err) {
+      if ( cb )  cb(); 
+      return _handleResponseError(err);
     }
   }
+
 
   //-----------------------USER ACTIVITIES------------------------------ 
   const loadPayments = async () => {
@@ -723,14 +659,11 @@ const AdminState = props => {
       });      
 
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      _handleResponseError(err);
     }
     setAdminLoading(false);
   }
+
 
   const getAllUserActivities= async ({cb}) => {
     // setAdminLoading(true);
@@ -748,16 +681,12 @@ const AdminState = props => {
       // setAdminLoading(false);
       // return res.data
     } catch (err) {
-      if ( cb ) { cb(null); }
-      console.log(err.request.status === 401);
-      if (err.request.status === 401) handleAuthError();
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      if ( cb ) cb(null); 
+      return _handleResponseError(err);
     }
     // setAdminLoading(false);
   }
+
 
   const getSingleUserActivity= async ({activityId, next}) => {
     setAdminLoading(true);
@@ -777,17 +706,8 @@ const AdminState = props => {
 
       // return res.data
     } catch (err) {
-      console.log("LOAD SINGLE ORDER ERROR");
-
       next(null);
-
-      console.log(err.request.status === 401);
-      if (err.request.status === 401) handleAuthError();
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      _handleResponseError(err);
     }
     setAdminLoading(false);
   }
@@ -808,11 +728,8 @@ const AdminState = props => {
       next(res.data)
       setAlert(res.data.msg, "success", 3000);
     } catch (err ) {
-      const errors = err.response.data.errors;
       next(null)
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   }  // End of Update Payment
   
@@ -848,10 +765,7 @@ const AdminState = props => {
       setAlert(res.data.msg, "success", 3000);
       return res.data;
     } catch (err) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   };
 
@@ -872,11 +786,7 @@ const AdminState = props => {
       return res.data      
 
     } catch (err ) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   }
 
@@ -902,13 +812,8 @@ const AdminState = props => {
       setAlert(res.data.msg, "success", 3000);
       return res.data
     } catch (err ) {
-      const errors = err.response.data.errors;
-      if ( cb ) {
-        cb();
-      }
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      if ( cb )  cb();      
+      return _handleResponseError(err);
     }
   }  // End of Delete Customer
 
@@ -932,10 +837,10 @@ const AdminState = props => {
         type: CUSTOMERS_LOADED,
         payload: res.data
       });
-    setAdminLoading(false);
     } catch (err) {
-      
+      _handleResponseError(err);
     }
+    setAdminLoading(false);
   }  
 
   // Load Queried Users
@@ -959,12 +864,10 @@ const AdminState = props => {
         cb( [] );
       }
     } catch (err) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   };
+
 
   const clearUserQuery = () => {
     dispatch({
@@ -990,11 +893,7 @@ const AdminState = props => {
       setAlert(res.data.msg, "success", 3000);      
       
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   }
 
@@ -1016,11 +915,7 @@ const AdminState = props => {
 
       if (res.data) return res.data;
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   }
 
@@ -1042,11 +937,7 @@ const AdminState = props => {
 
       if (res.data) return res.data;
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   }
 
@@ -1068,11 +959,7 @@ const AdminState = props => {
 
       if (res.data) return res.data;
     } catch (err) {
-      const errors = err.response.data.errors;
-
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   }
 
@@ -1106,10 +993,7 @@ const AdminState = props => {
       setAlert(res.data.msg, "success", 3000);
       return res.data;
     } catch (err) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   };
   
@@ -1129,10 +1013,7 @@ const AdminState = props => {
     cb(res.data);
     setAdminLoading(false);
     } catch (err) {
-      const errors = err.response.data.errors;
-      if (errors) {
-        errors.forEach(error => setAlert(error.msg, "error", 2500));
-      }
+      return _handleResponseError(err);
     }
   }  
 

@@ -2,31 +2,39 @@ const express = require('express')
 const router = express.Router();
 const bcrypt = require('bcryptjs')
 const auth = require('../../middleware/auth')
-const User = require('../../models/User')
-const Admin = require('../../models/Admin')
 const jwt = require('jsonwebtoken')
-const config = require('config')
-const { check, validationResult } = require('express-validator')
+
+// Helpers
+const createAdminToken = require('../../helpers/auth/createAdminToken');
+const createCustomerToken = require('../../helpers/auth/createCustomerToken');
+
+// Middleware
 const authAdmin = require('../../middleware/authAdmin')
 
+// Models
+const User = require('../../models/User')
+const Admin = require('../../models/Admin');
 
 // ------------------------------Admin--------------------------------
 
 // Admin Auth
-router.get('/admin', authAdmin,  async (req, res) => {
-
-  try {
-    const admin = await Admin.findById(req.user.id).select('-password')
-    res.json({
-      admin,
-      userType: 'Admin'
-    })
-  } catch (err) {
-    console.error(err.message)
-    res.status(500).send('Server Error')
+router.get(
+  '/admin', 
+  authAdmin,  
+  async (req, res) => {
+    try {
+      const admin = await Admin.findById(req.user.id).select('-password')
+      res.json({
+        admin,
+        userType: 'Admin'
+      })
+    } catch (err) {
+      console.error(err.message)
+      res.status(500).send('Server Error')
+    }
+    // res.send('Auth route')
   }
-  // res.send('Auth route')
-})
+);
 
 
 // Admin Login
@@ -54,23 +62,16 @@ router.post('/admin', async (req, res) => {
       return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] })
     }
 
-    // Return jsonwebtoken
-    const payload = {
-      user: {
-        id: admin.id,
-        type: 'Admin'
+    res.cookie(
+      'xAuthToken',
+      createAdminToken(admin),
+      { 
+        maxAge: 1000 * 60 * 15, // 15 min (unit: millliseconds)
+        // httpOnly: true // so we can not use it in Jaavscript or manipulate it
       }
-    }
+    );
+    res.status(200).send();
 
-    jwt.sign(
-      payload,
-      config.get('jwtSecretAdmin'),
-      { expiresIn: 360000 },
-      (err, token) => {
-        if (err) throw err;
-        res.json({ token, userType: "Admin" });
-      }
-    )
 
   } catch (err) {
     console.error(err.message)
@@ -101,24 +102,22 @@ router.post('/users', async (req, res) => {
       return res.status(400).json({ errors: [{ msg: 'Invalid Credentials' }] })
     }
 
-    // Return jsonwebtoken
-    const payload = {
-      user: {
-        id: user.id,
-        type: 'user'
+    res.cookie(
+      'xAuthToken',
+      createCustomerToken(user),
+      { 
+        maxAge: 1000 * 60 * 15, // 15 min (unit: millliseconds)
+        // httpOnly: true // so we can not use it in Jaavscript or manipulate it
       }
-    }
-
-    jwt.sign(
-      payload,
-      config.get('jwtSecret'),
-      { expiresIn: 360000 },
-      (err, token) => {
-        if (err) throw err;
-        res.json({ token, userType: 'user' })
+    );
+    res.cookie(
+      'userType',
+      'user',
+      { 
+        maxAge: 1000 * 60 * 15, // 15 min (unit: millliseconds)
       }
-    )
-
+    );
+    res.status(200).json({userType: 'user'});
   } catch (err) {
     console.error(err.message)
     res.status(500).send('Server Error')
